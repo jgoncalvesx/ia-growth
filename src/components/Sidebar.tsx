@@ -8,12 +8,14 @@ import {
   FileVideo, 
   BarChart3, 
   Settings, 
-  LogOut 
+  LogOut,
+  Users
 } from 'lucide-react';
 
 const navItems = [
   { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
   { icon: Megaphone, label: 'Campanhas', path: '/campaigns' },
+  { icon: Users, label: 'Leads', path: '/leads' },
   { icon: FileVideo, label: 'Conteúdo', path: '/content' },
   { icon: BarChart3, label: 'Analytics', path: '/analytics' },
   { icon: Settings, label: 'Configurações', path: '/settings' },
