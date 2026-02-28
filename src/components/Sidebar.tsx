@@ -1,6 +1,7 @@
 "use client";
 
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 import { 
   LayoutDashboard, 
   Megaphone, 
@@ -11,11 +12,11 @@ import {
 } from 'lucide-react';
 
 const navItems = [
-  { icon: LayoutDashboard, label: 'Dashboard', active: true },
-  { icon: Megaphone, label: 'Campanhas' },
-  { icon: FileVideo, label: 'Conteúdo' },
-  { icon: BarChart3, label: 'Analytics' },
-  { icon: Settings, label: 'Configurações' },
+  { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
+  { icon: Megaphone, label: 'Campanhas', path: '/campaigns' },
+  { icon: FileVideo, label: 'Conteúdo', path: '/content' },
+  { icon: BarChart3, label: 'Analytics', path: '/analytics' },
+  { icon: Settings, label: 'Configurações', path: '/settings' },
 ];
 
 const Sidebar = () => {
@@ -29,17 +30,19 @@ const Sidebar = () => {
       
       <nav className="flex-1 px-4 space-y-2">
         {navItems.map((item) => (
-          <button
+          <NavLink
             key={item.label}
-            className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
-              item.active 
+            to={item.path}
+            className={({ isActive }) => `
+              w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors
+              ${isActive 
                 ? 'bg-blue-600 text-white' 
-                : 'text-slate-400 hover:bg-slate-800 hover:text-white'
-            }`}
+                : 'text-slate-400 hover:bg-slate-800 hover:text-white'}
+            `}
           >
             <item.icon size={20} />
             <span className="font-medium">{item.label}</span>
-          </button>
+          </NavLink>
         ))}
       </nav>
 
