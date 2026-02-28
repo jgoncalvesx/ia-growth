@@ -1,6 +1,7 @@
 "use client";
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
@@ -11,7 +12,8 @@ import {
   Download, 
   Mail, 
   Phone, 
-  MoreHorizontal 
+  MoreHorizontal,
+  Eye
 } from 'lucide-react';
 
 const leads = [
@@ -23,6 +25,8 @@ const leads = [
 ];
 
 const Leads = () => {
+  const navigate = useNavigate();
+
   return (
     <Layout>
       <div className="flex justify-between items-center mb-8">
@@ -64,7 +68,7 @@ const Leads = () => {
           </thead>
           <tbody className="divide-y divide-slate-200">
             {leads.map((lead) => (
-              <tr key={lead.id} className="hover:bg-slate-50 transition-colors">
+              <tr key={lead.id} className="hover:bg-slate-50 transition-colors group">
                 <td className="px-6 py-4">
                   <p className="font-medium text-slate-900">{lead.name}</p>
                 </td>
@@ -92,9 +96,19 @@ const Leads = () => {
                 </td>
                 <td className="px-6 py-4 text-slate-500 text-sm">{lead.date}</td>
                 <td className="px-6 py-4 text-right">
-                  <button className="text-slate-400 hover:text-slate-600">
-                    <MoreHorizontal size={20} />
-                  </button>
+                  <div className="flex items-center justify-end space-x-2">
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="opacity-0 group-hover:opacity-100 transition-opacity"
+                      onClick={() => navigate(`/leads/${lead.id}`)}
+                    >
+                      <Eye className="h-4 w-4 mr-1" /> Ver Detalhes
+                    </Button>
+                    <button className="text-slate-400 hover:text-slate-600">
+                      <MoreHorizontal size={20} />
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}
