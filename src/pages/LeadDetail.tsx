@@ -13,13 +13,35 @@ import {
   Calendar, 
   MessageSquare, 
   User,
-  Tag
+  Tag,
+  Send
 } from 'lucide-react';
 import ChangeLeadStatusModal from '../components/ChangeLeadStatusModal';
+import { toast } from 'sonner';
 
 const LeadDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [note, setNote] = React.useState('');
+  const [notes, setNotes] = React.useState([
+    { id: 1, text: 'Cliente interessado no pacote premium.', date: '20/05/2024 14:30', author: 'Admin' },
+    { id: 2, text: 'Solicitou orçamento detalhado por e-mail.', date: '20/05/2024 15:45', author: 'Admin' }
+  ]);
+
+  const handleSaveNote = () => {
+    if (!note.trim()) return;
+    
+    const newNote = {
+      id: Date.now(),
+      text: note,
+      date: new Date().toLocaleString('pt-BR'),
+      author: 'Admin'
+    };
+    
+    setNotes([newNote, ...notes]);
+    setNote('');
+    toast.success('Nota salva com sucesso!');
+  };
 
   return (
     <Layout>
@@ -55,7 +77,6 @@ const LeadDetail = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Contact Info */}
         <div className="space-y-6">
           <Card className="bg-white border-slate-200 shadow-sm">
             <CardHeader>
@@ -79,21 +100,43 @@ const LeadDetail = () => {
 
           <Card className="bg-white border-slate-200 shadow-sm">
             <CardHeader>
-              <CardTitle className="text-lg font-semibold">Notas Rápidas</CardTitle>
+              <CardTitle className="text-lg font-semibold">Adicionar Nota</CardTitle>
             </CardHeader>
             <CardContent>
               <textarea 
-                className="w-full h-32 p-3 text-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none resize-none"
-                placeholder="Adicione uma nota sobre este lead..."
+                value={note}
+                onChange={(e) => setNote(e.target.value)}
+                className="w-full h-32 p-3 text-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none resize-none mb-3"
+                placeholder="Digite algo importante sobre este lead..."
               ></textarea>
-              <Button className="w-full mt-3 text-xs" variant="secondary">Salvar Nota</Button>
+              <Button className="w-full" onClick={handleSaveNote} disabled={!note.trim()}>
+                <Send className="mr-2 h-4 w-4" /> Salvar Nota
+              </Button>
             </CardContent>
           </Card>
         </div>
 
-        {/* Timeline/History */}
-        <div className="lg:col-span-2">
-          <Card className="bg-white border-slate-200 shadow-sm h-full">
+        <div className="lg:col-span-2 space-y-6">
+          <Card className="bg-white border-slate-200 shadow-sm">
+            <CardHeader>
+              <CardTitle className="text-lg font-semibold">Notas e Comentários</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {notes.map((n) => (
+                  <div key={n.id} className="p-4 rounded-lg bg-slate-50 border border-slate-100">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-xs font-bold text-blue-600 uppercase">{n.author}</span>
+                      <span className="text-[10px] text-slate-400">{n.date}</span>
+                    </div>
+                    <p className="text-sm text-slate-700">{n.text}</p>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-white border-slate-200 shadow-sm">
             <CardHeader>
               <CardTitle className="text-lg font-semibold">Histórico de Atividades</CardTitle>
             </CardHeader>

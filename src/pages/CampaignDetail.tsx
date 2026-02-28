@@ -14,7 +14,8 @@ import {
   DollarSign,
   Calendar,
   Play,
-  MoreVertical
+  MoreVertical,
+  AlertCircle
 } from 'lucide-react';
 import { 
   LineChart, 
@@ -51,6 +52,10 @@ const CampaignDetail = () => {
     toast.info('Campanha pausada com sucesso.');
   };
 
+  const budgetSpent = 1260;
+  const totalBudget = 5000;
+  const budgetPercentage = (budgetSpent / totalBudget) * 100;
+
   return (
     <Layout>
       <div className="mb-6">
@@ -79,6 +84,33 @@ const CampaignDetail = () => {
         </div>
       </div>
 
+      {/* Budget Progress Card */}
+      <Card className="bg-white border-slate-200 shadow-sm mb-8">
+        <CardContent className="p-6">
+          <div className="flex justify-between items-center mb-4">
+            <div className="flex items-center space-x-2">
+              <DollarSign className="text-slate-400" size={20} />
+              <h3 className="font-semibold text-slate-900">Consumo do Orçamento</h3>
+            </div>
+            <span className="text-sm font-medium text-slate-500">
+              R$ {budgetSpent.toLocaleString()} de R$ {totalBudget.toLocaleString()}
+            </span>
+          </div>
+          <div className="w-full bg-slate-100 h-3 rounded-full overflow-hidden">
+            <div 
+              className="bg-blue-600 h-full transition-all duration-500" 
+              style={{ width: `${budgetPercentage}%` }}
+            ></div>
+          </div>
+          <div className="flex justify-between mt-2">
+            <span className="text-xs text-slate-400">{budgetPercentage.toFixed(1)}% utilizado</span>
+            <div className="flex items-center text-xs text-orange-600 font-medium">
+              <AlertCircle size={12} className="mr-1" /> Restam R$ {(totalBudget - budgetSpent).toLocaleString()}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
         {[
@@ -102,7 +134,6 @@ const CampaignDetail = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-        {/* Performance Chart */}
         <Card className="lg:col-span-2 bg-white border-slate-200 shadow-sm">
           <CardHeader>
             <CardTitle className="text-lg font-semibold">Performance Diária</CardTitle>
@@ -139,7 +170,6 @@ const CampaignDetail = () => {
           </CardContent>
         </Card>
 
-        {/* Top Creatives */}
         <Card className="bg-white border-slate-200 shadow-sm">
           <CardHeader>
             <CardTitle className="text-lg font-semibold">Melhores Criativos</CardTitle>
