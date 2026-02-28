@@ -2,10 +2,11 @@
 
 import React from 'react';
 import Layout from '../components/Layout';
-import { Card, CardContent, CardFooter } from '../components/ui/card';
+import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
 import { Play, MoreVertical, Eye, ThumbsUp } from 'lucide-react';
+import UploadContentModal from '../components/UploadContentModal';
 
 const contentItems = [
   { id: 1, title: 'Teaser Coleção Verão', type: 'Vídeo', status: 'Publicado', views: '12.4k', likes: '850', thumbnail: 'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=400&h=225&fit=crop' },
@@ -22,7 +23,7 @@ const Content = () => {
           <h2 className="text-2xl font-bold text-slate-900">Conteúdo</h2>
           <p className="text-slate-500">Gerencie seus criativos e mídias sociais.</p>
         </div>
-        <Button className="bg-blue-600 hover:bg-blue-700">Upload de Mídia</Button>
+        <UploadContentModal />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
