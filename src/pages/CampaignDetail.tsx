@@ -12,7 +12,9 @@ import {
   Users, 
   MousePointer2, 
   DollarSign,
-  Calendar
+  Calendar,
+  Play,
+  MoreVertical
 } from 'lucide-react';
 import { 
   LineChart, 
@@ -23,6 +25,7 @@ import {
   Tooltip, 
   ResponsiveContainer 
 } from 'recharts';
+import { toast } from 'sonner';
 
 const performanceData = [
   { date: '2024-05-01', spend: 120, clicks: 450, conversions: 12 },
@@ -34,9 +37,19 @@ const performanceData = [
   { date: '2024-05-07', spend: 220, clicks: 780, conversions: 25 },
 ];
 
+const topCreatives = [
+  { id: 1, title: 'Vídeo Lifestyle Verão', ctr: '3.2%', conversions: 45, thumbnail: 'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=150&h=150&fit=crop' },
+  { id: 2, title: 'Carrossel Produtos', ctr: '2.8%', conversions: 32, thumbnail: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=150&h=150&fit=crop' },
+  { id: 3, title: 'Depoimento Influencer', ctr: '4.1%', conversions: 58, thumbnail: 'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=150&h=150&fit=crop' },
+];
+
 const CampaignDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+
+  const handlePause = () => {
+    toast.info('Campanha pausada com sucesso.');
+  };
 
   return (
     <Layout>
@@ -60,7 +73,7 @@ const CampaignDetail = () => {
             </p>
           </div>
           <div className="flex space-x-3">
-            <Button variant="outline">Pausar Campanha</Button>
+            <Button variant="outline" onClick={handlePause}>Pausar Campanha</Button>
             <Button className="bg-blue-600 hover:bg-blue-700">Editar Configurações</Button>
           </div>
         </div>
@@ -88,52 +101,74 @@ const CampaignDetail = () => {
         ))}
       </div>
 
-      {/* Performance Chart */}
-      <Card className="bg-white border-slate-200 shadow-sm mb-8">
-        <CardHeader>
-          <CardTitle className="text-lg font-semibold">Performance Diária</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="h-[400px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={performanceData}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-                <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{fill: '#64748b'}} />
-                <YAxis axisLine={false} tickLine={false} tick={{fill: '#64748b'}} />
-                <Tooltip 
-                  contentStyle={{ backgroundColor: '#fff', borderRadius: '8px', border: '1px solid #e2e8f0' }}
-                />
-                <Line 
-                  type="monotone" 
-                  dataKey="conversions" 
-                  stroke="#3b82f6" 
-                  strokeWidth={3} 
-                  dot={{ r: 4, fill: '#3b82f6' }}
-                  activeDot={{ r: 6 }}
-                />
-                <Line 
-                  type="monotone" 
-                  dataKey="spend" 
-                  stroke="#10b981" 
-                  strokeWidth={2} 
-                  strokeDasharray="5 5"
-                  dot={false}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-          <div className="flex justify-center space-x-6 mt-4">
-            <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-              <span className="text-sm text-slate-600">Conversões</span>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+        {/* Performance Chart */}
+        <Card className="lg:col-span-2 bg-white border-slate-200 shadow-sm">
+          <CardHeader>
+            <CardTitle className="text-lg font-semibold">Performance Diária</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-[350px] w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={performanceData}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                  <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{fill: '#64748b'}} />
+                  <YAxis axisLine={false} tickLine={false} tick={{fill: '#64748b'}} />
+                  <Tooltip 
+                    contentStyle={{ backgroundColor: '#fff', borderRadius: '8px', border: '1px solid #e2e8f0' }}
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="conversions" 
+                    stroke="#3b82f6" 
+                    strokeWidth={3} 
+                    dot={{ r: 4, fill: '#3b82f6' }}
+                    activeDot={{ r: 6 }}
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="spend" 
+                    stroke="#10b981" 
+                    strokeWidth={2} 
+                    strokeDasharray="5 5"
+                    dot={false}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
             </div>
-            <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 rounded-full bg-green-500"></div>
-              <span className="text-sm text-slate-600">Investimento (R$)</span>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+
+        {/* Top Creatives */}
+        <Card className="bg-white border-slate-200 shadow-sm">
+          <CardHeader>
+            <CardTitle className="text-lg font-semibold">Melhores Criativos</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {topCreatives.map((creative) => (
+              <div key={creative.id} className="flex items-center space-x-4 p-3 rounded-lg border border-slate-50 hover:bg-slate-50 transition-colors">
+                <div className="relative w-12 h-12 rounded-md overflow-hidden flex-shrink-0">
+                  <img src={creative.thumbnail} alt={creative.title} className="w-full h-full object-cover" />
+                  <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+                    <Play size={12} className="text-white" />
+                  </div>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-slate-900 truncate">{creative.title}</p>
+                  <div className="flex items-center space-x-3 mt-1">
+                    <span className="text-[10px] font-semibold text-slate-500 uppercase">CTR: {creative.ctr}</span>
+                    <span className="text-[10px] font-semibold text-blue-600 uppercase">{creative.conversions} Conv.</span>
+                  </div>
+                </div>
+                <button className="text-slate-400 hover:text-slate-600">
+                  <MoreVertical size={16} />
+                </button>
+              </div>
+            ))}
+            <Button variant="ghost" className="w-full text-xs text-blue-600">Ver todos os criativos</Button>
+          </CardContent>
+        </Card>
+      </div>
     </Layout>
   );
 };

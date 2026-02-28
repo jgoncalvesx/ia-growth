@@ -16,6 +16,10 @@ const Settings = () => {
     toast.success(`Conectando ao ${platform}... Redirecionando para autenticação.`);
   };
 
+  const handleSaveProfile = () => {
+    toast.success('Perfil atualizado com sucesso!');
+  };
+
   return (
     <Layout>
       <div className="mb-8">
@@ -44,7 +48,7 @@ const Settings = () => {
                 <Label htmlFor="role">Cargo</Label>
                 <Input id="role" defaultValue="Marketing Manager" />
               </div>
-              <Button className="bg-blue-600 hover:bg-blue-700">Salvar Alterações</Button>
+              <Button className="bg-blue-600 hover:bg-blue-700" onClick={handleSaveProfile}>Salvar Alterações</Button>
             </CardContent>
           </Card>
 
