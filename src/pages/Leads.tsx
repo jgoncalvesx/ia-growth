@@ -14,15 +14,14 @@ import {
   Phone, 
   MoreHorizontal,
   Eye,
-  UserPlus,
   Users,
   UserCheck,
-  UserMinus,
   Clock
 } from 'lucide-react';
 import CreateLeadModal from '../components/CreateLeadModal';
+import { toast } from 'sonner';
 
-const leads = [
+const initialLeads = [
   { id: 1, name: 'João Silva', email: 'joao@exemplo.com', phone: '(11) 99999-9999', source: 'Instagram', status: 'Novo', date: '2024-05-20' },
   { id: 2, name: 'Maria Oliveira', email: 'maria@exemplo.com', phone: '(21) 98888-8888', source: 'Google Ads', status: 'Em Contato', date: '2024-05-19' },
   { id: 3, name: 'Pedro Santos', email: 'pedro@exemplo.com', phone: '(31) 97777-7777', source: 'TikTok', status: 'Qualificado', date: '2024-05-18' },
@@ -32,6 +31,21 @@ const leads = [
 
 const Leads = () => {
   const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = React.useState('');
+  
+  const filteredLeads = initialLeads.filter(lead => 
+    lead.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    lead.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    lead.source.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const handleExport = () => {
+    toast.promise(new Promise((resolve) => setTimeout(resolve, 1500)), {
+      loading: 'Preparando exportação...',
+      success: 'Leads exportados com sucesso (CSV)!',
+      error: 'Erro ao exportar leads.',
+    });
+  };
 
   return (
     <Layout>
@@ -41,14 +55,13 @@ const Leads = () => {
           <p className="text-slate-500">Acompanhe e gerencie os contatos gerados pelas suas campanhas.</p>
         </div>
         <div className="flex space-x-3">
-          <Button variant="outline">
+          <Button variant="outline" onClick={handleExport}>
             <Download className="mr-2 h-4 w-4" /> Exportar
           </Button>
           <CreateLeadModal />
         </div>
       </div>
 
-      {/* Status Summary Bar */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
         {[
           { label: 'Total Leads', value: '1,240', icon: Users, color: 'text-blue-600', bg: 'bg-blue-50' },
@@ -72,7 +85,12 @@ const Leads = () => {
         <div className="p-4 border-b border-slate-200 flex items-center justify-between bg-slate-50/50">
           <div className="relative w-72">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
-            <Input placeholder="Filtrar leads..." className="pl-9 bg-white" />
+            <Input 
+              placeholder="Filtrar por nome, e-mail ou origem..." 
+              className="pl-9 bg-white" 
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
           </div>
           <Button variant="ghost" size="sm" className="text-slate-600">
             <Filter className="mr-2 h-4 w-4" /> Filtros Avançados
@@ -91,51 +109,59 @@ const Leads = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-200">
-            {leads.map((lead) => (
-              <tr key={lead.id} className="hover:bg-slate-50 transition-colors group">
-                <td className="px-6 py-4">
-                  <p className="font-medium text-slate-900">{lead.name}</p>
-                </td>
-                <td className="px-6 py-4">
-                  <div className="flex flex-col space-y-1">
-                    <div className="flex items-center text-xs text-slate-500">
-                      <Mail size={12} className="mr-1" /> {lead.email}
+            {filteredLeads.length > 0 ? (
+              filteredLeads.map((lead) => (
+                <tr key={lead.id} className="hover:bg-slate-50 transition-colors group">
+                  <td className="px-6 py-4">
+                    <p className="font-medium text-slate-900">{lead.name}</p>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="flex flex-col space-y-1">
+                      <div className="flex items-center text-xs text-slate-500">
+                        <Mail size={12} className="mr-1" /> {lead.email}
+                      </div>
+                      <div className="flex items-center text-xs text-slate-500">
+                        <Phone size={12} className="mr-1" /> {lead.phone}
+                      </div>
                     </div>
-                    <div className="flex items-center text-xs text-slate-500">
-                      <Phone size={12} className="mr-1" /> {lead.phone}
-                    </div>
-                  </div>
-                </td>
-                <td className="px-6 py-4 text-slate-600 text-sm">{lead.source}</td>
-                <td className="px-6 py-4">
-                  <Badge 
-                    variant={
-                      lead.status === 'Novo' ? 'default' : 
-                      lead.status === 'Convertido' ? 'success' : 
-                      'secondary'
-                    }
-                  >
-                    {lead.status}
-                  </Badge>
-                </td>
-                <td className="px-6 py-4 text-slate-500 text-sm">{lead.date}</td>
-                <td className="px-6 py-4 text-right">
-                  <div className="flex items-center justify-end space-x-2">
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      className="opacity-0 group-hover:opacity-100 transition-opacity"
-                      onClick={() => navigate(`/leads/${lead.id}`)}
+                  </td>
+                  <td className="px-6 py-4 text-slate-600 text-sm">{lead.source}</td>
+                  <td className="px-6 py-4">
+                    <Badge 
+                      variant={
+                        lead.status === 'Novo' ? 'default' : 
+                        lead.status === 'Convertido' ? 'success' : 
+                        'secondary'
+                      }
                     >
-                      <Eye className="h-4 w-4 mr-1" /> Ver Detalhes
-                    </Button>
-                    <button className="text-slate-400 hover:text-slate-600">
-                      <MoreHorizontal size={20} />
-                    </button>
-                  </div>
+                      {lead.status}
+                    </Badge>
+                  </td>
+                  <td className="px-6 py-4 text-slate-500 text-sm">{lead.date}</td>
+                  <td className="px-6 py-4 text-right">
+                    <div className="flex items-center justify-end space-x-2">
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="opacity-0 group-hover:opacity-100 transition-opacity"
+                        onClick={() => navigate(`/leads/${lead.id}`)}
+                      >
+                        <Eye className="h-4 w-4 mr-1" /> Ver Detalhes
+                      </Button>
+                      <button className="text-slate-400 hover:text-slate-600">
+                        <MoreHorizontal size={20} />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={6} className="px-6 py-12 text-center text-slate-500">
+                  Nenhum lead encontrado para "{searchTerm}"
                 </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>

@@ -18,7 +18,9 @@ import {
   Line
 } from 'recharts';
 import { Badge } from '../components/ui/badge';
-import { TrendingUp, TrendingDown, DollarSign } from 'lucide-react';
+import { Button } from '../components/ui/button';
+import { TrendingUp, TrendingDown, Zap, FileText, Download } from 'lucide-react';
+import { toast } from 'sonner';
 
 const platformData = [
   { name: 'Instagram', value: 4500, color: '#E1306C' },
@@ -53,11 +55,33 @@ const topCampaigns = [
 ];
 
 const Analytics = () => {
+  const handleGenerateReport = () => {
+    toast.promise(new Promise((resolve) => setTimeout(resolve, 2000)), {
+      loading: 'Analisando dados e gerando relatório...',
+      success: 'Relatório de performance gerado com sucesso!',
+      error: 'Erro ao gerar relatório.',
+    });
+  };
+
+  const handleOptimizeBudget = () => {
+    toast.success('IA: Sugestão de realocação de R$ 1.200 do Google Ads para TikTok Ads para reduzir CPA em 12%.');
+  };
+
   return (
     <Layout>
-      <div className="mb-8">
-        <h2 className="text-2xl font-bold text-slate-900">Analytics</h2>
-        <p className="text-slate-500">Análise detalhada de performance e conversão.</p>
+      <div className="flex justify-between items-center mb-8">
+        <div>
+          <h2 className="text-2xl font-bold text-slate-900">Analytics</h2>
+          <p className="text-slate-500">Análise detalhada de performance e conversão.</p>
+        </div>
+        <div className="flex space-x-3">
+          <Button variant="outline" onClick={handleOptimizeBudget}>
+            <Zap className="mr-2 h-4 w-4 text-orange-500" /> Otimizar Orçamento
+          </Button>
+          <Button className="bg-blue-600 hover:bg-blue-700" onClick={handleGenerateReport}>
+            <FileText className="mr-2 h-4 w-4" /> Gerar Relatório
+          </Button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
