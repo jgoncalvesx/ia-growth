@@ -15,6 +15,7 @@ import {
   MoreHorizontal,
   Eye
 } from 'lucide-react';
+import CreateLeadModal from '../components/CreateLeadModal';
 
 const leads = [
   { id: 1, name: 'João Silva', email: 'joao@exemplo.com', phone: '(11) 99999-9999', source: 'Instagram', status: 'Novo', date: '2024-05-20' },
@@ -38,9 +39,7 @@ const Leads = () => {
           <Button variant="outline">
             <Download className="mr-2 h-4 w-4" /> Exportar
           </Button>
-          <Button className="bg-blue-600 hover:bg-blue-700">
-            Novo Lead
-          </Button>
+          <CreateLeadModal />
         </div>
       </div>
 

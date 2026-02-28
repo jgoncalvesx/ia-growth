@@ -15,6 +15,8 @@ import {
   Pie,
   Cell
 } from 'recharts';
+import { Badge } from '../components/ui/badge';
+import { TrendingUp, TrendingDown } from 'lucide-react';
 
 const platformData = [
   { name: 'Instagram', value: 4500, color: '#E1306C' },
@@ -30,6 +32,13 @@ const conversionData = [
   { name: 'Abr', sales: 278, leads: 3908 },
   { name: 'Mai', sales: 189, leads: 4800 },
   { name: 'Jun', sales: 239, leads: 3800 },
+];
+
+const topCampaigns = [
+  { name: 'Verão 2024', platform: 'Meta', roi: '5.2x', status: 'up' },
+  { name: 'Black Friday', platform: 'Google', roi: '4.8x', status: 'up' },
+  { name: 'Lançamento App', platform: 'TikTok', roi: '3.1x', status: 'down' },
+  { name: 'Retargeting Q1', platform: 'Meta', roi: '4.2x', status: 'up' },
 ];
 
 const Analytics = () => {
@@ -93,6 +102,46 @@ const Analytics = () => {
           </CardContent>
         </Card>
       </div>
+
+      <Card className="bg-white border-slate-200 shadow-sm">
+        <CardHeader>
+          <CardTitle className="text-lg font-semibold">Campanhas de Melhor Performance</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left">
+              <thead>
+                <tr className="border-b border-slate-100">
+                  <th className="pb-4 text-xs font-semibold text-slate-500 uppercase">Campanha</th>
+                  <th className="pb-4 text-xs font-semibold text-slate-500 uppercase">Plataforma</th>
+                  <th className="pb-4 text-xs font-semibold text-slate-500 uppercase">ROI</th>
+                  <th className="pb-4 text-xs font-semibold text-slate-500 uppercase">Tendência</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-50">
+                {topCampaigns.map((campaign, i) => (
+                  <tr key={i} className="hover:bg-slate-50/50 transition-colors">
+                    <td className="py-4 font-medium text-slate-900">{campaign.name}</td>
+                    <td className="py-4 text-slate-600 text-sm">{campaign.platform}</td>
+                    <td className="py-4 font-bold text-slate-900">{campaign.roi}</td>
+                    <td className="py-4">
+                      {campaign.status === 'up' ? (
+                        <div className="flex items-center text-green-600 text-xs font-medium">
+                          <TrendingUp size={14} className="mr-1" /> Crescente
+                        </div>
+                      ) : (
+                        <div className="flex items-center text-red-600 text-xs font-medium">
+                          <TrendingDown size={14} className="mr-1" /> Estável
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </CardContent>
+      </Card>
     </Layout>
   );
 };
