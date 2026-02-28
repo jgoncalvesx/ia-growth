@@ -13,16 +13,27 @@ import {
   ResponsiveContainer,
   PieChart,
   Pie,
-  Cell
+  Cell,
+  LineChart,
+  Line
 } from 'recharts';
 import { Badge } from '../components/ui/badge';
-import { TrendingUp, TrendingDown } from 'lucide-react';
+import { TrendingUp, TrendingDown, DollarSign } from 'lucide-react';
 
 const platformData = [
   { name: 'Instagram', value: 4500, color: '#E1306C' },
   { name: 'Facebook', value: 3200, color: '#1877F2' },
   { name: 'TikTok', value: 5800, color: '#000000' },
   { name: 'Google', value: 2100, color: '#4285F4' },
+];
+
+const cpaData = [
+  { month: 'Jan', cpa: 12.5 },
+  { month: 'Fev', cpa: 11.8 },
+  { month: 'Mar', cpa: 14.2 },
+  { month: 'Abr', cpa: 10.5 },
+  { month: 'Mai', cpa: 9.8 },
+  { month: 'Jun', cpa: 8.4 },
 ];
 
 const conversionData = [
@@ -49,7 +60,8 @@ const Analytics = () => {
         <p className="text-slate-500">Análise detalhada de performance e conversão.</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+        {/* Platform Distribution */}
         <Card className="bg-white border-slate-200 shadow-sm">
           <CardHeader>
             <CardTitle className="text-lg font-semibold">Distribuição por Plataforma</CardTitle>
@@ -84,6 +96,35 @@ const Analytics = () => {
           </CardContent>
         </Card>
 
+        {/* CPA Trend */}
+        <Card className="lg:col-span-2 bg-white border-slate-200 shadow-sm">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <CardTitle className="text-lg font-semibold">Tendência de CPA (R$)</CardTitle>
+            <Badge variant="outline" className="text-green-600 border-green-200 bg-green-50">
+              <TrendingDown size={12} className="mr-1" /> -15% este mês
+            </Badge>
+          </CardHeader>
+          <CardContent className="h-[300px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={cpaData}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                <XAxis dataKey="month" axisLine={false} tickLine={false} />
+                <YAxis axisLine={false} tickLine={false} />
+                <Tooltip />
+                <Line 
+                  type="monotone" 
+                  dataKey="cpa" 
+                  stroke="#3b82f6" 
+                  strokeWidth={3} 
+                  dot={{ r: 4, fill: '#3b82f6' }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
         <Card className="bg-white border-slate-200 shadow-sm">
           <CardHeader>
             <CardTitle className="text-lg font-semibold">Leads vs Vendas</CardTitle>
@@ -101,47 +142,47 @@ const Analytics = () => {
             </ResponsiveContainer>
           </CardContent>
         </Card>
-      </div>
 
-      <Card className="bg-white border-slate-200 shadow-sm">
-        <CardHeader>
-          <CardTitle className="text-lg font-semibold">Campanhas de Melhor Performance</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="overflow-x-auto">
-            <table className="w-full text-left">
-              <thead>
-                <tr className="border-b border-slate-100">
-                  <th className="pb-4 text-xs font-semibold text-slate-500 uppercase">Campanha</th>
-                  <th className="pb-4 text-xs font-semibold text-slate-500 uppercase">Plataforma</th>
-                  <th className="pb-4 text-xs font-semibold text-slate-500 uppercase">ROI</th>
-                  <th className="pb-4 text-xs font-semibold text-slate-500 uppercase">Tendência</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-50">
-                {topCampaigns.map((campaign, i) => (
-                  <tr key={i} className="hover:bg-slate-50/50 transition-colors">
-                    <td className="py-4 font-medium text-slate-900">{campaign.name}</td>
-                    <td className="py-4 text-slate-600 text-sm">{campaign.platform}</td>
-                    <td className="py-4 font-bold text-slate-900">{campaign.roi}</td>
-                    <td className="py-4">
-                      {campaign.status === 'up' ? (
-                        <div className="flex items-center text-green-600 text-xs font-medium">
-                          <TrendingUp size={14} className="mr-1" /> Crescente
-                        </div>
-                      ) : (
-                        <div className="flex items-center text-red-600 text-xs font-medium">
-                          <TrendingDown size={14} className="mr-1" /> Estável
-                        </div>
-                      )}
-                    </td>
+        <Card className="bg-white border-slate-200 shadow-sm">
+          <CardHeader>
+            <CardTitle className="text-lg font-semibold">Campanhas de Melhor Performance</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left">
+                <thead>
+                  <tr className="border-b border-slate-100">
+                    <th className="pb-4 text-xs font-semibold text-slate-500 uppercase">Campanha</th>
+                    <th className="pb-4 text-xs font-semibold text-slate-500 uppercase">Plataforma</th>
+                    <th className="pb-4 text-xs font-semibold text-slate-500 uppercase">ROI</th>
+                    <th className="pb-4 text-xs font-semibold text-slate-500 uppercase">Tendência</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </CardContent>
-      </Card>
+                </thead>
+                <tbody className="divide-y divide-slate-50">
+                  {topCampaigns.map((campaign, i) => (
+                    <tr key={i} className="hover:bg-slate-50/50 transition-colors">
+                      <td className="py-4 font-medium text-slate-900">{campaign.name}</td>
+                      <td className="py-4 text-slate-600 text-sm">{campaign.platform}</td>
+                      <td className="py-4 font-bold text-slate-900">{campaign.roi}</td>
+                      <td className="py-4">
+                        {campaign.status === 'up' ? (
+                          <div className="flex items-center text-green-600 text-xs font-medium">
+                            <TrendingUp size={14} className="mr-1" /> Crescente
+                          </div>
+                        ) : (
+                          <div className="flex items-center text-red-600 text-xs font-medium">
+                            <TrendingDown size={14} className="mr-1" /> Estável
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </Layout>
   );
 };
