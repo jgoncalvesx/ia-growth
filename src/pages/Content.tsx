@@ -11,9 +11,11 @@ import {
   Eye, 
   ThumbsUp, 
   Filter,
-  Search
+  Search,
+  Brain
 } from 'lucide-react';
 import UploadContentModal from '../components/UploadContentModal';
+import CreativeInsightsModal from '../components/CreativeInsightsModal';
 import { Input } from '../components/ui/input';
 import { 
   Select, 
@@ -34,10 +36,17 @@ const contentItems = [
 
 const Content = () => {
   const [filterType, setFilterType] = React.useState('all');
+  const [selectedItem, setSelectedItem] = React.useState<any>(null);
+  const [insightsOpen, setInsightsOpen] = React.useState(false);
 
   const filteredItems = filterType === 'all' 
     ? contentItems 
     : contentItems.filter(item => item.type.toLowerCase() === filterType.toLowerCase());
+
+  const handleShowInsights = (item: any) => {
+    setSelectedItem(item);
+    setInsightsOpen(true);
+  };
 
   return (
     <Layout>
@@ -71,20 +80,6 @@ const Content = () => {
           </Select>
         </div>
 
-        <div className="w-48">
-          <Select defaultValue="all">
-            <SelectTrigger>
-              <SelectValue placeholder="Status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Todos os Status</SelectItem>
-              <SelectItem value="publicado">Publicado</SelectItem>
-              <SelectItem value="rascunho">Rascunho</SelectItem>
-              <SelectItem value="expirado">Expirado</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
         <Button variant="outline" size="icon">
           <Filter size={18} />
         </Button>
@@ -95,9 +90,17 @@ const Content = () => {
           <Card key={item.id} className="overflow-hidden border-slate-200 shadow-sm hover:shadow-md transition-shadow group">
             <div className="relative aspect-video">
               <img src={item.thumbnail} alt={item.title} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
-              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center space-x-2">
                 <Button size="icon" variant="secondary" className="rounded-full">
                   <Play size={20} />
+                </Button>
+                <Button 
+                  size="icon" 
+                  variant="secondary" 
+                  className="rounded-full bg-purple-600 text-white hover:bg-purple-700 border-none"
+                  onClick={() => handleShowInsights(item)}
+                >
+                  <Brain size={20} />
                 </Button>
               </div>
               <Badge className="absolute top-2 right-2" variant={item.status === 'Publicado' ? 'default' : 'secondary'}>
@@ -123,14 +126,25 @@ const Content = () => {
                     <span className="text-xs font-medium">{item.likes}</span>
                   </div>
                 </div>
-                <Button variant="ghost" size="sm" className="h-7 text-[10px] uppercase font-bold text-blue-600">
-                  Editar
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="h-7 text-[10px] uppercase font-bold text-purple-600 hover:text-purple-700 hover:bg-purple-50"
+                  onClick={() => handleShowInsights(item)}
+                >
+                  Insights
                 </Button>
               </div>
             </CardContent>
           </Card>
         ))}
       </div>
+
+      <CreativeInsightsModal 
+        open={insightsOpen} 
+        onOpenChange={setInsightsOpen} 
+        item={selectedItem} 
+      />
     </Layout>
   );
 };

@@ -15,7 +15,8 @@ import {
   Calendar,
   Play,
   MoreVertical,
-  AlertCircle
+  AlertCircle,
+  Layers
 } from 'lucide-react';
 import { 
   LineChart, 
@@ -36,6 +37,12 @@ const performanceData = [
   { date: '2024-05-05', spend: 200, clicks: 700, conversions: 22 },
   { date: '2024-05-06', spend: 250, clicks: 850, conversions: 28 },
   { date: '2024-05-07', spend: 220, clicks: 780, conversions: 25 },
+];
+
+const adSets = [
+  { id: 1, name: 'Público Frio - Interesse Moda', status: 'Ativo', spend: 'R$ 450', roas: '4.2x', conversions: 45 },
+  { id: 2, name: 'Lookalike 1% Clientes', status: 'Ativo', spend: 'R$ 620', roas: '5.8x', conversions: 82 },
+  { id: 3, name: 'Retargeting Visitantes 30d', status: 'Pausado', spend: 'R$ 190', roas: '3.1x', conversions: 27 },
 ];
 
 const topCreatives = [
@@ -176,7 +183,7 @@ const CampaignDetail = () => {
           </CardHeader>
           <CardContent className="space-y-4">
             {topCreatives.map((creative) => (
-              <div key={creative.id} className="flex items-center space-x-4 p-3 rounded-lg border border-slate-50 hover:bg-slate-50 transition-colors">
+              <div key={creative.id} className="flex items-center space-x-4 p-3 rounded-lg border border-slate-100 hover:bg-slate-50 transition-colors">
                 <div className="relative w-12 h-12 rounded-md overflow-hidden flex-shrink-0">
                   <img src={creative.thumbnail} alt={creative.title} className="w-full h-full object-cover" />
                   <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
@@ -199,6 +206,46 @@ const CampaignDetail = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Ad Sets Section */}
+      <Card className="bg-white border-slate-200 shadow-sm">
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle className="text-lg font-semibold flex items-center">
+            <Layers className="mr-2 text-slate-400" size={20} /> Conjuntos de Anúncios
+          </CardTitle>
+          <Button variant="outline" size="sm">Ver Todos</Button>
+        </CardHeader>
+        <CardContent>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left">
+              <thead>
+                <tr className="border-b border-slate-100">
+                  <th className="pb-4 text-xs font-semibold text-slate-500 uppercase">Nome do Conjunto</th>
+                  <th className="pb-4 text-xs font-semibold text-slate-500 uppercase">Status</th>
+                  <th className="pb-4 text-xs font-semibold text-slate-500 uppercase">Gasto</th>
+                  <th className="pb-4 text-xs font-semibold text-slate-500 uppercase">ROAS</th>
+                  <th className="pb-4 text-xs font-semibold text-slate-500 uppercase">Conversões</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-50">
+                {adSets.map((adSet) => (
+                  <tr key={adSet.id} className="hover:bg-slate-50/50 transition-colors">
+                    <td className="py-4 font-medium text-slate-900">{adSet.name}</td>
+                    <td className="py-4">
+                      <Badge variant={adSet.status === 'Ativo' ? 'default' : 'secondary'}>
+                        {adSet.status}
+                      </Badge>
+                    </td>
+                    <td className="py-4 text-slate-600 text-sm">{adSet.spend}</td>
+                    <td className="py-4 font-bold text-slate-900">{adSet.roas}</td>
+                    <td className="py-4 text-slate-600 text-sm">{adSet.conversions}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </CardContent>
+      </Card>
     </Layout>
   );
 };
