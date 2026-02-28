@@ -3,8 +3,8 @@
 import React from 'react';
 import Layout from '../components/Layout';
 import { Badge } from '../components/ui/badge';
-import { Button } from '../components/ui/button';
-import { Plus, MoreHorizontal } from 'lucide-react';
+import { MoreHorizontal } from 'lucide-react';
+import CreateCampaignModal from '../components/CreateCampaignModal';
 
 const campaigns = [
   { id: 1, name: 'Verão 2024', status: 'Ativa', budget: 'R$ 5.000', spent: 'R$ 1.200', platform: 'Meta' },
@@ -21,9 +21,7 @@ const Campaigns = () => {
           <h2 className="text-2xl font-bold text-slate-900">Campanhas</h2>
           <p className="text-slate-500">Gerencie e monitore suas campanhas publicitárias.</p>
         </div>
-        <Button className="bg-blue-600 hover:bg-blue-700">
-          <Plus className="mr-2 h-4 w-4" /> Nova Campanha
-        </Button>
+        <CreateCampaignModal />
       </div>
 
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">

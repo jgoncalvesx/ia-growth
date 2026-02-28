@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Toaster } from 'sonner';
 import Index from './pages/Index';
 import Campaigns from './pages/Campaigns';
 import Content from './pages/Content';
@@ -12,6 +13,7 @@ import Leads from './pages/Leads';
 function App() {
   return (
     <Router>
+      <Toaster position="top-right" richColors />
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/campaigns" element={<Campaigns />} />
