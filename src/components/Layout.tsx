@@ -2,9 +2,10 @@
 
 import React from 'react';
 import Sidebar from './Sidebar';
-import { Search, Bell } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { Input } from './ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
+import NotificationDropdown from './NotificationDropdown';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -27,10 +28,7 @@ const Layout = ({ children }: LayoutProps) => {
           </div>
           
           <div className="flex items-center space-x-4">
-            <button className="p-2 text-slate-400 hover:text-slate-600 relative">
-              <Bell size={20} />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
-            </button>
+            <NotificationDropdown />
             <div className="flex items-center space-x-3 pl-4 border-l border-slate-200">
               <div className="text-right">
                 <p className="text-sm font-semibold text-slate-900">Admin User</p>
