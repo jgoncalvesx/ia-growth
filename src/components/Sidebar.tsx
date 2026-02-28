@@ -9,7 +9,8 @@ import {
   BarChart3, 
   Settings, 
   LogOut,
-  Users
+  Users,
+  Calendar as CalendarIcon
 } from 'lucide-react';
 
 const navItems = [
@@ -17,6 +18,7 @@ const navItems = [
   { icon: Megaphone, label: 'Campanhas', path: '/campaigns' },
   { icon: Users, label: 'Leads', path: '/leads' },
   { icon: FileVideo, label: 'Conteúdo', path: '/content' },
+  { icon: CalendarIcon, label: 'Calendário', path: '/calendar' },
   { icon: BarChart3, label: 'Analytics', path: '/analytics' },
   { icon: Settings, label: 'Configurações', path: '/settings' },
 ];

@@ -11,6 +11,7 @@ import Analytics from './pages/Analytics';
 import Settings from './pages/Settings';
 import Leads from './pages/Leads';
 import LeadDetail from './pages/LeadDetail';
+import Calendar from './pages/Calendar';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         <Route path="/leads" element={<Leads />} />
         <Route path="/leads/:id" element={<LeadDetail />} />
         <Route path="/content" element={<Content />} />
+        <Route path="/calendar" element={<Calendar />} />
         <Route path="/analytics" element={<Analytics />} />
         <Route path="/settings" element={<Settings />} />
       </Routes>
