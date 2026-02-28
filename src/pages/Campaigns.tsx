@@ -1,10 +1,12 @@
 "use client";
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { Badge } from '../components/ui/badge';
-import { MoreHorizontal } from 'lucide-react';
+import { MoreHorizontal, Eye } from 'lucide-react';
 import CreateCampaignModal from '../components/CreateCampaignModal';
+import { Button } from '../components/ui/button';
 
 const campaigns = [
   { id: 1, name: 'Verão 2024', status: 'Ativa', budget: 'R$ 5.000', spent: 'R$ 1.200', platform: 'Meta' },
@@ -14,6 +16,8 @@ const campaigns = [
 ];
 
 const Campaigns = () => {
+  const navigate = useNavigate();
+
   return (
     <Layout>
       <div className="flex justify-between items-center mb-8">
@@ -38,7 +42,7 @@ const Campaigns = () => {
           </thead>
           <tbody className="divide-y divide-slate-200">
             {campaigns.map((campaign) => (
-              <tr key={campaign.id} className="hover:bg-slate-50 transition-colors">
+              <tr key={campaign.id} className="hover:bg-slate-50 transition-colors group">
                 <td className="px-6 py-4 font-medium text-slate-900">{campaign.name}</td>
                 <td className="px-6 py-4">
                   <Badge variant={campaign.status === 'Ativa' ? 'default' : 'secondary'}>
@@ -49,9 +53,19 @@ const Campaigns = () => {
                 <td className="px-6 py-4 text-slate-600">{campaign.budget}</td>
                 <td className="px-6 py-4 text-slate-600">{campaign.spent}</td>
                 <td className="px-6 py-4 text-right">
-                  <button className="text-slate-400 hover:text-slate-600">
-                    <MoreHorizontal size={20} />
-                  </button>
+                  <div className="flex items-center justify-end space-x-2">
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="opacity-0 group-hover:opacity-100 transition-opacity"
+                      onClick={() => navigate(`/campaigns/${campaign.id}`)}
+                    >
+                      <Eye className="h-4 w-4 mr-1" /> Ver Detalhes
+                    </Button>
+                    <button className="text-slate-400 hover:text-slate-600">
+                      <MoreHorizontal size={20} />
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}
