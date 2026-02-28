@@ -15,6 +15,7 @@ import {
   User,
   Tag
 } from 'lucide-react';
+import ChangeLeadStatusModal from '../components/ChangeLeadStatusModal';
 
 const LeadDetail = () => {
   const { id } = useParams();
@@ -48,7 +49,7 @@ const LeadDetail = () => {
           </div>
           <div className="flex space-x-3">
             <Button variant="outline">Desqualificar</Button>
-            <Button className="bg-blue-600 hover:bg-blue-700">Mudar Status</Button>
+            <ChangeLeadStatusModal currentStatus="Novo" />
           </div>
         </div>
       </div>

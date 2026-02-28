@@ -4,9 +4,10 @@ import React from 'react';
 import Layout from '../components/Layout';
 import StatCard from '../components/StatCard';
 import PerformanceChart from '../components/PerformanceChart';
-import { Users, MousePointer2, Target, TrendingUp, Plus, FileText, Share2 } from 'lucide-react';
+import { Users, MousePointer2, Target, TrendingUp, Plus, FileText, Share2, UserCheck } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { useNavigate } from 'react-router-dom';
+import { Badge } from '../components/ui/badge';
 
 const Index = () => {
   const navigate = useNavigate();
@@ -92,20 +93,29 @@ const Index = () => {
             </div>
           </div>
 
-          {/* Recent Activity */}
+          {/* Recent Leads */}
           <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-            <h3 className="text-lg font-semibold text-slate-900 mb-4">Atividade Recente</h3>
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold text-slate-900">Leads Recentes</h3>
+              <Button variant="ghost" size="sm" className="text-xs text-blue-600" onClick={() => navigate('/leads')}>Ver todos</Button>
+            </div>
             <div className="space-y-4">
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="flex items-start space-x-3 pb-4 border-b border-slate-100 last:border-0">
-                  <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 flex-shrink-0">
-                    <Target size={16} />
+              {[
+                { name: 'João Silva', source: 'Instagram', time: '2 min atrás' },
+                { name: 'Maria Oliveira', source: 'Google', time: '15 min atrás' },
+                { name: 'Pedro Santos', source: 'TikTok', time: '1 hora atrás' },
+              ].map((lead, i) => (
+                <div key={i} className="flex items-center justify-between pb-3 border-b border-slate-50 last:border-0 last:pb-0">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600">
+                      <UserCheck size={16} />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-slate-900">{lead.name}</p>
+                      <p className="text-xs text-slate-500">{lead.source}</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-sm font-medium text-slate-900">Nova campanha criada</p>
-                    <p className="text-xs text-slate-500">Campanha "Verão 2024" foi iniciada.</p>
-                    <p className="text-[10px] text-slate-400 mt-1">Há 2 horas</p>
-                  </div>
+                  <span className="text-[10px] text-slate-400 font-medium uppercase">{lead.time}</span>
                 </div>
               ))}
             </div>
