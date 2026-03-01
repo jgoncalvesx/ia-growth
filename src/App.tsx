@@ -23,6 +23,7 @@ import Projects from './pages/Projects';
 import ProjectDetail from './pages/ProjectDetail';
 import Influencers from './pages/Influencers';
 import Integrations from './pages/Integrations';
+import Funnel from './pages/Funnel';
 
 function App() {
   return (
@@ -44,6 +45,7 @@ function App() {
         <Route path="/competitors" element={<Competitors />} />
         <Route path="/budget" element={<Budget />} />
         <Route path="/integrations" element={<Integrations />} />
+        <Route path="/funnel" element={<Funnel />} />
         <Route path="/calendar" element={<Calendar />} />
         <Route path="/workflows" element={<Workflows />} />
         <Route path="/analytics" element={<Analytics />} />

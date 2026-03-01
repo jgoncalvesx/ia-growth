@@ -19,27 +19,54 @@ import {
   Target,
   Layers,
   Star,
-  Share2
+  Share2,
+  Filter
 } from 'lucide-react';
 
-const navItems = [
-  { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
-  { icon: Layers, label: 'Projetos', path: '/projects' },
-  { icon: Megaphone, label: 'Campanhas', path: '/campaigns' },
-  { icon: Users, label: 'Leads', path: '/leads' },
-  { icon: Star, label: 'Influenciadores', path: '/influencers' },
-  { icon: Target, label: 'Audiências', path: '/audiences' },
-  { icon: FileVideo, label: 'Conteúdo', path: '/content' },
-  { icon: Brain, label: 'Gerador de IA', path: '/ai-generator' },
-  { icon: Palette, label: 'Brand Kit', path: '/brand-kit' },
-  { icon: Globe, label: 'Competidores', path: '/competitors' },
-  { icon: DollarSign, label: 'Orçamento', path: '/budget' },
-  { icon: Share2, label: 'Integrações', path: '/integrations' },
-  { icon: CalendarIcon, label: 'Calendário', path: '/calendar' },
-  { icon: Zap, label: 'Automações', path: '/workflows' },
-  { icon: BarChart3, label: 'Analytics', path: '/analytics' },
-  { icon: Users, label: 'Equipe', path: '/team' },
-  { icon: Settings, label: 'Configurações', path: '/settings' },
+const menuGroups = [
+  {
+    title: 'Principal',
+    items: [
+      { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
+      { icon: Layers, label: 'Projetos', path: '/projects' },
+      { icon: CalendarIcon, label: 'Calendário', path: '/calendar' },
+    ]
+  },
+  {
+    title: 'Estratégia',
+    items: [
+      { icon: Palette, label: 'Brand Kit', path: '/brand-kit' },
+      { icon: Target, label: 'Audiências', path: '/audiences' },
+      { icon: Globe, label: 'Competidores', path: '/competitors' },
+    ]
+  },
+  {
+    title: 'Execução',
+    items: [
+      { icon: Megaphone, label: 'Campanhas', path: '/campaigns' },
+      { icon: FileVideo, label: 'Conteúdo', path: '/content' },
+      { icon: Brain, label: 'Gerador de IA', path: '/ai-generator' },
+      { icon: Star, label: 'Influenciadores', path: '/influencers' },
+    ]
+  },
+  {
+    title: 'Performance',
+    items: [
+      { icon: Filter, label: 'Funil', path: '/funnel' },
+      { icon: BarChart3, label: 'Analytics', path: '/analytics' },
+      { icon: DollarSign, label: 'Orçamento', path: '/budget' },
+    ]
+  },
+  {
+    title: 'Gestão',
+    items: [
+      { icon: Users, label: 'Leads', path: '/leads' },
+      { icon: Zap, label: 'Automações', path: '/workflows' },
+      { icon: Share2, label: 'Integrações', path: '/integrations' },
+      { icon: Users, label: 'Equipe', path: '/team' },
+      { icon: Settings, label: 'Configurações', path: '/settings' },
+    ]
+  }
 ];
 
 const Sidebar = () => {
@@ -51,28 +78,37 @@ const Sidebar = () => {
         </h1>
       </div>
       
-      <nav className="flex-1 px-4 space-y-1 overflow-y-auto">
-        {navItems.map((item) => (
-          <NavLink
-            key={item.label}
-            to={item.path}
-            className={({ isActive }) => `
-              w-full flex items-center space-x-3 px-4 py-2.5 rounded-lg transition-colors
-              ${isActive 
-                ? 'bg-blue-600 text-white' 
-                : 'text-slate-400 hover:bg-slate-800 hover:text-white'}
-            `}
-          >
-            <item.icon size={18} />
-            <span className="font-medium text-sm">{item.label}</span>
-          </NavLink>
+      <nav className="flex-1 px-4 space-y-6 overflow-y-auto pb-8">
+        {menuGroups.map((group) => (
+          <div key={group.title} className="space-y-2">
+            <h3 className="px-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+              {group.title}
+            </h3>
+            <div className="space-y-1">
+              {group.items.map((item) => (
+                <NavLink
+                  key={item.label}
+                  to={item.path}
+                  className={({ isActive }) => `
+                    w-full flex items-center space-x-3 px-4 py-2 rounded-lg transition-colors
+                    ${isActive 
+                      ? 'bg-blue-600 text-white' 
+                      : 'text-slate-400 hover:bg-slate-800 hover:text-white'}
+                  `}
+                >
+                  <item.icon size={16} />
+                  <span className="font-medium text-sm">{item.label}</span>
+                </NavLink>
+              ))}
+            </div>
+          </div>
         ))}
       </nav>
 
       <div className="p-4 border-t border-slate-800">
         <button className="w-full flex items-center space-x-3 px-4 py-3 text-slate-400 hover:text-red-400 transition-colors">
-          <LogOut size={20} />
-          <span className="font-medium">Sair</span>
+          <LogOut size={18} />
+          <span className="font-medium text-sm">Sair</span>
         </button>
       </div>
     </div>
