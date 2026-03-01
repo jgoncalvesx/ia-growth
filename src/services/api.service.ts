@@ -12,11 +12,35 @@ const MOCK_DATA = {
     { id: 1, name: 'João Silva', email: 'joao@exemplo.com', phone: '(11) 99999-9999', source: 'Instagram', status: 'Novo', date: '2024-05-20' },
     { id: 2, name: 'Maria Oliveira', email: 'maria@exemplo.com', phone: '(21) 98888-8888', source: 'Google Ads', status: 'Em Contato', date: '2024-05-19' },
     { id: 3, name: 'Pedro Santos', email: 'pedro@exemplo.com', phone: '(31) 97777-7777', source: 'TikTok', status: 'Qualificado', date: '2024-05-18' }
+  ],
+  dashboardKpis: {
+    investimento: "12.450",
+    cpl_medio: "5,18",
+    leads: "2.403",
+    roas: "4,2",
+    investimento_delta: "+12%",
+    cpl_delta: "-8%",
+    leads_delta: "+15%",
+    roas_delta: "+0.3"
+  },
+  contasStatus: [
+    { nome: 'Loja Principal', canal: 'Meta Ads', cpl_real: 4.50, cpl_meta: 5.00, cpl_max: 7.00, investimento_hoje: 450, status: 'green' },
+    { nome: 'E-commerce Google', canal: 'Google Ads', cpl_real: 8.20, cpl_meta: 6.00, cpl_max: 9.00, investimento_hoje: 890, status: 'yellow' },
+    { nome: 'TikTok Branding', canal: 'TikTok Ads', cpl_real: 2.10, cpl_meta: 3.50, cpl_max: 4.50, investimento_hoje: 120, status: 'green' }
+  ],
+  alertas: [
+    { tipo: 'danger', titulo: 'CPA Crítico no Google', descricao: 'O custo por aquisição na campanha de Search subiu 40% nas últimas 2h.', acao: 'Pausar Campanha' },
+    { tipo: 'warn', titulo: 'Orçamento Meta no Limite', descricao: 'Você atingiu 90% do orçamento diário planejado para hoje.', acao: 'Ajustar Limite' }
   ]
 };
 
 const isConfigured = () => {
   return N8N_URL && N8N_URL !== "" && !N8N_URL.includes('sua-instancia');
+};
+
+const isWebhookConfigured = () => {
+  const base = import.meta.env.VITE_N8N_URL;
+  return base && base !== "" && !base.includes('sua-instancia');
 };
 
 export const dbService = {
@@ -91,6 +115,13 @@ export const dbService = {
 
 // --- NOVA FUNÇÃO AUXILIAR DE WEBHOOK ---
 async function callWebhook(path: string, method = 'GET', body?: object) {
+  if (!isWebhookConfigured()) {
+    // Retorna os mocks correspondentes com base no path
+    if (path === '/dashboard-kpis') return MOCK_DATA.dashboardKpis;
+    if (path === '/contas-status') return MOCK_DATA.contasStatus;
+    if (path === '/alertas-ativos') return MOCK_DATA.alertas;
+    return {};
+  }
   const base = import.meta.env.VITE_N8N_URL || '';
   const res = await fetch(`${base}${path}`, {
     method,
@@ -120,6 +151,9 @@ export async function enviarMensagemChat(
   contaId: string | null = null,
   periodo: string = '30d'
 ) {
+  if (!isWebhookConfigured()) {
+    return { analise: "Modo de simulação ativo. Configure o webhook para falar com a IA.", confianca: 1 };
+  }
   return callWebhook('/chat', 'POST', { pergunta, conta_id: contaId, periodo });
 }
 
