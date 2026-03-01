@@ -15,23 +15,33 @@ const MOCK_DATA = {
   ]
 };
 
+const isConfigured = () => {
+  return N8N_URL && N8N_URL !== "" && !N8N_URL.includes('sua-instancia');
+};
+
 export const dbService = {
   async getCampaigns() {
-    if (!N8N_URL || N8N_URL.includes('sua-instancia')) return MOCK_DATA.campaigns;
+    if (!isConfigured()) return MOCK_DATA.campaigns;
     try {
       const response = await fetch(N8N_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'get_campaigns' })
       });
-      return response.ok ? await response.json() : MOCK_DATA.campaigns;
+      if (!response.ok) return MOCK_DATA.campaigns;
+      const data = await response.json();
+      return Array.isArray(data) ? data : MOCK_DATA.campaigns;
     } catch (error) {
+      console.warn("N8N fetch failed, using mock data", error);
       return MOCK_DATA.campaigns;
     }
   },
 
   async createCampaign(data: any) {
-    if (!N8N_URL || N8N_URL.includes('sua-instancia')) return { success: true };
+    if (!isConfigured()) {
+      console.log("Mock create campaign:", data);
+      return { success: true };
+    }
     try {
       const response = await fetch(N8N_URL, {
         method: 'POST',
@@ -45,21 +55,27 @@ export const dbService = {
   },
 
   async getLeads() {
-    if (!N8N_URL || N8N_URL.includes('sua-instancia')) return MOCK_DATA.leads;
+    if (!isConfigured()) return MOCK_DATA.leads;
     try {
       const response = await fetch(N8N_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'get_leads' })
       });
-      return response.ok ? await response.json() : MOCK_DATA.leads;
+      if (!response.ok) return MOCK_DATA.leads;
+      const data = await response.json();
+      return Array.isArray(data) ? data : MOCK_DATA.leads;
     } catch (error) {
+      console.warn("N8N fetch failed, using mock data", error);
       return MOCK_DATA.leads;
     }
   },
 
   async createLead(data: any) {
-    if (!N8N_URL || N8N_URL.includes('sua-instancia')) return { success: true };
+    if (!isConfigured()) {
+      console.log("Mock create lead:", data);
+      return { success: true };
+    }
     try {
       const response = await fetch(N8N_URL, {
         method: 'POST',
