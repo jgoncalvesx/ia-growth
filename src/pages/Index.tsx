@@ -4,7 +4,7 @@ import React from 'react';
 import Layout from '../components/Layout';
 import StatCard from '../components/StatCard';
 import PerformanceChart from '../components/PerformanceChart';
-import { Users, MousePointer2, Target, TrendingUp, Plus, FileText, UserCheck, Loader2, Zap } from 'lucide-center';
+import { Users, MousePointer2, Target, TrendingUp, Plus, FileText, UserCheck, Loader2, Zap } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import OnboardingModal from '../components/OnboardingModal';
