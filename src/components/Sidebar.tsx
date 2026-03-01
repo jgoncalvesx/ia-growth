@@ -14,13 +14,11 @@ import {
   Globe,
   DollarSign,
   Target,
-  Layers,
   Share2,
   Filter,
   HelpCircle,
   History,
   Compass,
-  FileVideo,
   PlayCircle,
   MessageSquare
 } from 'lucide-react';
@@ -40,8 +38,6 @@ const Sidebar = () => {
       items: [
         { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
         { icon: MessageSquare, label: 'Chat IA', path: '/chat' },
-        { icon: Layers, label: 'Projetos', path: '/projects' },
-        { icon: FileVideo, label: 'Conteúdo', path: '/content' },
         { icon: CalendarIcon, label: 'Calendário', path: '/calendar' },
       ]
     },
@@ -51,7 +47,7 @@ const Sidebar = () => {
         { icon: Compass, label: 'Roadmap IA', path: '/strategy' },
         { icon: Palette, label: 'Brand Kit', path: '/brand-kit' },
         { icon: Target, label: 'Audiências', path: '/audiences' },
-        { icon: Globe, label: 'Competidores', path: '/competitors' },
+        { icon: Globe, label: 'Concorrência', path: '/competitors' },
       ]
     },
     {
