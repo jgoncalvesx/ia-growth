@@ -18,7 +18,8 @@ import {
   DollarSign,
   Target,
   Layers,
-  Star
+  Star,
+  Share2
 } from 'lucide-react';
 
 const navItems = [
@@ -33,6 +34,7 @@ const navItems = [
   { icon: Palette, label: 'Brand Kit', path: '/brand-kit' },
   { icon: Globe, label: 'Competidores', path: '/competitors' },
   { icon: DollarSign, label: 'Orçamento', path: '/budget' },
+  { icon: Share2, label: 'Integrações', path: '/integrations' },
   { icon: CalendarIcon, label: 'Calendário', path: '/calendar' },
   { icon: Zap, label: 'Automações', path: '/workflows' },
   { icon: BarChart3, label: 'Analytics', path: '/analytics' },

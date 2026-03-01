@@ -21,6 +21,7 @@ import Budget from './pages/Budget';
 import Audiences from './pages/Audiences';
 import Projects from './pages/Projects';
 import Influencers from './pages/Influencers';
+import Integrations from './pages/Integrations';
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
         <Route path="/brand-kit" element={<BrandKit />} />
         <Route path="/competitors" element={<Competitors />} />
         <Route path="/budget" element={<Budget />} />
+        <Route path="/integrations" element={<Integrations />} />
         <Route path="/calendar" element={<Calendar />} />
         <Route path="/workflows" element={<Workflows />} />
         <Route path="/analytics" element={<Analytics />} />
