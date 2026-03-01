@@ -88,3 +88,72 @@ export const dbService = {
     }
   }
 };
+
+// --- NOVA FUNÇÃO AUXILIAR DE WEBHOOK ---
+async function callWebhook(path: string, method = 'GET', body?: object) {
+  const base = import.meta.env.VITE_N8N_URL || '';
+  const res = await fetch(`${base}${path}`, {
+    method,
+    headers: { 'Content-Type': 'application/json' },
+    ...(body ? { body: JSON.stringify(body) } : {}),
+  });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json();
+}
+
+// ─── DASHBOARD Growth Midia IA ───────────────────────────────────────────
+export async function fetchDashboardKpis() {
+  return callWebhook('/dashboard-kpis');
+}
+
+export async function fetchContasStatus() {
+  return callWebhook('/contas-status');
+}
+
+export async function fetchAlertasAtivos() {
+  return callWebhook('/alertas-ativos');
+}
+
+// ─── CHAT COM CLAUDE ─────────────────────────────────────────────
+export async function enviarMensagemChat(
+  pergunta: string,
+  contaId: string | null = null,
+  periodo: string = '30d'
+) {
+  return callWebhook('/chat', 'POST', { pergunta, conta_id: contaId, periodo });
+}
+
+// ─── EXECUÇÃO ────────────────────────────────────────────────────
+export async function fetchAcoesPendentes() {
+  return callWebhook('/acoes-pendentes');
+}
+
+export async function executarAcao(acaoId: string) {
+  return callWebhook('/executar-acao', 'POST', { acao_id: acaoId });
+}
+
+export async function ignorarAcao(acaoId: string) {
+  return callWebhook('/ignorar-acao', 'POST', { acao_id: acaoId });
+}
+
+export async function fetchAuditLog() {
+  return callWebhook('/audit-log');
+}
+
+// ─── BIBLIOTECA ──────────────────────────────────────────────────
+export async function executarAnalise(
+  tipo: string,
+  contaId: string | null = null,
+  periodo: string = '30d'
+) {
+  return callWebhook('/executar-analise', 'POST', { tipo, conta_id: contaId, periodo });
+}
+
+// ─── ANALYTICS (substituir mocks) ────────────────────────────────
+export async function fetchMetricasAnalytics(contaId: string | null = null) {
+  return callWebhook(`/analytics${contaId ? `?conta_id=${contaId}` : ''}`);
+}
+
+export async function fetchDadosBudget(contaId: string | null = null) {
+  return callWebhook(`/budget${contaId ? `?conta_id=${contaId}` : ''}`);
+}
