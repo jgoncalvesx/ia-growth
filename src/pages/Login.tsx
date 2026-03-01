@@ -18,7 +18,7 @@ const Login = () => {
     setLoading(true);
     
     setTimeout(() => {
-      toast.success('Bem-vindo ao MidiaOS!');
+      toast.success('Bem-vindo ao Growth Midia IA!');
       navigate('/');
     }, 1500);
   };
@@ -30,7 +30,7 @@ const Login = () => {
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-blue-600 text-white shadow-xl mb-4">
             <Brain size={32} />
           </div>
-          <h1 className="text-4xl font-black text-slate-900 tracking-tight">MidiaOS</h1>
+          <h1 className="text-4xl font-black text-slate-900 tracking-tight">Growth Midia IA</h1>
           <p className="text-slate-500">O sistema operacional do marketing moderno.</p>
         </div>
 

@@ -13,7 +13,7 @@ import { Brain, Target, Zap, BarChart3, ChevronRight, ChevronLeft } from 'lucide
 
 const steps = [
   {
-    title: "Bem-vindo ao MidiaOS",
+    title: "Bem-vindo ao Growth Midia IA",
     description: "Sua central de comando para marketing de alta performance. Vamos configurar seu ambiente em 30 segundos.",
     icon: Brain,
     color: "text-blue-600",
