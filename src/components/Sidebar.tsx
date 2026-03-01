@@ -23,7 +23,8 @@ import {
   Filter,
   HelpCircle,
   CreditCard,
-  History
+  History,
+  Compass
 } from 'lucide-react';
 
 const menuGroups = [
@@ -38,6 +39,7 @@ const menuGroups = [
   {
     title: 'Estratégia',
     items: [
+      { icon: Compass, label: 'Roadmap IA', path: '/strategy' },
       { icon: Palette, label: 'Brand Kit', path: '/brand-kit' },
       { icon: Target, label: 'Audiências', path: '/audiences' },
       { icon: Globe, label: 'Competidores', path: '/competitors' },

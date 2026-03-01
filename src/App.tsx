@@ -28,6 +28,7 @@ import Help from './pages/Help';
 import Login from './pages/Login';
 import Billing from './pages/Billing';
 import ActivityLog from './pages/ActivityLog';
+import Strategy from './pages/Strategy';
 
 function App() {
   return (
@@ -38,6 +39,7 @@ function App() {
         <Route path="/" element={<Index />} />
         <Route path="/projects" element={<Projects />} />
         <Route path="/projects/:id" element={<ProjectDetail />} />
+        <Route path="/strategy" element={<Strategy />} />
         <Route path="/campaigns" element={<Campaigns />} />
         <Route path="/campaigns/:id" element={<CampaignDetail />} />
         <Route path="/leads" element={<Leads />} />
