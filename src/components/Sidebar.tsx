@@ -107,7 +107,7 @@ const Sidebar = () => {
       <nav className="flex-1 px-4 space-y-6 overflow-y-auto pb-8 pt-6">
         {menuGroups.map((group) => (
           <div key={group.title} className="space-y-2">
-            <h3 className="px-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+            <h3 className="px-4 text-xs font-semibold text-muted-foreground tracking-wider uppercase">
               {group.title}
             </h3>
             <div className="space-y-1">
@@ -118,8 +118,8 @@ const Sidebar = () => {
                   className={({ isActive }) => `
                     w-full flex items-center justify-between px-4 py-2 rounded-lg transition-colors
                     ${isActive 
-                      ? 'bg-blue-600 text-white' 
-                      : 'text-slate-400 hover:bg-slate-800 hover:text-white'}
+                      ? 'bg-blue-600 text-foreground' 
+                      : 'text-muted-foreground hover:bg-slate-800 hover:text-foreground'}
                   `}
                 >
                   <div className="flex items-center space-x-3">
@@ -143,7 +143,7 @@ const Sidebar = () => {
           to="/help"
           className={({ isActive }) => `
             w-full flex items-center space-x-3 px-4 py-2 rounded-lg transition-colors
-            ${isActive ? 'bg-slate-800 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}
+            ${isActive ? 'bg-slate-800 text-foreground' : 'text-muted-foreground hover:bg-slate-800 hover:text-foreground'}
           `}
         >
           <HelpCircle size={18} />
@@ -151,7 +151,7 @@ const Sidebar = () => {
         </NavLink>
         <button 
           onClick={handleLogout}
-          className="w-full flex items-center space-x-3 px-4 py-3 text-slate-400 hover:text-red-400 transition-colors"
+          className="w-full flex items-center space-x-3 px-4 py-3 text-muted-foreground hover:text-red-400 transition-colors"
         >
           <LogOut size={18} />
           <span className="font-medium text-sm">Sair</span>

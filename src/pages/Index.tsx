@@ -27,19 +27,19 @@ const Index = () => {
 
   return (
     <Layout>
-      <div className="space-y-8 bg-slate-950 min-h-screen -m-4 lg:-m-8 p-4 lg:p-8 text-slate-50">
+      <div className="space-y-8 bg-slate-950 min-h-screen -m-4 lg:-m-8 p-4 lg:p-8 text-white">
         
         {/* HEADER DA PÁGINA */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <h1 className="text-3xl font-black tracking-tight">Dashboard</h1>
-            <p className="text-slate-400 text-sm mt-1">Visão geral · Atualizado há 12 min</p>
+            <h1 className="text-3xl font-black tracking-tight text-white">Dashboard</h1>
+            <p className="text-muted-foreground text-sm mt-1">Visão geral · Atualizado há 12 min</p>
           </div>
           <div className="flex items-center gap-3">
             <Badge className="bg-blue-600/20 text-blue-400 border-blue-500/30 px-3 py-1">Meta Ads</Badge>
             <Badge className="bg-red-600/20 text-red-400 border-red-500/30 px-3 py-1">Google Ads</Badge>
             <Badge className="bg-orange-600/20 text-orange-400 border-orange-500/30 px-3 py-1">CRM</Badge>
-            <Button variant="ghost" size="sm" className="text-slate-400 hover:text-white ml-2">
+            <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-white ml-2">
               <RefreshCw size={16} className="mr-2" /> Atualizar
             </Button>
           </div>
@@ -80,44 +80,44 @@ const Index = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <Card className="bg-slate-900 border-slate-800 shadow-xl">
             <CardContent className="pt-6">
-              <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">INVESTIMENTO TOTAL</p>
-              <h3 className="text-3xl font-bold font-mono">R$ 84.320</h3>
+              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-2">INVESTIMENTO TOTAL</p>
+              <h3 className="text-3xl font-bold font-mono text-white">R$ 84.320</h3>
               <div className="flex items-center gap-1 mt-2 text-green-500 text-xs font-bold">
-                <ArrowUpRight size={14} /> +12% <span className="text-slate-500 font-medium">vs. mês anterior</span>
+                <ArrowUpRight size={14} /> +12% <span className="text-muted-foreground font-medium">vs. mês anterior</span>
               </div>
             </CardContent>
           </Card>
 
           <Card className="bg-slate-900 border-slate-800 shadow-xl">
             <CardContent className="pt-6">
-              <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">CPL (CRM)</p>
+              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-2">CPL (CRM)</p>
               <h3 className="text-3xl font-bold font-mono text-red-400">R$ 18,40</h3>
               <div className="flex items-center gap-1 mt-2 text-red-500 text-xs font-bold">
                 <ArrowDownRight size={14} /> -8%
               </div>
-              <p className="text-[10px] text-slate-500 mt-2 font-medium">Meta: R$ 15 · Max: R$ 22</p>
+              <p className="text-[10px] text-muted-foreground mt-2 font-medium">Meta: R$ 15 · Max: R$ 22</p>
             </CardContent>
           </Card>
 
           <Card className="bg-slate-900 border-slate-800 shadow-xl">
             <CardContent className="pt-6">
-              <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">LEADS QUALIFICADOS</p>
-              <h3 className="text-3xl font-bold font-mono">1.284</h3>
+              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-2">LEADS QUALIFICADOS</p>
+              <h3 className="text-3xl font-bold font-mono text-white">1.284</h3>
               <div className="flex items-center gap-1 mt-2 text-green-500 text-xs font-bold">
                 <ArrowUpRight size={14} /> +21%
               </div>
-              <p className="text-[10px] text-slate-500 mt-2 font-medium">Taxa qualif.: 34%</p>
+              <p className="text-[10px] text-muted-foreground mt-2 font-medium">Taxa qualif.: 34%</p>
             </CardContent>
           </Card>
 
           <Card className="bg-slate-900 border-slate-800 shadow-xl">
             <CardContent className="pt-6">
-              <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">ROAS CONSOLIDADO</p>
+              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-2">ROAS CONSOLIDADO</p>
               <h3 className="text-3xl font-bold font-mono text-blue-400">4.2x</h3>
               <div className="flex items-center gap-1 mt-2 text-red-500 text-xs font-bold">
                 <ArrowDownRight size={14} /> -0.3x
               </div>
-              <p className="text-[10px] text-slate-500 mt-2 font-medium">Meta: 4.5x</p>
+              <p className="text-[10px] text-muted-foreground mt-2 font-medium">Meta: 4.5x</p>
             </CardContent>
           </Card>
         </div>
@@ -125,12 +125,12 @@ const Index = () => {
         {/* SEÇÃO 3: SEMÁFORO DE CONTAS */}
         <Card className="bg-slate-900 border-slate-800 shadow-xl overflow-hidden">
           <CardHeader className="flex flex-row items-center justify-between border-b border-slate-800 py-4">
-            <CardTitle className="text-lg font-bold">Semáforo de Contas</CardTitle>
-            <Button variant="ghost" size="sm" className="text-slate-400 hover:text-white">Ver todas</Button>
+            <CardTitle className="text-lg font-bold text-white">Semáforo de Contas</CardTitle>
+            <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-white">Ver todas</Button>
           </CardHeader>
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
-              <thead className="bg-slate-800/50 text-slate-400 uppercase text-[10px] font-bold tracking-widest">
+              <thead className="bg-slate-800/50 text-muted-foreground uppercase text-[10px] font-bold tracking-widest">
                 <tr>
                   <th className="px-6 py-4">Cliente</th>
                   <th className="px-6 py-4">Canal</th>
@@ -151,25 +151,25 @@ const Index = () => {
                   { cliente: "Consultor RH", canal: "LinkedIn+Google", status: "atencao", cpl: "42,00", meta: "40", invest: "980", acao: "Revisar budget", color: "yellow" },
                 ].map((row, i) => (
                   <tr key={i} className="hover:bg-slate-800/30 transition-colors">
-                    <td className="px-6 py-4 font-bold">{row.cliente}</td>
+                    <td className="px-6 py-4 font-bold text-white">{row.cliente}</td>
                     <td className="px-6 py-4">
-                      <Badge variant="secondary" className="bg-slate-800 text-slate-400 border-slate-700 text-[10px]">{row.canal}</Badge>
+                      <Badge variant="secondary" className="bg-slate-800 text-muted-foreground border-slate-700 text-[10px]">{row.canal}</Badge>
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2">
                         <Circle size={8} className={`fill-current ${row.status === 'ok' ? 'text-green-500' : row.status === 'atencao' ? 'text-yellow-500' : 'text-red-500'}`} />
-                        <span className="capitalize font-medium">{row.status === 'ok' ? 'OK' : row.status === 'atencao' ? 'Atenção' : 'Urgente'}</span>
+                        <span className="capitalize font-medium text-white">{row.status === 'ok' ? 'OK' : row.status === 'atencao' ? 'Atenção' : 'Urgente'}</span>
                       </div>
                     </td>
-                    <td className="px-6 py-4 font-mono font-bold">R$ {row.cpl}</td>
-                    <td className="px-6 py-4 text-slate-500 font-mono">R$ {row.meta}</td>
-                    <td className="px-6 py-4 font-mono">R$ {row.invest}</td>
+                    <td className="px-6 py-4 font-mono font-bold text-white">R$ {row.cpl}</td>
+                    <td className="px-6 py-4 text-muted-foreground font-mono">R$ {row.meta}</td>
+                    <td className="px-6 py-4 font-mono text-white">R$ {row.invest}</td>
                     <td className="px-6 py-4">
                       {row.acao ? (
                         <Badge className={`${row.color === 'red' ? 'bg-red-500/10 text-red-500 border-red-500/20' : 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20'} text-[9px] uppercase font-black`}>
                           {row.acao}
                         </Badge>
-                      ) : <span className="text-slate-700">—</span>}
+                      ) : <span className="text-slate-800">—</span>}
                     </td>
                   </tr>
                 ))}
@@ -184,7 +184,7 @@ const Index = () => {
           {/* COLUNA ESQUERDA - PERFORMANCE POR CANAL */}
           <Card className="lg:col-span-6 bg-slate-900 border-slate-800 shadow-xl">
             <CardHeader className="pb-4">
-              <CardTitle className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">PERFORMANCE POR CANAL</CardTitle>
+              <CardTitle className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">PERFORMANCE POR CANAL</CardTitle>
             </CardHeader>
             <CardContent className="space-y-8 pt-2">
               {[
@@ -195,13 +195,13 @@ const Index = () => {
                 <div key={i} className="space-y-3">
                   <div className="flex justify-between items-end">
                     <div>
-                      <h4 className="text-lg font-bold">{canal.name}</h4>
+                      <h4 className="text-lg font-bold text-white">{canal.name}</h4>
                       <div className="flex gap-4 mt-1">
-                        <p className="text-xs text-slate-400">CPL: <span className="text-slate-200 font-mono font-bold">R$ {canal.cpl}</span></p>
-                        <p className="text-xs text-slate-400">Leads CRM: <span className="text-slate-200 font-mono font-bold">{canal.leads}</span></p>
+                        <p className="text-xs text-muted-foreground">CPL: <span className="text-white font-mono font-bold">R$ {canal.cpl}</span></p>
+                        <p className="text-xs text-muted-foreground">Leads CRM: <span className="text-white font-mono font-bold">{canal.leads}</span></p>
                       </div>
                     </div>
-                    <p className="text-sm text-slate-500 font-mono">R$ {canal.spend}</p>
+                    <p className="text-sm text-muted-foreground font-mono">R$ {canal.spend}</p>
                   </div>
                   <Progress value={canal.progress} className="h-2 bg-slate-800" />
                   {i < 2 && <div className="border-b border-slate-800 pt-2"></div>}
@@ -213,7 +213,7 @@ const Index = () => {
           {/* COLUNA DIREITA - ATIVIDADE RECENTE */}
           <Card className="lg:col-span-4 bg-slate-900 border-slate-800 shadow-xl">
             <CardHeader className="pb-4">
-              <CardTitle className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">ATIVIDADE RECENTE DO SISTEMA</CardTitle>
+              <CardTitle className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">ATIVIDADE RECENTE DO SISTEMA</CardTitle>
             </CardHeader>
             <CardContent className="pt-2">
               <div className="space-y-6">
@@ -226,7 +226,7 @@ const Index = () => {
                   { time: "16:45", color: "yellow", text: "Alert: Anomalia de gasto em campanha Google Search" },
                 ].map((log, i) => (
                   <div key={i} className="flex gap-4 items-start">
-                    <span className="text-[10px] font-mono text-slate-500 mt-0.5">{log.time}</span>
+                    <span className="text-[10px] font-mono text-muted-foreground mt-0.5">{log.time}</span>
                     <Circle size={8} className={`mt-1.5 fill-current ${log.color === 'blue' ? 'text-blue-500' : log.color === 'yellow' ? 'text-yellow-500' : 'text-green-500'}`} />
                     <p className="text-xs text-slate-300 leading-relaxed">{log.text}</p>
                   </div>
