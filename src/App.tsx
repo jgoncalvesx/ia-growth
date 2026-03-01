@@ -24,6 +24,7 @@ import ActivityLog from './pages/ActivityLog';
 import Strategy from './pages/Strategy';
 import Content from './pages/Content';
 import Execucao from './pages/Execucao';
+import Chat from './pages/Chat';
 
 function App() {
   return (
@@ -48,6 +49,7 @@ function App() {
         <Route path="/workflows" element={<Workflows />} />
         <Route path="/analytics" element={<Analytics />} />
         <Route path="/execucao" element={<Execucao />} />
+        <Route path="/chat" element={<Chat />} />
         <Route path="/activity-log" element={<ActivityLog />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/help" element={<Help />} />

@@ -21,7 +21,8 @@ import {
   History,
   Compass,
   FileVideo,
-  PlayCircle
+  PlayCircle,
+  MessageSquare
 } from 'lucide-react';
 import { toast } from 'sonner';
 import ClientSwitcher from './ClientSwitcher';
@@ -38,6 +39,7 @@ const Sidebar = () => {
       title: 'Principal',
       items: [
         { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
+        { icon: MessageSquare, label: 'Chat IA', path: '/chat' },
         { icon: Layers, label: 'Projetos', path: '/projects' },
         { icon: FileVideo, label: 'Conteúdo', path: '/content' },
         { icon: CalendarIcon, label: 'Calendário', path: '/calendar' },
