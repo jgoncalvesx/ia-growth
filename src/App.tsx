@@ -20,6 +20,7 @@ import Competitors from './pages/Competitors';
 import Budget from './pages/Budget';
 import Audiences from './pages/Audiences';
 import Projects from './pages/Projects';
+import ProjectDetail from './pages/ProjectDetail';
 import Influencers from './pages/Influencers';
 import Integrations from './pages/Integrations';
 
@@ -30,6 +31,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/projects" element={<Projects />} />
+        <Route path="/projects/:id" element={<ProjectDetail />} />
         <Route path="/campaigns" element={<Campaigns />} />
         <Route path="/campaigns/:id" element={<CampaignDetail />} />
         <Route path="/leads" element={<Leads />} />

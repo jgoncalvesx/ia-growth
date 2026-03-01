@@ -1,6 +1,7 @@
 "use client";
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
@@ -62,6 +63,7 @@ const projects = [
 ];
 
 const Projects = () => {
+  const navigate = useNavigate();
   const handleCreateProject = () => {
     toast.success('Iniciando assistente de criação de projeto...');
   };
@@ -90,7 +92,10 @@ const Projects = () => {
                   <MoreVertical size={20} />
                 </button>
               </div>
-              <CardTitle className="text-lg font-bold text-slate-900 group-hover:text-blue-600 transition-colors cursor-pointer">
+              <CardTitle 
+                className="text-lg font-bold text-slate-900 group-hover:text-blue-600 transition-colors cursor-pointer"
+                onClick={() => navigate(`/projects/${project.id}`)}
+              >
                 {project.name}
               </CardTitle>
               <div className="flex items-center space-x-2 mt-1">
@@ -132,7 +137,11 @@ const Projects = () => {
                 </div>
               </div>
 
-              <Button variant="ghost" className="w-full text-xs text-blue-600 hover:bg-blue-50 group/btn">
+              <Button 
+                variant="ghost" 
+                className="w-full text-xs text-blue-600 hover:bg-blue-50 group/btn"
+                onClick={() => navigate(`/projects/${project.id}`)}
+              >
                 Ver Detalhes do Projeto <ArrowRight size={14} className="ml-2 group-hover/btn:translate-x-1 transition-transform" />
               </Button>
             </CardContent>
