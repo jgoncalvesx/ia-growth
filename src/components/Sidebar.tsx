@@ -10,7 +10,9 @@ import {
   Settings, 
   LogOut,
   Users,
-  Calendar as CalendarIcon
+  Calendar as CalendarIcon,
+  Zap,
+  UserGroup
 } from 'lucide-react';
 
 const navItems = [
@@ -19,7 +21,9 @@ const navItems = [
   { icon: Users, label: 'Leads', path: '/leads' },
   { icon: FileVideo, label: 'Conteúdo', path: '/content' },
   { icon: CalendarIcon, label: 'Calendário', path: '/calendar' },
+  { icon: Zap, label: 'Automações', path: '/workflows' },
   { icon: BarChart3, label: 'Analytics', path: '/analytics' },
+  { icon: Users, label: 'Equipe', path: '/team' },
   { icon: Settings, label: 'Configurações', path: '/settings' },
 ];
 
@@ -32,20 +36,20 @@ const Sidebar = () => {
         </h1>
       </div>
       
-      <nav className="flex-1 px-4 space-y-2">
+      <nav className="flex-1 px-4 space-y-1 overflow-y-auto">
         {navItems.map((item) => (
           <NavLink
             key={item.label}
             to={item.path}
             className={({ isActive }) => `
-              w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors
+              w-full flex items-center space-x-3 px-4 py-2.5 rounded-lg transition-colors
               ${isActive 
                 ? 'bg-blue-600 text-white' 
                 : 'text-slate-400 hover:bg-slate-800 hover:text-white'}
             `}
           >
-            <item.icon size={20} />
-            <span className="font-medium">{item.label}</span>
+            <item.icon size={18} />
+            <span className="font-medium text-sm">{item.label}</span>
           </NavLink>
         ))}
       </nav>

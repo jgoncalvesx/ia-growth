@@ -12,6 +12,8 @@ import Settings from './pages/Settings';
 import Leads from './pages/Leads';
 import LeadDetail from './pages/LeadDetail';
 import Calendar from './pages/Calendar';
+import Workflows from './pages/Workflows';
+import Team from './pages/Team';
 
 function App() {
   return (
@@ -25,7 +27,9 @@ function App() {
         <Route path="/leads/:id" element={<LeadDetail />} />
         <Route path="/content" element={<Content />} />
         <Route path="/calendar" element={<Calendar />} />
+        <Route path="/workflows" element={<Workflows />} />
         <Route path="/analytics" element={<Analytics />} />
+        <Route path="/team" element={<Team />} />
         <Route path="/settings" element={<Settings />} />
       </Routes>
     </Router>
