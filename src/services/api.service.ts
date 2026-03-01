@@ -31,6 +31,14 @@ const MOCK_DATA = {
   alertas: [
     { tipo: 'danger', titulo: 'CPA Crítico no Google', descricao: 'O custo por aquisição na campanha de Search subiu 40% nas últimas 2h.', acao: 'Pausar Campanha' },
     { tipo: 'warn', titulo: 'Orçamento Meta no Limite', descricao: 'Você atingiu 90% do orçamento diário planejado para hoje.', acao: 'Ajustar Limite' }
+  ],
+  acoesPendentes: [
+    { id: '1', titulo: 'Reduzir Lances Google Search', conta_nome: 'E-commerce Google', urgencia: 'alta', racional: 'O CPL está 30% acima da meta máxima permitida.', comando_api: 'reduce_bids', economia_estimada: 'R$ 150/dia' },
+    { id: '2', titulo: 'Escalar Campanha Reels', conta_nome: 'Loja Principal', urgencia: 'media', racional: 'Performance excepcional com ROAS de 8.5x nas últimas 48h.', comando_api: 'increase_budget', economia_estimada: 'Vendas Adicionais' }
+  ],
+  auditLog: [
+    { hora: '10:45', mensagem: 'Orçamento Meta Ads ajustado para R$ 500/dia', executado_por: 'IA MidiaOS', tipo: 'automation' },
+    { hora: '09:30', mensagem: 'Nova campanha "Inverno 2024" criada', executado_por: 'Admin', tipo: 'manual' }
   ]
 };
 
@@ -113,13 +121,13 @@ export const dbService = {
   }
 };
 
-// --- NOVA FUNÇÃO AUXILIAR DE WEBHOOK ---
 async function callWebhook(path: string, method = 'GET', body?: object) {
   if (!isWebhookConfigured()) {
-    // Retorna os mocks correspondentes com base no path
     if (path === '/dashboard-kpis') return MOCK_DATA.dashboardKpis;
     if (path === '/contas-status') return MOCK_DATA.contasStatus;
     if (path === '/alertas-ativos') return MOCK_DATA.alertas;
+    if (path === '/acoes-pendentes') return MOCK_DATA.acoesPendentes;
+    if (path === '/audit-log') return MOCK_DATA.auditLog;
     return {};
   }
   const base = import.meta.env.VITE_N8N_URL || '';
@@ -132,62 +140,19 @@ async function callWebhook(path: string, method = 'GET', body?: object) {
   return res.json();
 }
 
-// ─── DASHBOARD Growth Midia IA ───────────────────────────────────────────
-export async function fetchDashboardKpis() {
-  return callWebhook('/dashboard-kpis');
-}
-
-export async function fetchContasStatus() {
-  return callWebhook('/contas-status');
-}
-
-export async function fetchAlertasAtivos() {
-  return callWebhook('/alertas-ativos');
-}
-
-// ─── CHAT COM CLAUDE ─────────────────────────────────────────────
-export async function enviarMensagemChat(
-  pergunta: string,
-  contaId: string | null = null,
-  periodo: string = '30d'
-) {
-  if (!isWebhookConfigured()) {
-    return { analise: "Modo de simulação ativo. Configure o webhook para falar com a IA.", confianca: 1 };
-  }
+export async function fetchDashboardKpis() { return callWebhook('/dashboard-kpis'); }
+export async function fetchContasStatus() { return callWebhook('/contas-status'); }
+export async function fetchAlertasAtivos() { return callWebhook('/alertas-ativos'); }
+export async function enviarMensagemChat(pergunta: string, contaId: string | null = null, periodo: string = '30d') {
+  if (!isWebhookConfigured()) return { analise: "Simulação: Para ter respostas reais da IA, configure seu Webhook no n8n.", confianca: 0.95 };
   return callWebhook('/chat', 'POST', { pergunta, conta_id: contaId, periodo });
 }
-
-// ─── EXECUÇÃO ────────────────────────────────────────────────────
-export async function fetchAcoesPendentes() {
-  return callWebhook('/acoes-pendentes');
-}
-
-export async function executarAcao(acaoId: string) {
-  return callWebhook('/executar-acao', 'POST', { acao_id: acaoId });
-}
-
-export async function ignorarAcao(acaoId: string) {
-  return callWebhook('/ignorar-acao', 'POST', { acao_id: acaoId });
-}
-
-export async function fetchAuditLog() {
-  return callWebhook('/audit-log');
-}
-
-// ─── BIBLIOTECA ──────────────────────────────────────────────────
-export async function executarAnalise(
-  tipo: string,
-  contaId: string | null = null,
-  periodo: string = '30d'
-) {
+export async function fetchAcoesPendentes() { return callWebhook('/acoes-pendentes'); }
+export async function executarAcao(acaoId: string) { return callWebhook('/executar-acao', 'POST', { acao_id: acaoId }); }
+export async function ignorarAcao(acaoId: string) { return callWebhook('/ignorar-acao', 'POST', { acao_id: acaoId }); }
+export async function fetchAuditLog() { return callWebhook('/audit-log'); }
+export async function executarAnalise(tipo: string, contaId: string | null = null, periodo: string = '30d') {
   return callWebhook('/executar-analise', 'POST', { tipo, conta_id: contaId, periodo });
 }
-
-// ─── ANALYTICS (substituir mocks) ────────────────────────────────
-export async function fetchMetricasAnalytics(contaId: string | null = null) {
-  return callWebhook(`/analytics${contaId ? `?conta_id=${contaId}` : ''}`);
-}
-
-export async function fetchDadosBudget(contaId: string | null = null) {
-  return callWebhook(`/budget${contaId ? `?conta_id=${contaId}` : ''}`);
-}
+export async function fetchMetricasAnalytics(contaId: string | null = null) { return callWebhook(`/analytics${contaId ? `?conta_id=${contaId}` : ''}`); }
+export async function fetchDadosBudget(contaId: string | null = null) { return callWebhook(`/budget${contaId ? `?conta_id=${contaId}` : ''}`); }
