@@ -14,8 +14,9 @@ import {
   SelectTrigger, 
   SelectValue 
 } from '../components/ui/select';
-import { Brain, Sparkles, Copy, RefreshCw, Send, Wand2 } from 'lucide-react';
+import { Brain, Sparkles, Copy, RefreshCw, Send, Wand2, CheckCircle2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { Badge } from '../components/ui/badge';
 
 const AIGenerator = () => {
   const [loading, setLoading] = React.useState(false);
@@ -25,7 +26,6 @@ const AIGenerator = () => {
     e.preventDefault();
     setLoading(true);
     
-    // Simulando chamada de API de IA
     setTimeout(() => {
       setResult(
         "🚀 Transforme seu verão com a nova Coleção Breeze! \n\n" +
@@ -55,9 +55,14 @@ const AIGenerator = () => {
           <h2 className="text-2xl font-bold text-slate-900">Gerador de IA</h2>
           <p className="text-slate-500">Crie copies e legendas de alta conversão em segundos.</p>
         </div>
-        <Badge className="bg-purple-100 text-purple-700 border-none px-3 py-1">
-          <Sparkles size={14} className="mr-2" /> IA Ativa
-        </Badge>
+        <div className="flex items-center space-x-3">
+          <div className="flex items-center text-xs text-green-600 bg-green-50 px-3 py-1 rounded-full border border-green-100">
+            <CheckCircle2 size={14} className="mr-1" /> Brand Kit Ativo
+          </div>
+          <Badge className="bg-purple-100 text-purple-700 border-none px-3 py-1">
+            <Sparkles size={14} className="mr-2" /> IA Ativa
+          </Badge>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -110,6 +115,11 @@ const AIGenerator = () => {
                     className="h-32 resize-none"
                     required
                   />
+                </div>
+
+                <div className="p-3 bg-slate-50 rounded-lg border border-slate-100">
+                  <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Contexto da Marca</p>
+                  <p className="text-xs text-slate-600 italic">"Inovadora, tecnológica e focada em resultados..."</p>
                 </div>
 
                 <Button 

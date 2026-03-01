@@ -15,6 +15,7 @@ import Calendar from './pages/Calendar';
 import Workflows from './pages/Workflows';
 import Team from './pages/Team';
 import AIGenerator from './pages/AIGenerator';
+import BrandKit from './pages/BrandKit';
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
         <Route path="/leads/:id" element={<LeadDetail />} />
         <Route path="/content" element={<Content />} />
         <Route path="/ai-generator" element={<AIGenerator />} />
+        <Route path="/brand-kit" element={<BrandKit />} />
         <Route path="/calendar" element={<Calendar />} />
         <Route path="/workflows" element={<Workflows />} />
         <Route path="/analytics" element={<Analytics />} />
