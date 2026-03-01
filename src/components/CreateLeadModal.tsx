@@ -19,16 +19,36 @@ import {
   SelectTrigger, 
   SelectValue 
 } from './ui/select';
-import { UserPlus } from 'lucide-react';
+import { UserPlus, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { dbService } from '../services/api.service';
 
 const CreateLeadModal = () => {
   const [open, setOpen] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    toast.success('Lead adicionado com sucesso!');
-    setOpen(false);
+    setLoading(true);
+    
+    const formData = new FormData(e.currentTarget);
+    const data = {
+      name: formData.get('name'),
+      email: formData.get('email'),
+      phone: formData.get('phone'),
+      source: formData.get('source'),
+      status: 'Novo'
+    };
+
+    try {
+      await dbService.createLead(data);
+      toast.success('Lead adicionado com sucesso!');
+      setOpen(false);
+    } catch (error) {
+      toast.error('Erro ao salvar lead.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -45,19 +65,19 @@ const CreateLeadModal = () => {
         <form onSubmit={handleSubmit} className="space-y-4 py-4">
           <div className="space-y-2">
             <Label htmlFor="name">Nome Completo</Label>
-            <Input id="name" placeholder="Ex: João Silva" required />
+            <Input id="name" name="name" placeholder="Ex: João Silva" required />
           </div>
           <div className="space-y-2">
             <Label htmlFor="email">E-mail</Label>
-            <Input id="email" type="email" placeholder="joao@exemplo.com" required />
+            <Input id="email" name="email" type="email" placeholder="joao@exemplo.com" required />
           </div>
           <div className="space-y-2">
             <Label htmlFor="phone">Telefone</Label>
-            <Input id="phone" placeholder="(11) 99999-9999" required />
+            <Input id="phone" name="phone" placeholder="(11) 99999-9999" required />
           </div>
           <div className="space-y-2">
             <Label htmlFor="source">Origem</Label>
-            <Select required>
+            <Select name="source" required>
               <SelectTrigger>
                 <SelectValue placeholder="Selecione a origem" />
               </SelectTrigger>
@@ -71,11 +91,11 @@ const CreateLeadModal = () => {
             </Select>
           </div>
           <DialogFooter className="pt-4">
-            <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+            <Button type="button" variant="outline" onClick={() => setOpen(false)} disabled={loading}>
               Cancelar
             </Button>
-            <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
-              Salvar Lead
+            <Button type="submit" className="bg-blue-600 hover:bg-blue-700" disabled={loading}>
+              {loading ? <Loader2 className="animate-spin" size={18} /> : 'Salvar Lead'}
             </Button>
           </DialogFooter>
         </form>

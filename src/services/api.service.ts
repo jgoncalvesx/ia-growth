@@ -30,6 +30,20 @@ export const dbService = {
     }
   },
 
+  async createCampaign(data: any) {
+    if (!N8N_URL || N8N_URL.includes('sua-instancia')) return { success: true };
+    try {
+      const response = await fetch(N8N_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'create_campaign', data })
+      });
+      return await response.json();
+    } catch (error) {
+      return { success: true };
+    }
+  },
+
   async getLeads() {
     if (!N8N_URL || N8N_URL.includes('sua-instancia')) return MOCK_DATA.leads;
     try {
@@ -44,13 +58,13 @@ export const dbService = {
     }
   },
 
-  async createLead(leadData: any) {
+  async createLead(data: any) {
     if (!N8N_URL || N8N_URL.includes('sua-instancia')) return { success: true };
     try {
       const response = await fetch(N8N_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'create_lead', data: leadData })
+        body: JSON.stringify({ action: 'create_lead', data })
       });
       return await response.json();
     } catch (error) {

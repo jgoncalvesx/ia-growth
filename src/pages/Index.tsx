@@ -4,14 +4,41 @@ import React from 'react';
 import Layout from '../components/Layout';
 import StatCard from '../components/StatCard';
 import PerformanceChart from '../components/PerformanceChart';
-import { Users, MousePointer2, Target, TrendingUp, Plus, FileText, Share2, UserCheck } from 'lucide-react';
+import { Users, MousePointer2, Target, TrendingUp, Plus, FileText, Share2, UserCheck, Loader2 } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { useNavigate } from 'react-router-dom';
-import { Badge } from '../components/ui/badge';
 import OnboardingModal from '../components/OnboardingModal';
+import { dbService } from '../services/api.service';
 
 const Index = () => {
   const navigate = useNavigate();
+  const [data, setData] = React.useState<{ campaigns: any[], leads: any[] }>({ campaigns: [], leads: [] });
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    const fetchDashboardData = async () => {
+      const [campaigns, leads] = await Promise.all([
+        dbService.getCampaigns(),
+        dbService.getLeads()
+      ]);
+      setData({ campaigns, leads });
+      setLoading(false);
+    };
+    fetchDashboardData();
+  }, []);
+
+  if (loading) {
+    return (
+      <Layout>
+        <div className="h-full flex items-center justify-center">
+          <Loader2 className="animate-spin text-blue-600" size={48} />
+        </div>
+      </Layout>
+    );
+  }
+
+  const activeCampaigns = data.campaigns.filter(c => c.status === 'Ativa').length;
+  const totalLeads = data.leads.length;
 
   return (
     <Layout>
@@ -34,8 +61,8 @@ const Index = () => {
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <StatCard 
-          title="Alcance Total" 
-          value="1.2M" 
+          title="Leads Totais" 
+          value={totalLeads.toString()} 
           change="+12.5%" 
           isPositive={true} 
           icon={Users} 
@@ -51,9 +78,9 @@ const Index = () => {
         />
         <StatCard 
           title="Campanhas Ativas" 
-          value="12" 
-          change="-2" 
-          isPositive={false} 
+          value={activeCampaigns.toString()} 
+          change="Atualizado" 
+          isPositive={true} 
           icon={Target} 
           iconColor="bg-orange-500"
         />
@@ -67,12 +94,10 @@ const Index = () => {
         />
       </div>
 
-      {/* Charts & Lists */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <PerformanceChart />
         
         <div className="space-y-8">
-          {/* Quick Actions */}
           <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
             <h3 className="text-lg font-semibold text-slate-900 mb-4">Ações Rápidas</h3>
             <div className="grid grid-cols-2 gap-3">
@@ -95,18 +120,13 @@ const Index = () => {
             </div>
           </div>
 
-          {/* Recent Leads */}
           <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold text-slate-900">Leads Recentes</h3>
               <Button variant="ghost" size="sm" className="text-xs text-blue-600" onClick={() => navigate('/leads')}>Ver todos</Button>
             </div>
             <div className="space-y-4">
-              {[
-                { name: 'João Silva', source: 'Instagram', time: '2 min atrás' },
-                { name: 'Maria Oliveira', source: 'Google', time: '15 min atrás' },
-                { name: 'Pedro Santos', source: 'TikTok', time: '1 hora atrás' },
-              ].map((lead, i) => (
+              {data.leads.slice(0, 3).map((lead, i) => (
                 <div key={i} className="flex items-center justify-between pb-3 border-b border-slate-50 last:border-0 last:pb-0">
                   <div className="flex items-center space-x-3">
                     <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600">
@@ -117,7 +137,7 @@ const Index = () => {
                       <p className="text-xs text-slate-500">{lead.source}</p>
                     </div>
                   </div>
-                  <span className="text-[10px] text-slate-400 font-medium uppercase">{lead.time}</span>
+                  <span className="text-[10px] text-slate-400 font-medium uppercase">Recent</span>
                 </div>
               ))}
             </div>

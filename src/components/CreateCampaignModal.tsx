@@ -19,16 +19,35 @@ import {
   SelectTrigger, 
   SelectValue 
 } from './ui/select';
-import { Plus } from 'lucide-react';
+import { Plus, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { dbService } from '../services/api.service';
 
 const CreateCampaignModal = () => {
   const [open, setOpen] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    toast.success('Campanha criada com sucesso!');
-    setOpen(false);
+    setLoading(true);
+    
+    const formData = new FormData(e.currentTarget);
+    const data = {
+      name: formData.get('name'),
+      platform: formData.get('platform'),
+      budget: formData.get('budget'),
+      status: 'Ativa'
+    };
+
+    try {
+      await dbService.createCampaign(data);
+      toast.success('Campanha enviada para processamento!');
+      setOpen(false);
+    } catch (error) {
+      toast.error('Erro ao criar campanha. Verifique o n8n.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -45,11 +64,11 @@ const CreateCampaignModal = () => {
         <form onSubmit={handleSubmit} className="space-y-4 py-4">
           <div className="space-y-2">
             <Label htmlFor="name">Nome da Campanha</Label>
-            <Input id="name" placeholder="Ex: Promoção de Inverno" required />
+            <Input id="name" name="name" placeholder="Ex: Promoção de Inverno" required />
           </div>
           <div className="space-y-2">
             <Label htmlFor="platform">Plataforma</Label>
-            <Select required>
+            <Select name="platform" required>
               <SelectTrigger>
                 <SelectValue placeholder="Selecione a plataforma" />
               </SelectTrigger>
@@ -63,14 +82,14 @@ const CreateCampaignModal = () => {
           </div>
           <div className="space-y-2">
             <Label htmlFor="budget">Orçamento Total (R$)</Label>
-            <Input id="budget" type="number" placeholder="0.00" required />
+            <Input id="budget" name="budget" type="number" placeholder="0.00" required />
           </div>
           <DialogFooter className="pt-4">
-            <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+            <Button type="button" variant="outline" onClick={() => setOpen(false)} disabled={loading}>
               Cancelar
             </Button>
-            <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
-              Criar Campanha
+            <Button type="submit" className="bg-blue-600 hover:bg-blue-700" disabled={loading}>
+              {loading ? <Loader2 className="animate-spin" size={18} /> : 'Criar Campanha'}
             </Button>
           </DialogFooter>
         </form>
