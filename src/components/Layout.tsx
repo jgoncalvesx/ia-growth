@@ -2,11 +2,12 @@
 
 import React from 'react';
 import Sidebar from './Sidebar';
-import { Search, Menu, X } from 'lucide-react';
+import { Search, Menu, X, Command } from 'lucide-react';
 import { Input } from './ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import NotificationDropdown from './NotificationDropdown';
 import { Button } from './ui/button';
+import CommandPalette from './CommandPalette';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -14,9 +15,23 @@ interface LayoutProps {
 
 const Layout = ({ children }: LayoutProps) => {
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
+  const [isSearchOpen, setIsSearchOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setIsSearchOpen(true);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   return (
     <div className="flex h-screen bg-slate-50 overflow-hidden">
+      <CommandPalette isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
+
       {/* Sidebar Desktop */}
       <div className="hidden lg:block">
         <Sidebar />
@@ -56,12 +71,18 @@ const Layout = ({ children }: LayoutProps) => {
             >
               <Menu size={24} />
             </Button>
-            <div className="relative w-48 md:w-96 hidden sm:block">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-              <Input 
-                placeholder="Buscar..." 
-                className="pl-10 bg-slate-50 border-slate-200 focus:bg-white transition-all"
-              />
+            <div 
+              className="relative w-48 md:w-96 hidden sm:block cursor-pointer group"
+              onClick={() => setIsSearchOpen(true)}
+            >
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-hover:text-blue-500 transition-colors" size={18} />
+              <div className="pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-slate-400 text-sm flex justify-between items-center group-hover:bg-white group-hover:border-blue-200 transition-all">
+                <span>Busca rápida...</span>
+                <div className="flex items-center space-x-1">
+                  <kbd className="bg-white border border-slate-200 px-1.5 py-0.5 rounded text-[10px] font-bold">⌘</kbd>
+                  <kbd className="bg-white border border-slate-200 px-1.5 py-0.5 rounded text-[10px] font-bold">K</kbd>
+                </div>
+              </div>
             </div>
           </div>
           

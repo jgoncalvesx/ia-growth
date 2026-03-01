@@ -20,7 +20,8 @@ import {
   Layers,
   Star,
   Share2,
-  Filter
+  Filter,
+  HelpCircle
 } from 'lucide-react';
 
 const menuGroups = [
@@ -105,7 +106,17 @@ const Sidebar = () => {
         ))}
       </nav>
 
-      <div className="p-4 border-t border-slate-800">
+      <div className="p-4 border-t border-slate-800 space-y-1">
+        <NavLink
+          to="/help"
+          className={({ isActive }) => `
+            w-full flex items-center space-x-3 px-4 py-2 rounded-lg transition-colors
+            ${isActive ? 'bg-slate-800 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}
+          `}
+        >
+          <HelpCircle size={18} />
+          <span className="font-medium text-sm">Ajuda & Suporte</span>
+        </NavLink>
         <button className="w-full flex items-center space-x-3 px-4 py-3 text-slate-400 hover:text-red-400 transition-colors">
           <LogOut size={18} />
           <span className="font-medium text-sm">Sair</span>

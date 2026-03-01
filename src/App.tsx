@@ -24,6 +24,7 @@ import ProjectDetail from './pages/ProjectDetail';
 import Influencers from './pages/Influencers';
 import Integrations from './pages/Integrations';
 import Funnel from './pages/Funnel';
+import Help from './pages/Help';
 
 function App() {
   return (
@@ -51,6 +52,7 @@ function App() {
         <Route path="/analytics" element={<Analytics />} />
         <Route path="/team" element={<Team />} />
         <Route path="/settings" element={<Settings />} />
+        <Route path="/help" element={<Help />} />
       </Routes>
     </Router>
   );
