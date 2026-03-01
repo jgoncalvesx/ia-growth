@@ -1,0 +1,27 @@
+"use client";
+import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
+import React from 'react';
+import Layout from '../components/Layout';
+import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/card';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
+import { Switch } from '../components/ui/switch';
+import { Badge } from '../components/ui/badge';
+import { Facebook, Chrome, Music2, CheckCircle2 } from 'lucide-react';
+import { toast } from 'sonner';
+const Settings = () => {
+    const handleConnect = (platform) => {
+        toast.success(`Conectando ao ${platform}... Redirecionando para autenticação.`);
+    };
+    const handleSaveProfile = () => {
+        toast.success('Perfil atualizado com sucesso!');
+    };
+    return (_jsxs(Layout, { children: [_jsxs("div", { className: "mb-8", children: [_jsx("h2", { className: "text-2xl font-bold text-slate-900", children: "Configura\u00E7\u00F5es" }), _jsx("p", { className: "text-slate-500", children: "Gerencie sua conta e conex\u00F5es de plataforma." })] }), _jsxs("div", { className: "grid grid-cols-1 lg:grid-cols-3 gap-8", children: [_jsxs("div", { className: "lg:col-span-2 space-y-8", children: [_jsxs(Card, { className: "bg-white border-slate-200 shadow-sm", children: [_jsx(CardHeader, { children: _jsx(CardTitle, { className: "text-lg font-semibold", children: "Perfil" }) }), _jsxs(CardContent, { className: "space-y-4", children: [_jsxs("div", { className: "grid grid-cols-2 gap-4", children: [_jsxs("div", { className: "space-y-2", children: [_jsx(Label, { htmlFor: "name", children: "Nome" }), _jsx(Input, { id: "name", defaultValue: "Admin User" })] }), _jsxs("div", { className: "space-y-2", children: [_jsx(Label, { htmlFor: "email", children: "E-mail" }), _jsx(Input, { id: "email", defaultValue: "admin@midiaos.com" })] })] }), _jsxs("div", { className: "space-y-2", children: [_jsx(Label, { htmlFor: "role", children: "Cargo" }), _jsx(Input, { id: "role", defaultValue: "Marketing Manager" })] }), _jsx(Button, { className: "bg-blue-600 hover:bg-blue-700", onClick: handleSaveProfile, children: "Salvar Altera\u00E7\u00F5es" })] })] }), _jsxs(Card, { className: "bg-white border-slate-200 shadow-sm", children: [_jsx(CardHeader, { children: _jsx(CardTitle, { className: "text-lg font-semibold", children: "Integra\u00E7\u00F5es de Plataforma" }) }), _jsx(CardContent, { className: "space-y-4", children: [
+                                            { name: 'Meta Ads', icon: Facebook, color: 'text-blue-600', status: 'Conectado' },
+                                            { name: 'Google Ads', icon: Chrome, color: 'text-red-500', status: 'Desconectado' },
+                                            { name: 'TikTok Ads', icon: Music2, color: 'text-black', status: 'Desconectado' },
+                                        ].map((platform) => (_jsxs("div", { className: "flex items-center justify-between p-4 border border-slate-100 rounded-lg hover:bg-slate-50 transition-colors", children: [_jsxs("div", { className: "flex items-center space-x-4", children: [_jsx("div", { className: `p-2 rounded-lg bg-slate-100 ${platform.color}`, children: _jsx(platform.icon, { size: 24 }) }), _jsxs("div", { children: [_jsx("p", { className: "font-medium text-slate-900", children: platform.name }), _jsx("p", { className: "text-xs text-slate-500", children: "Sincroniza\u00E7\u00E3o de campanhas e leads." })] })] }), _jsx("div", { className: "flex items-center space-x-3", children: platform.status === 'Conectado' ? (_jsxs(Badge, { className: "bg-green-100 text-green-700 hover:bg-green-100 border-none", children: [_jsx(CheckCircle2, { size: 12, className: "mr-1" }), " Ativo"] })) : (_jsx(Button, { variant: "outline", size: "sm", onClick: () => handleConnect(platform.name), children: "Conectar" })) })] }, platform.name))) })] })] }), _jsx("div", { className: "space-y-8", children: _jsxs(Card, { className: "bg-white border-slate-200 shadow-sm", children: [_jsx(CardHeader, { children: _jsx(CardTitle, { className: "text-lg font-semibold", children: "Notifica\u00E7\u00F5es" }) }), _jsxs(CardContent, { className: "space-y-6", children: [_jsxs("div", { className: "flex items-center justify-between", children: [_jsxs("div", { className: "space-y-0.5", children: [_jsx("p", { className: "text-sm font-medium", children: "Alertas de Campanha" }), _jsx("p", { className: "text-xs text-slate-500", children: "Avisos de or\u00E7amento." })] }), _jsx(Switch, { defaultChecked: true })] }), _jsxs("div", { className: "flex items-center justify-between", children: [_jsxs("div", { className: "space-y-0.5", children: [_jsx("p", { className: "text-sm font-medium", children: "Relat\u00F3rios Semanais" }), _jsx("p", { className: "text-xs text-slate-500", children: "Resumo toda segunda." })] }), _jsx(Switch, { defaultChecked: true })] }), _jsxs("div", { className: "flex items-center justify-between", children: [_jsxs("div", { className: "space-y-0.5", children: [_jsx("p", { className: "text-sm font-medium", children: "Novos Leads" }), _jsx("p", { className: "text-xs text-slate-500", children: "Tempo real." })] }), _jsx(Switch, {})] })] })] }) })] })] }));
+};
+export default Settings;
+//# sourceMappingURL=Settings.js.map
