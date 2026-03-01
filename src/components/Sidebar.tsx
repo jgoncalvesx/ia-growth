@@ -17,7 +17,8 @@ import {
   Globe,
   DollarSign,
   Target,
-  Layers
+  Layers,
+  Star
 } from 'lucide-react';
 
 const navItems = [
@@ -25,6 +26,7 @@ const navItems = [
   { icon: Layers, label: 'Projetos', path: '/projects' },
   { icon: Megaphone, label: 'Campanhas', path: '/campaigns' },
   { icon: Users, label: 'Leads', path: '/leads' },
+  { icon: Star, label: 'Influenciadores', path: '/influencers' },
   { icon: Target, label: 'Audiências', path: '/audiences' },
   { icon: FileVideo, label: 'Conteúdo', path: '/content' },
   { icon: Brain, label: 'Gerador de IA', path: '/ai-generator' },
