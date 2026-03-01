@@ -14,12 +14,14 @@ import {
   SelectTrigger, 
   SelectValue 
 } from '../components/ui/select';
-import { Brain, Sparkles, Copy, RefreshCw, Send, Wand2, CheckCircle2 } from 'lucide-react';
+import { Brain, Sparkles, Copy, RefreshCw, Send, Wand2, CheckCircle2, Eye } from 'lucide-react';
 import { toast } from 'sonner';
 import { Badge } from '../components/ui/badge';
+import SocialPreview from '../components/SocialPreview';
 
 const AIGenerator = () => {
   const [loading, setLoading] = React.useState(false);
+  const [platform, setPlatform] = React.useState('instagram');
   const [result, setResult] = React.useState<string | null>(null);
 
   const handleGenerate = (e: React.FormEvent) => {
@@ -65,8 +67,9 @@ const AIGenerator = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-1">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        {/* Form Column */}
+        <div className="lg:col-span-4">
           <Card className="bg-white border-slate-200 shadow-sm sticky top-24">
             <CardHeader>
               <CardTitle className="text-lg font-semibold flex items-center">
@@ -77,7 +80,7 @@ const AIGenerator = () => {
               <form onSubmit={handleGenerate} className="space-y-6">
                 <div className="space-y-2">
                   <Label htmlFor="platform">Plataforma</Label>
-                  <Select defaultValue="instagram">
+                  <Select onValueChange={setPlatform} defaultValue={platform}>
                     <SelectTrigger>
                       <SelectValue placeholder="Selecione" />
                     </SelectTrigger>
@@ -117,11 +120,6 @@ const AIGenerator = () => {
                   />
                 </div>
 
-                <div className="p-3 bg-slate-50 rounded-lg border border-slate-100">
-                  <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Contexto da Marca</p>
-                  <p className="text-xs text-slate-600 italic">"Inovadora, tecnológica e focada em resultados..."</p>
-                </div>
-
                 <Button 
                   type="submit" 
                   className="w-full bg-purple-600 hover:bg-purple-700"
@@ -142,49 +140,46 @@ const AIGenerator = () => {
           </Card>
         </div>
 
-        <div className="lg:col-span-2">
+        {/* Result & Preview Column */}
+        <div className="lg:col-span-8 space-y-8">
           {result ? (
-            <Card className="bg-white border-slate-200 shadow-sm animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <CardHeader className="flex flex-row items-center justify-between border-b border-slate-50">
-                <CardTitle className="text-lg font-semibold">Resultado Gerado</CardTitle>
-                <div className="flex space-x-2">
-                  <Button variant="outline" size="sm" onClick={copyToClipboard}>
-                    <Copy size={14} className="mr-2" /> Copiar
-                  </Button>
-                  <Button variant="outline" size="sm" onClick={handleGenerate}>
-                    <RefreshCw size={14} className="mr-2" /> Recriar
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardContent className="p-6">
-                <div className="bg-slate-50 p-6 rounded-xl border border-slate-100 whitespace-pre-wrap text-slate-700 leading-relaxed">
-                  {result}
-                </div>
-                <div className="mt-6 flex items-center justify-between">
-                  <div className="flex items-center space-x-4">
-                    <div className="flex items-center text-xs text-slate-400">
-                      <Sparkles size={12} className="mr-1 text-purple-500" /> 
-                      Otimizado para SEO
-                    </div>
-                    <div className="flex items-center text-xs text-slate-400">
-                      <Send size={12} className="mr-1 text-blue-500" /> 
-                      Pronto para publicar
-                    </div>
+            <>
+              <Card className="bg-white border-slate-200 shadow-sm animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <CardHeader className="flex flex-row items-center justify-between border-b border-slate-50">
+                  <CardTitle className="text-lg font-semibold">Resultado Gerado</CardTitle>
+                  <div className="flex space-x-2">
+                    <Button variant="outline" size="sm" onClick={copyToClipboard}>
+                      <Copy size={14} className="mr-2" /> Copiar
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={handleGenerate}>
+                      <RefreshCw size={14} className="mr-2" /> Recriar
+                    </Button>
                   </div>
-                  <Button className="bg-blue-600 hover:bg-blue-700">
-                    Usar em Campanha
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+                </CardHeader>
+                <CardContent className="p-6">
+                  <Textarea 
+                    value={result}
+                    onChange={(e) => setResult(e.target.value)}
+                    className="min-h-[200px] bg-slate-50 p-6 rounded-xl border border-slate-100 whitespace-pre-wrap text-slate-700 leading-relaxed resize-none focus:ring-0 focus:border-slate-200"
+                  />
+                </CardContent>
+              </Card>
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-bold text-slate-900 flex items-center">
+                  <Eye className="mr-2 text-blue-600" size={20} /> Preview Visual
+                </h3>
+                <SocialPreview content={result} platform={platform} />
+              </div>
+            </>
           ) : (
-            <div className="h-full min-h-[400px] flex flex-col items-center justify-center border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50/50 text-center p-8">
+            <div className="h-full min-h-[600px] flex flex-col items-center justify-center border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50/50 text-center p-8">
               <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 mb-4">
                 <Brain size={32} />
               </div>
               <h3 className="text-xl font-bold text-slate-900 mb-2">Sua IA Criativa está pronta</h3>
               <p className="text-slate-500 max-w-md">
-                Preencha as informações ao lado e deixe nossa inteligência artificial criar textos impossíveis de ignorar para suas campanhas.
+                Preencha as informações ao lado e veja a mágica acontecer com previews em tempo real para suas redes sociais.
               </p>
             </div>
           )}
