@@ -22,6 +22,7 @@ import Help from './pages/Help';
 import Login from './pages/Login';
 import ActivityLog from './pages/ActivityLog';
 import Strategy from './pages/Strategy';
+import Content from './pages/Content';
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
         <Route path="/strategy" element={<Strategy />} />
         <Route path="/leads" element={<Leads />} />
         <Route path="/leads/:id" element={<LeadDetail />} />
+        <Route path="/content" element={<Content />} />
         <Route path="/audiences" element={<Audiences />} />
         <Route path="/brand-kit" element={<BrandKit />} />
         <Route path="/competitors" element={<Competitors />} />

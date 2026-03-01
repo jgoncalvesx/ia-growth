@@ -19,7 +19,8 @@ import {
   Filter,
   HelpCircle,
   History,
-  Compass
+  Compass,
+  FileVideo
 } from 'lucide-react';
 import { toast } from 'sonner';
 import ClientSwitcher from './ClientSwitcher';
@@ -30,6 +31,7 @@ const menuGroups = [
     items: [
       { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
       { icon: Layers, label: 'Projetos', path: '/projects' },
+      { icon: FileVideo, label: 'Conteúdo', path: '/content' },
       { icon: CalendarIcon, label: 'Calendário', path: '/calendar' },
     ]
   },
