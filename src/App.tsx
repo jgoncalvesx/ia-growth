@@ -3,6 +3,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'sonner';
+import Layout from './components/Layout';
 import Index from './pages/Index';
 import Analytics from './pages/Analytics';
 import Settings from './pages/Settings';
@@ -23,6 +24,7 @@ import Login from './pages/Login';
 import ActivityLog from './pages/ActivityLog';
 import Strategy from './pages/Strategy';
 import Content from './pages/Content';
+import Execucao from './pages/Execucao';
 
 function App() {
   return (
@@ -46,6 +48,7 @@ function App() {
         <Route path="/calendar" element={<Calendar />} />
         <Route path="/workflows" element={<Workflows />} />
         <Route path="/analytics" element={<Analytics />} />
+        <Route path="/execucao" element={<Execucao />} />
         <Route path="/activity-log" element={<ActivityLog />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/help" element={<Help />} />

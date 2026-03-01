@@ -20,57 +20,75 @@ import {
   HelpCircle,
   History,
   Compass,
-  FileVideo
+  FileVideo,
+  PlayCircle
 } from 'lucide-react';
 import { toast } from 'sonner';
 import ClientSwitcher from './ClientSwitcher';
-
-const menuGroups = [
-  {
-    title: 'Principal',
-    items: [
-      { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
-      { icon: Layers, label: 'Projetos', path: '/projects' },
-      { icon: FileVideo, label: 'Conteúdo', path: '/content' },
-      { icon: CalendarIcon, label: 'Calendário', path: '/calendar' },
-    ]
-  },
-  {
-    title: 'Estratégia',
-    items: [
-      { icon: Compass, label: 'Roadmap IA', path: '/strategy' },
-      { icon: Palette, label: 'Brand Kit', path: '/brand-kit' },
-      { icon: Target, label: 'Audiências', path: '/audiences' },
-      { icon: Globe, label: 'Competidores', path: '/competitors' },
-    ]
-  },
-  {
-    title: 'Performance',
-    items: [
-      { icon: Filter, label: 'Funil', path: '/funnel' },
-      { icon: BarChart3, label: 'Analytics', path: '/analytics' },
-      { icon: DollarSign, label: 'Orçamento', path: '/budget' },
-    ]
-  },
-  {
-    title: 'Gestão de Leads',
-    items: [
-      { icon: Users, label: 'Leads', path: '/leads' },
-      { icon: Zap, label: 'Automações', path: '/workflows' },
-    ]
-  },
-  {
-    title: 'Configurações',
-    items: [
-      { icon: Share2, label: 'Integrações', path: '/integrations' },
-      { icon: History, label: 'Atividades', path: '/activity-log' },
-      { icon: Settings, label: 'Configurações', path: '/settings' },
-    ]
-  }
-];
+import { fetchAcoesPendentes } from '../services/api.service';
+import { useClient } from '../context/ClientContext';
 
 const Sidebar = () => {
   const navigate = useNavigate();
+  const { selectedClient } = useClient();
+  const [pendingCount, setPendingCount] = React.useState(0);
+
+  const menuGroups = [
+    {
+      title: 'Principal',
+      items: [
+        { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
+        { icon: Layers, label: 'Projetos', path: '/projects' },
+        { icon: FileVideo, label: 'Conteúdo', path: '/content' },
+        { icon: CalendarIcon, label: 'Calendário', path: '/calendar' },
+      ]
+    },
+    {
+      title: 'Estratégia',
+      items: [
+        { icon: Compass, label: 'Roadmap IA', path: '/strategy' },
+        { icon: Palette, label: 'Brand Kit', path: '/brand-kit' },
+        { icon: Target, label: 'Audiências', path: '/audiences' },
+        { icon: Globe, label: 'Competidores', path: '/competitors' },
+      ]
+    },
+    {
+      title: 'Performance',
+      items: [
+        { icon: Filter, label: 'Funil', path: '/funnel' },
+        { icon: BarChart3, label: 'Analytics', path: '/analytics' },
+        { icon: DollarSign, label: 'Orçamento', path: '/budget' },
+        { icon: PlayCircle, label: 'Execução', path: '/execucao', showBadge: true },
+      ]
+    },
+    {
+      title: 'Gestão de Leads',
+      items: [
+        { icon: Users, label: 'Leads', path: '/leads' },
+        { icon: Zap, label: 'Automações', path: '/workflows' },
+      ]
+    },
+    {
+      title: 'Configurações',
+      items: [
+        { icon: Share2, label: 'Integrações', path: '/integrations' },
+        { icon: History, label: 'Atividades', path: '/activity-log' },
+        { icon: Settings, label: 'Configurações', path: '/settings' },
+      ]
+    }
+  ];
+
+  React.useEffect(() => {
+    const getCount = async () => {
+      try {
+        const data = await fetchAcoesPendentes();
+        setPendingCount(Array.isArray(data) ? data.length : 0);
+      } catch (e) {
+        setPendingCount(0);
+      }
+    };
+    getCount();
+  }, [selectedClient.id]);
 
   const handleLogout = () => {
     toast.info('Saindo da conta...');
@@ -100,14 +118,21 @@ const Sidebar = () => {
                   key={item.label}
                   to={item.path}
                   className={({ isActive }) => `
-                    w-full flex items-center space-x-3 px-4 py-2 rounded-lg transition-colors
+                    w-full flex items-center justify-between px-4 py-2 rounded-lg transition-colors
                     ${isActive 
                       ? 'bg-blue-600 text-white' 
                       : 'text-slate-400 hover:bg-slate-800 hover:text-white'}
                   `}
                 >
-                  <item.icon size={16} />
-                  <span className="font-medium text-sm">{item.label}</span>
+                  <div className="flex items-center space-x-3">
+                    <item.icon size={16} />
+                    <span className="font-medium text-sm">{item.label}</span>
+                  </div>
+                  {item.showBadge && pendingCount > 0 && (
+                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
+                      {pendingCount}
+                    </span>
+                  )}
                 </NavLink>
               ))}
             </div>
