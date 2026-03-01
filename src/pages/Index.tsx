@@ -6,6 +6,7 @@ import StatCard from '../components/StatCard';
 import PerformanceChart from '../components/PerformanceChart';
 import { Users, MousePointer2, Target, TrendingUp, Plus, FileText, UserCheck, Loader2, Zap } from 'lucide-react';
 import { Button } from '../components/ui/button';
+import { Badge } from '../components/ui/badge';
 import { useNavigate } from 'react-router-dom';
 import OnboardingModal from '../components/OnboardingModal';
 import { dbService } from '../services/api.service';
