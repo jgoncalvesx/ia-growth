@@ -2,8 +2,7 @@
 
 import React from 'react';
 import Sidebar from './Sidebar';
-import { Search, Menu, X, Command } from 'lucide-react';
-import { Input } from './ui/input';
+import { Search, Menu, X } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import NotificationDropdown from './NotificationDropdown';
 import { Button } from './ui/button';
@@ -89,10 +88,6 @@ const Layout = ({ children }: LayoutProps) => {
           <div className="flex items-center space-x-2 md:space-x-4">
             <NotificationDropdown />
             <div className="flex items-center space-x-3 pl-2 md:pl-4 border-l border-slate-200">
-              <div className="text-right hidden md:block">
-                <p className="text-sm font-semibold text-slate-900">Admin User</p>
-                <p className="text-xs text-slate-500">Marketing Manager</p>
-              </div>
               <Avatar className="h-8 w-8 md:h-10 md:w-10">
                 <AvatarImage src="https://github.com/shadcn.png" />
                 <AvatarFallback>AD</AvatarFallback>

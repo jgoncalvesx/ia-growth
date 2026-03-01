@@ -4,7 +4,7 @@ import React from 'react';
 import Layout from '../components/Layout';
 import StatCard from '../components/StatCard';
 import PerformanceChart from '../components/PerformanceChart';
-import { Users, MousePointer2, Target, TrendingUp, Plus, FileText, Share2, UserCheck, Loader2 } from 'lucide-react';
+import { Users, MousePointer2, Target, TrendingUp, Plus, FileText, Share2, UserCheck, Loader2, Zap } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import OnboardingModal from '../components/OnboardingModal';
@@ -12,16 +12,13 @@ import { dbService } from '../services/api.service';
 
 const Index = () => {
   const navigate = useNavigate();
-  const [data, setData] = React.useState<{ campaigns: any[], leads: any[] }>({ campaigns: [], leads: [] });
+  const [data, setData] = React.useState<{ leads: any[] }>({ leads: [] });
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
     const fetchDashboardData = async () => {
-      const [campaigns, leads] = await Promise.all([
-        dbService.getCampaigns(),
-        dbService.getLeads()
-      ]);
-      setData({ campaigns, leads });
+      const leads = await dbService.getLeads();
+      setData({ leads });
       setLoading(false);
     };
     fetchDashboardData();
@@ -37,7 +34,6 @@ const Index = () => {
     );
   }
 
-  const activeCampaigns = data.campaigns.filter(c => c.status === 'Ativa').length;
   const totalLeads = data.leads.length;
 
   return (
@@ -45,15 +41,12 @@ const Index = () => {
       <OnboardingModal />
       <div className="flex justify-between items-end mb-8">
         <div>
-          <h2 className="text-2xl font-bold text-slate-900">Bem-vindo de volta! 👋</h2>
-          <p className="text-slate-500">Aqui está o que está acontecendo com suas campanhas hoje.</p>
+          <h2 className="text-2xl font-bold text-slate-900">Dashboard do Cliente 👋</h2>
+          <p className="text-slate-500">Visão geral de performance e leads para o cliente selecionado.</p>
         </div>
         <div className="flex space-x-3">
           <Button variant="outline" size="sm" className="bg-white">
-            <FileText className="mr-2 h-4 w-4" /> Relatório PDF
-          </Button>
-          <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
-            <Share2 className="mr-2 h-4 w-4" /> Compartilhar
+            <FileText className="mr-2 h-4 w-4" /> Exportar Dados
           </Button>
         </div>
       </div>
@@ -69,25 +62,25 @@ const Index = () => {
           iconColor="bg-blue-500"
         />
         <StatCard 
-          title="Engajamento" 
-          value="45.2k" 
-          change="+5.2%" 
+          title="Taxa de Conversão" 
+          value="4.2%" 
+          change="+0.5%" 
           isPositive={true} 
-          icon={MousePointer2} 
+          icon={Target} 
           iconColor="bg-purple-500"
         />
         <StatCard 
-          title="Campanhas Ativas" 
-          value={activeCampaigns.toString()} 
-          change="Atualizado" 
+          title="Engajamento Médio" 
+          value="18.5k" 
+          change="+5.2%" 
           isPositive={true} 
-          icon={Target} 
+          icon={MousePointer2} 
           iconColor="bg-orange-500"
         />
         <StatCard 
-          title="ROI Médio" 
-          value="4.2x" 
-          change="+0.8" 
+          title="ROI Projetado" 
+          value="3.8x" 
+          change="+0.2" 
           isPositive={true} 
           icon={TrendingUp} 
           iconColor="bg-green-500"
@@ -104,18 +97,18 @@ const Index = () => {
               <Button 
                 variant="outline" 
                 className="h-20 flex flex-col items-center justify-center space-y-1 border-slate-100 hover:bg-blue-50 hover:border-blue-200 hover:text-blue-600 transition-all"
-                onClick={() => navigate('/campaigns')}
+                onClick={() => navigate('/leads')}
               >
                 <Plus size={20} />
-                <span className="text-xs">Nova Campanha</span>
+                <span className="text-xs">Novo Lead</span>
               </Button>
               <Button 
                 variant="outline" 
                 className="h-20 flex flex-col items-center justify-center space-y-1 border-slate-100 hover:bg-purple-50 hover:border-purple-200 hover:text-purple-600 transition-all"
-                onClick={() => navigate('/content')}
+                onClick={() => navigate('/workflows')}
               >
-                <Share2 size={20} />
-                <span className="text-xs">Subir Criativo</span>
+                <Zap size={20} />
+                <span className="text-xs">Automação</span>
               </Button>
             </div>
           </div>
@@ -137,7 +130,7 @@ const Index = () => {
                       <p className="text-xs text-slate-500">{lead.source}</p>
                     </div>
                   </div>
-                  <span className="text-[10px] text-slate-400 font-medium uppercase">Recent</span>
+                  <span className="text-[10px] text-slate-400 font-medium uppercase">Novo</span>
                 </div>
               ))}
             </div>

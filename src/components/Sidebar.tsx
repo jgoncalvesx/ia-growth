@@ -4,29 +4,25 @@ import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { 
   LayoutDashboard, 
-  Megaphone, 
-  FileVideo, 
   BarChart3, 
   Settings, 
   LogOut,
   Users,
   Calendar as CalendarIcon,
   Zap,
-  Brain,
   Palette,
   Globe,
   DollarSign,
   Target,
   Layers,
-  Star,
   Share2,
   Filter,
   HelpCircle,
-  CreditCard,
   History,
   Compass
 } from 'lucide-react';
 import { toast } from 'sonner';
+import ClientSwitcher from './ClientSwitcher';
 
 const menuGroups = [
   {
@@ -47,15 +43,6 @@ const menuGroups = [
     ]
   },
   {
-    title: 'Execução',
-    items: [
-      { icon: Megaphone, label: 'Campanhas', path: '/campaigns' },
-      { icon: FileVideo, label: 'Conteúdo', path: '/content' },
-      { icon: Brain, label: 'Gerador de IA', path: '/ai-generator' },
-      { icon: Star, label: 'Influenciadores', path: '/influencers' },
-    ]
-  },
-  {
     title: 'Performance',
     items: [
       { icon: Filter, label: 'Funil', path: '/funnel' },
@@ -64,14 +51,17 @@ const menuGroups = [
     ]
   },
   {
-    title: 'Gestão',
+    title: 'Gestão de Leads',
     items: [
       { icon: Users, label: 'Leads', path: '/leads' },
       { icon: Zap, label: 'Automações', path: '/workflows' },
+    ]
+  },
+  {
+    title: 'Configurações',
+    items: [
       { icon: Share2, label: 'Integrações', path: '/integrations' },
-      { icon: Users, label: 'Equipe', path: '/team' },
       { icon: History, label: 'Atividades', path: '/activity-log' },
-      { icon: CreditCard, label: 'Faturamento', path: '/billing' },
       { icon: Settings, label: 'Configurações', path: '/settings' },
     ]
   }
@@ -89,13 +79,14 @@ const Sidebar = () => {
 
   return (
     <div className="w-64 bg-slate-900 text-white h-screen flex flex-col border-r border-slate-800">
-      <div className="p-6">
-        <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+      <div className="p-6 border-b border-slate-800/50">
+        <h1 className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent mb-6">
           Growth Midia IA
         </h1>
+        <ClientSwitcher />
       </div>
       
-      <nav className="flex-1 px-4 space-y-6 overflow-y-auto pb-8">
+      <nav className="flex-1 px-4 space-y-6 overflow-y-auto pb-8 pt-6">
         {menuGroups.map((group) => (
           <div key={group.title} className="space-y-2">
             <h3 className="px-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
