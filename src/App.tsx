@@ -25,12 +25,14 @@ import Influencers from './pages/Influencers';
 import Integrations from './pages/Integrations';
 import Funnel from './pages/Funnel';
 import Help from './pages/Help';
+import Login from './pages/Login';
 
 function App() {
   return (
     <Router>
       <Toaster position="top-right" richColors />
       <Routes>
+        <Route path="/login" element={<Login />} />
         <Route path="/" element={<Index />} />
         <Route path="/projects" element={<Projects />} />
         <Route path="/projects/:id" element={<ProjectDetail />} />

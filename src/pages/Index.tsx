@@ -8,12 +8,14 @@ import { Users, MousePointer2, Target, TrendingUp, Plus, FileText, Share2, UserC
 import { Button } from '../components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { Badge } from '../components/ui/badge';
+import OnboardingModal from '../components/OnboardingModal';
 
 const Index = () => {
   const navigate = useNavigate();
 
   return (
     <Layout>
+      <OnboardingModal />
       <div className="flex justify-between items-end mb-8">
         <div>
           <h2 className="text-2xl font-bold text-slate-900">Bem-vindo de volta! 👋</h2>
