@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { 
   LayoutDashboard, 
   Megaphone, 
@@ -26,6 +26,7 @@ import {
   History,
   Compass
 } from 'lucide-react';
+import { toast } from 'sonner';
 
 const menuGroups = [
   {
@@ -77,6 +78,15 @@ const menuGroups = [
 ];
 
 const Sidebar = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    toast.info('Saindo da conta...');
+    setTimeout(() => {
+      navigate('/login');
+    }, 1000);
+  };
+
   return (
     <div className="w-64 bg-slate-900 text-white h-screen flex flex-col border-r border-slate-800">
       <div className="p-6">
@@ -123,7 +133,10 @@ const Sidebar = () => {
           <HelpCircle size={18} />
           <span className="font-medium text-sm">Ajuda & Suporte</span>
         </NavLink>
-        <button className="w-full flex items-center space-x-3 px-4 py-3 text-slate-400 hover:text-red-400 transition-colors">
+        <button 
+          onClick={handleLogout}
+          className="w-full flex items-center space-x-3 px-4 py-3 text-slate-400 hover:text-red-400 transition-colors"
+        >
           <LogOut size={18} />
           <span className="font-medium text-sm">Sair</span>
         </button>
