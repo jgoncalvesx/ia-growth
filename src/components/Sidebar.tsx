@@ -14,7 +14,8 @@ import {
   Zap,
   Brain,
   Palette,
-  Globe
+  Globe,
+  DollarSign
 } from 'lucide-react';
 
 const navItems = [
@@ -25,6 +26,7 @@ const navItems = [
   { icon: Brain, label: 'Gerador de IA', path: '/ai-generator' },
   { icon: Palette, label: 'Brand Kit', path: '/brand-kit' },
   { icon: Globe, label: 'Competidores', path: '/competitors' },
+  { icon: DollarSign, label: 'Orçamento', path: '/budget' },
   { icon: CalendarIcon, label: 'Calendário', path: '/calendar' },
   { icon: Zap, label: 'Automações', path: '/workflows' },
   { icon: BarChart3, label: 'Analytics', path: '/analytics' },

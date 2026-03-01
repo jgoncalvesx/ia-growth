@@ -17,6 +17,7 @@ import Team from './pages/Team';
 import AIGenerator from './pages/AIGenerator';
 import BrandKit from './pages/BrandKit';
 import Competitors from './pages/Competitors';
+import Budget from './pages/Budget';
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
         <Route path="/ai-generator" element={<AIGenerator />} />
         <Route path="/brand-kit" element={<BrandKit />} />
         <Route path="/competitors" element={<Competitors />} />
+        <Route path="/budget" element={<Budget />} />
         <Route path="/calendar" element={<Calendar />} />
         <Route path="/workflows" element={<Workflows />} />
         <Route path="/analytics" element={<Analytics />} />
