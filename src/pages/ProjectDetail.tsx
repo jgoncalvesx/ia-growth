@@ -7,13 +7,14 @@ import { Button } from '../components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Progress } from '../components/ui/progress';
-import { 
-  ArrowLeft, 
-  Calendar, 
-  CheckCircle2, 
-  Clock, 
-  Users, 
-  Plus, 
+import { Input } from '../components/ui/input';
+import {
+  ArrowLeft,
+  Calendar,
+  CheckCircle2,
+  Clock,
+  Users,
+  Plus,
   MoreVertical,
   Layers,
   MessageSquare,
@@ -41,14 +42,14 @@ const ProjectDetail = () => {
   return (
     <Layout>
       <div className="mb-6">
-        <Button 
-          variant="ghost" 
+        <Button
+          variant="ghost"
           onClick={() => navigate('/projects')}
           className="mb-4 -ml-2 text-slate-500 hover:text-slate-900"
         >
           <ArrowLeft className="mr-2 h-4 w-4" /> Voltar para Projetos
         </Button>
-        
+
         <div className="flex justify-between items-start">
           <div className="flex items-center space-x-4">
             <div className="w-14 h-14 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-lg">
@@ -96,11 +97,10 @@ const ProjectDetail = () => {
                         <div className="flex items-center space-x-3 mt-1">
                           <span className="text-[10px] font-bold text-slate-400 uppercase">{task.assignee}</span>
                           <span className="text-[10px] text-slate-300">•</span>
-                          <Badge variant="outline" className={`text-[9px] px-1.5 py-0 ${
-                            task.priority === 'Alta' ? 'text-red-600 border-red-100 bg-red-50' :
-                            task.priority === 'Média' ? 'text-orange-600 border-orange-100 bg-orange-50' :
-                            'text-blue-600 border-blue-100 bg-blue-50'
-                          }`}>
+                          <Badge variant="outline" className={`text-[9px] px-1.5 py-0 ${task.priority === 'Alta' ? 'text-red-600 border-red-100 bg-red-50' :
+                              task.priority === 'Média' ? 'text-orange-600 border-orange-100 bg-orange-50' :
+                                'text-blue-600 border-blue-100 bg-blue-50'
+                            }`}>
                             {task.priority}
                           </Badge>
                         </div>

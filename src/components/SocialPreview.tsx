@@ -79,10 +79,10 @@ const SocialPreview = ({ content, platform, brandName = "Sua Marca" }: SocialPre
         <span className="text-xs text-slate-600">https://www.suamarca.com</span>
       </div>
       <h3 className="text-blue-700 text-lg font-medium hover:underline cursor-pointer mb-1">
-        {content.split('\n')[0].substring(0, 60)}...
+        {(content || '').split('\n')?.[0]?.substring(0, 60)}...
       </h3>
       <p className="text-sm text-slate-600 line-clamp-2">
-        {content.length > 60 ? content.substring(60) : content}
+        {(content || '').length > 60 ? (content || '').substring(60) : content}
       </p>
     </div>
   );

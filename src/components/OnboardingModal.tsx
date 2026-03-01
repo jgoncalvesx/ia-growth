@@ -1,10 +1,10 @@
 "use client";
 
 import React from 'react';
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
   DialogTitle,
   DialogFooter
 } from './ui/dialog';
@@ -62,23 +62,24 @@ const OnboardingModal = () => {
     }
   };
 
-  const step = steps[currentStep];
+  const step = steps[currentStep] || steps[0];
+  if (!step) return null;
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="sm:max-w-[500px] bg-white p-0 overflow-hidden border-none shadow-2xl">
         <div className={`h-2 bg-slate-100 w-full`}>
-          <div 
-            className="h-full bg-blue-600 transition-all duration-500" 
+          <div
+            className="h-full bg-blue-600 transition-all duration-500"
             style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
           ></div>
         </div>
-        
+
         <div className="p-8">
           <div className={`w-16 h-16 rounded-2xl ${step.bg} ${step.color} flex items-center justify-center mb-6 mx-auto`}>
             <step.icon size={32} />
           </div>
-          
+
           <div className="text-center space-y-3">
             <DialogTitle className="text-2xl font-bold text-slate-900">{step.title}</DialogTitle>
             <p className="text-slate-500 leading-relaxed">
@@ -88,8 +89,8 @@ const OnboardingModal = () => {
 
           <div className="flex justify-center space-x-2 mt-8">
             {steps.map((_, i) => (
-              <div 
-                key={i} 
+              <div
+                key={i}
                 className={`h-1.5 rounded-full transition-all ${i === currentStep ? 'w-8 bg-blue-600' : 'w-2 bg-slate-200'}`}
               ></div>
             ))}
@@ -97,8 +98,8 @@ const OnboardingModal = () => {
         </div>
 
         <DialogFooter className="p-6 bg-slate-50 border-t border-slate-100 flex sm:justify-between items-center">
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             onClick={() => setOpen(false)}
             className="text-slate-400 hover:text-slate-600"
           >
@@ -111,7 +112,7 @@ const OnboardingModal = () => {
               </Button>
             )}
             <Button className="bg-blue-600 hover:bg-blue-700 min-w-[120px]" onClick={handleNext}>
-              {currentStep === steps.length - 1 ? "Começar Agora" : "Próximo"} 
+              {currentStep === steps.length - 1 ? "Começar Agora" : "Próximo"}
               {currentStep !== steps.length - 1 && <ChevronRight size={18} className="ml-1" />}
             </Button>
           </div>

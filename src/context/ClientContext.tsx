@@ -24,7 +24,7 @@ const ClientContext = createContext<ClientContextType | undefined>(undefined);
 export const ClientProvider = ({ children }: { children: React.ReactNode }) => {
   const [selectedClient, setSelectedClient] = useState<Client>(() => {
     const saved = localStorage.getItem('active_client_id');
-    return clients.find(c => c.id === saved) || clients[0];
+    return (clients.find(c => c.id === saved) || clients[0]) as Client;
   });
 
   useEffect(() => {

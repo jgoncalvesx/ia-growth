@@ -13,7 +13,7 @@ import { cn } from '../lib/utils';
 interface Message {
   role: 'user' | 'assistant';
   content: string;
-  confidence?: number;
+  confidence?: number | undefined;
   error?: boolean;
 }
 
@@ -22,12 +22,12 @@ const Chat = () => {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
-    { 
-      role: 'assistant', 
-      content: `Olá! Tenho acesso ao contexto completo das contas de ${selectedClient.name}. O que você quer analisar hoje?` 
+    {
+      role: 'assistant',
+      content: `Olá! Tenho acesso ao contexto completo das contas de ${selectedClient.name}. O que você quer analisar hoje?`
     }
   ]);
-  
+
   const scrollRef = useRef<HTMLDivElement>(null);
   const n8nConnected = !!import.meta.env.VITE_N8N_URL;
 
@@ -57,14 +57,14 @@ const Chat = () => {
 
     try {
       const response = await enviarMensagemChat(userMessage, selectedClient.id);
-      setMessages(prev => [...prev, { 
-        role: 'assistant', 
+      setMessages(prev => [...prev, {
+        role: 'assistant',
         content: response.analise,
         confidence: response.confianca ? response.confianca * 100 : undefined
       }]);
     } catch (error) {
-      setMessages(prev => [...prev, { 
-        role: 'assistant', 
+      setMessages(prev => [...prev, {
+        role: 'assistant',
         content: "Desculpe, tive um problema ao processar sua análise. Verifique a conexão com o servidor n8n.",
         error: true
       }]);
@@ -108,13 +108,13 @@ const Chat = () => {
                 </span>
                 <div className={cn(
                   "p-4 rounded-2xl text-sm leading-relaxed max-w-[85%] shadow-sm",
-                  msg.role === 'user' 
-                    ? "bg-blue-950 text-white border border-blue-800 rounded-tr-none" 
-                    : cn("bg-slate-100 text-slate-700 border border-slate-200 rounded-tl-none", 
-                         msg.error && "border-red-300 bg-red-50 text-red-900")
+                  msg.role === 'user'
+                    ? "bg-blue-950 text-white border border-blue-800 rounded-tr-none"
+                    : cn("bg-slate-100 text-slate-700 border border-slate-200 rounded-tl-none",
+                      msg.error && "border-red-300 bg-red-50 text-red-900")
                 )}>
                   {msg.content}
-                  
+
                   {msg.confidence !== undefined && (
                     <div className="mt-4 pt-3 border-t border-slate-200/50">
                       <div className="flex justify-between items-center mb-1.5">
@@ -122,8 +122,8 @@ const Chat = () => {
                         <span className="text-[10px] font-black text-blue-600">{msg.confidence.toFixed(0)}%</span>
                       </div>
                       <div className="h-1 w-full bg-slate-200 rounded-full overflow-hidden">
-                        <div 
-                          className="h-full bg-blue-500 transition-all duration-1000" 
+                        <div
+                          className="h-full bg-blue-500 transition-all duration-1000"
                           style={{ width: `${msg.confidence}%` }}
                         />
                       </div>
@@ -153,9 +153,9 @@ const Chat = () => {
           {messages.length === 1 && !loading && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-6 max-w-4xl mx-auto">
               {suggestions.map((suggestion, i) => (
-                <Button 
-                  key={i} 
-                  variant="outline" 
+                <Button
+                  key={i}
+                  variant="outline"
                   className="justify-start text-left h-auto py-3 px-4 text-xs bg-white hover:bg-blue-50 hover:border-blue-200 text-slate-600 border-slate-200 transition-all"
                   onClick={() => handleSend(suggestion)}
                 >
@@ -175,7 +175,7 @@ const Chat = () => {
                 rows={Math.min(input.split('\n').length || 1, 4)}
                 className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 pr-14 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none resize-none shadow-sm transition-all"
               />
-              <Button 
+              <Button
                 onClick={() => handleSend()}
                 disabled={!input.trim() || loading}
                 className="absolute right-2 bottom-2 bg-blue-600 hover:bg-blue-700 h-9 w-9 p-0 rounded-lg shadow-lg shadow-blue-200"
@@ -183,7 +183,7 @@ const Chat = () => {
                 {loading ? <Loader2 className="animate-spin h-4 w-4" /> : <Send size={18} />}
               </Button>
             </div>
-            
+
             <div className="flex items-center justify-center space-x-2">
               <div className={cn("w-1.5 h-1.5 rounded-full", n8nConnected ? "bg-green-500" : "bg-orange-500")} />
               <p className="text-[10px] font-mono text-slate-400 uppercase tracking-tighter">

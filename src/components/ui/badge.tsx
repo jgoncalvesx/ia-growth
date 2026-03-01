@@ -7,7 +7,7 @@ function cn(...inputs: ClassValue[]) {
 }
 
 export interface BadgeProps extends React.HTMLAttributes<HTMLDivElement> {
-  variant?: "default" | "secondary" | "destructive" | "outline" | "success"
+  variant?: "default" | "secondary" | "destructive" | "outline" | "success" | "ghost"
 }
 
 function Badge({ className, variant = "default", ...props }: BadgeProps) {
@@ -17,6 +17,7 @@ function Badge({ className, variant = "default", ...props }: BadgeProps) {
     destructive: "border-transparent bg-red-500 text-slate-50 hover:bg-red-500/80",
     outline: "text-slate-950 border border-slate-200",
     success: "border-transparent bg-green-100 text-green-700",
+    ghost: "border-transparent bg-transparent text-slate-900 hover:bg-slate-100",
   }
 
   return (
