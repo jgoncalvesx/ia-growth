@@ -18,26 +18,31 @@ import {
   UserCheck,
   Clock,
   LayoutList,
-  LayoutGrid
+  LayoutGrid,
+  Loader2
 } from 'lucide-react';
 import CreateLeadModal from '../components/CreateLeadModal';
 import LeadKanbanBoard from '../components/LeadKanbanBoard';
 import { toast } from 'sonner';
-
-const initialLeads = [
-  { id: 1, name: 'João Silva', email: 'joao@exemplo.com', phone: '(11) 99999-9999', source: 'Instagram', status: 'Novo', date: '2024-05-20' },
-  { id: 2, name: 'Maria Oliveira', email: 'maria@exemplo.com', phone: '(21) 98888-8888', source: 'Google Ads', status: 'Em Contato', date: '2024-05-19' },
-  { id: 3, name: 'Pedro Santos', email: 'pedro@exemplo.com', phone: '(31) 97777-7777', source: 'TikTok', status: 'Qualificado', date: '2024-05-18' },
-  { id: 4, name: 'Ana Costa', email: 'ana@exemplo.com', phone: '(41) 96666-6666', source: 'Facebook', status: 'Convertido', date: '2024-05-17' },
-  { id: 5, name: 'Lucas Souza', email: 'lucas@exemplo.com', phone: '(51) 95555-5555', source: 'Instagram', status: 'Novo', date: '2024-05-16' },
-];
+import { dbService } from '../services/api.service';
 
 const Leads = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = React.useState('');
   const [viewMode, setViewMode] = React.useState<'list' | 'board'>('list');
+  const [leads, setLeads] = React.useState<any[]>([]);
+  const [loading, setLoading] = React.useState(true);
   
-  const filteredLeads = initialLeads.filter(lead => 
+  React.useEffect(() => {
+    const fetchData = async () => {
+      const data = await dbService.getLeads();
+      setLeads(data);
+      setLoading(false);
+    };
+    fetchData();
+  }, []);
+
+  const filteredLeads = leads.filter(lead => 
     lead.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     lead.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
     lead.source.toLowerCase().includes(searchTerm.toLowerCase())
@@ -86,10 +91,10 @@ const Leads = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
         {[
-          { label: 'Total Leads', value: '1,240', icon: Users, color: 'text-blue-600', bg: 'bg-blue-50' },
-          { label: 'Novos', value: '85', icon: Clock, color: 'text-orange-600', bg: 'bg-orange-50' },
-          { label: 'Em Contato', value: '312', icon: Phone, color: 'text-purple-600', bg: 'bg-purple-50' },
-          { label: 'Convertidos', value: '142', icon: UserCheck, color: 'text-green-600', bg: 'bg-green-50' },
+          { label: 'Total Leads', value: leads.length.toString(), icon: Users, color: 'text-blue-600', bg: 'bg-blue-50' },
+          { label: 'Novos', value: leads.filter(l => l.status === 'Novo').length.toString(), icon: Clock, color: 'text-orange-600', bg: 'bg-orange-50' },
+          { label: 'Em Contato', value: leads.filter(l => l.status === 'Em Contato').length.toString(), icon: Phone, color: 'text-purple-600', bg: 'bg-purple-50' },
+          { label: 'Convertidos', value: leads.filter(l => l.status === 'Convertido').length.toString(), icon: UserCheck, color: 'text-green-600', bg: 'bg-green-50' },
         ].map((stat, i) => (
           <div key={i} className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center space-x-4">
             <div className={`p-2 rounded-lg ${stat.bg} ${stat.color}`}>
@@ -103,7 +108,12 @@ const Leads = () => {
         ))}
       </div>
 
-      {viewMode === 'list' ? (
+      {loading ? (
+        <div className="p-20 flex justify-center items-center bg-white rounded-xl border border-slate-200">
+          <Loader2 className="animate-spin text-blue-600" size={32} />
+          <span className="ml-3 text-slate-500 font-medium">Carregando leads...</span>
+        </div>
+      ) : viewMode === 'list' ? (
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
           <div className="p-4 border-b border-slate-200 flex items-center justify-between bg-slate-50/50">
             <div className="relative w-72">

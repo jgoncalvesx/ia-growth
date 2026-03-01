@@ -4,7 +4,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { Badge } from '../components/ui/badge';
-import { MoreHorizontal, Eye, Search, Filter } from 'lucide-react';
+import { MoreHorizontal, Eye, Search, Filter, Loader2 } from 'lucide-react';
 import CreateCampaignModal from '../components/CreateCampaignModal';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -15,20 +15,25 @@ import {
   SelectTrigger, 
   SelectValue 
 } from '../components/ui/select';
-
-const initialCampaigns = [
-  { id: 1, name: 'Verão 2024', status: 'Ativa', budget: 'R$ 5.000', spent: 'R$ 1.200', platform: 'Meta' },
-  { id: 2, name: 'Black Friday', status: 'Pausada', budget: 'R$ 15.000', spent: 'R$ 14.800', platform: 'Google' },
-  { id: 3, name: 'Lançamento App', status: 'Ativa', budget: 'R$ 2.500', spent: 'R$ 450', platform: 'TikTok' },
-  { id: 4, name: 'Retargeting Q1', status: 'Concluída', budget: 'R$ 3.000', spent: 'R$ 3.000', platform: 'Meta' },
-];
+import { dbService } from '../services/api.service';
 
 const Campaigns = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = React.useState('');
   const [platformFilter, setPlatformFilter] = React.useState('all');
+  const [campaigns, setCampaigns] = React.useState<any[]>([]);
+  const [loading, setLoading] = React.useState(true);
 
-  const filteredCampaigns = initialCampaigns.filter(campaign => {
+  React.useEffect(() => {
+    const fetchData = async () => {
+      const data = await dbService.getCampaigns();
+      setCampaigns(data);
+      setLoading(false);
+    };
+    fetchData();
+  }, []);
+
+  const filteredCampaigns = campaigns.filter(campaign => {
     const matchesSearch = campaign.name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesPlatform = platformFilter === 'all' || campaign.platform.toLowerCase() === platformFilter.toLowerCase();
     return matchesSearch && matchesPlatform;
@@ -75,56 +80,63 @@ const Campaigns = () => {
           </Button>
         </div>
 
-        <table className="w-full text-left">
-          <thead className="bg-slate-50 border-b border-slate-200">
-            <tr>
-              <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Nome</th>
-              <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
-              <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Plataforma</th>
-              <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Orçamento</th>
-              <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Gasto</th>
-              <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider"></th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-200">
-            {filteredCampaigns.length > 0 ? (
-              filteredCampaigns.map((campaign) => (
-                <tr key={campaign.id} className="hover:bg-slate-50 transition-colors group">
-                  <td className="px-6 py-4 font-medium text-slate-900">{campaign.name}</td>
-                  <td className="px-6 py-4">
-                    <Badge variant={campaign.status === 'Ativa' ? 'default' : 'secondary'}>
-                      {campaign.status}
-                    </Badge>
-                  </td>
-                  <td className="px-6 py-4 text-slate-600">{campaign.platform}</td>
-                  <td className="px-6 py-4 text-slate-600">{campaign.budget}</td>
-                  <td className="px-6 py-4 text-slate-600">{campaign.spent}</td>
-                  <td className="px-6 py-4 text-right">
-                    <div className="flex items-center justify-end space-x-2">
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        className="opacity-0 group-hover:opacity-100 transition-opacity"
-                        onClick={() => navigate(`/campaigns/${campaign.id}`)}
-                      >
-                        <Eye className="h-4 w-4 mr-1" /> Ver Detalhes
-                      </Button>
-                      <button className="text-slate-400 hover:text-slate-600">
-                        <MoreHorizontal size={20} />
-                      </button>
-                    </div>
+        {loading ? (
+          <div className="p-20 flex justify-center items-center">
+            <Loader2 className="animate-spin text-blue-600" size={32} />
+            <span className="ml-3 text-slate-500 font-medium">Carregando campanhas...</span>
+          </div>
+        ) : (
+          <table className="w-full text-left">
+            <thead className="bg-slate-50 border-b border-slate-200">
+              <tr>
+                <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Nome</th>
+                <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
+                <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Plataforma</th>
+                <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Orçamento</th>
+                <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Gasto</th>
+                <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider"></th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-200">
+              {filteredCampaigns.length > 0 ? (
+                filteredCampaigns.map((campaign) => (
+                  <tr key={campaign.id} className="hover:bg-slate-50 transition-colors group">
+                    <td className="px-6 py-4 font-medium text-slate-900">{campaign.name}</td>
+                    <td className="px-6 py-4">
+                      <Badge variant={campaign.status === 'Ativa' ? 'default' : 'secondary'}>
+                        {campaign.status}
+                      </Badge>
+                    </td>
+                    <td className="px-6 py-4 text-slate-600">{campaign.platform}</td>
+                    <td className="px-6 py-4 text-slate-600">{campaign.budget}</td>
+                    <td className="px-6 py-4 text-slate-600">{campaign.spent}</td>
+                    <td className="px-6 py-4 text-right">
+                      <div className="flex items-center justify-end space-x-2">
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="opacity-0 group-hover:opacity-100 transition-opacity"
+                          onClick={() => navigate(`/campaigns/${campaign.id}`)}
+                        >
+                          <Eye className="h-4 w-4 mr-1" /> Ver Detalhes
+                        </Button>
+                        <button className="text-slate-400 hover:text-slate-600">
+                          <MoreHorizontal size={20} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={6} className="px-6 py-12 text-center text-slate-500">
+                    Nenhuma campanha encontrada.
                   </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={6} className="px-6 py-12 text-center text-slate-500">
-                  Nenhuma campanha encontrada.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+              )}
+            </tbody>
+          </table>
+        )}
       </div>
     </Layout>
   );
