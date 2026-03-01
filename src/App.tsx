@@ -19,6 +19,7 @@ import BrandKit from './pages/BrandKit';
 import Competitors from './pages/Competitors';
 import Budget from './pages/Budget';
 import Audiences from './pages/Audiences';
+import Projects from './pages/Projects';
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
       <Toaster position="top-right" richColors />
       <Routes>
         <Route path="/" element={<Index />} />
+        <Route path="/projects" element={<Projects />} />
         <Route path="/campaigns" element={<Campaigns />} />
         <Route path="/campaigns/:id" element={<CampaignDetail />} />
         <Route path="/leads" element={<Leads />} />

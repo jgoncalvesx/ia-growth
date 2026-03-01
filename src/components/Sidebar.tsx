@@ -16,11 +16,13 @@ import {
   Palette,
   Globe,
   DollarSign,
-  Target
+  Target,
+  Layers
 } from 'lucide-react';
 
 const navItems = [
   { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
+  { icon: Layers, label: 'Projetos', path: '/projects' },
   { icon: Megaphone, label: 'Campanhas', path: '/campaigns' },
   { icon: Users, label: 'Leads', path: '/leads' },
   { icon: Target, label: 'Audiências', path: '/audiences' },
