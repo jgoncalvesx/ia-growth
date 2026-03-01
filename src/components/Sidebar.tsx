@@ -12,7 +12,7 @@ import {
   Users,
   Calendar as CalendarIcon,
   Zap,
-  UserGroup
+  Brain
 } from 'lucide-react';
 
 const navItems = [
@@ -20,6 +20,7 @@ const navItems = [
   { icon: Megaphone, label: 'Campanhas', path: '/campaigns' },
   { icon: Users, label: 'Leads', path: '/leads' },
   { icon: FileVideo, label: 'Conteúdo', path: '/content' },
+  { icon: Brain, label: 'Gerador de IA', path: '/ai-generator' },
   { icon: CalendarIcon, label: 'Calendário', path: '/calendar' },
   { icon: Zap, label: 'Automações', path: '/workflows' },
   { icon: BarChart3, label: 'Analytics', path: '/analytics' },

@@ -14,6 +14,7 @@ import LeadDetail from './pages/LeadDetail';
 import Calendar from './pages/Calendar';
 import Workflows from './pages/Workflows';
 import Team from './pages/Team';
+import AIGenerator from './pages/AIGenerator';
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
         <Route path="/leads" element={<Leads />} />
         <Route path="/leads/:id" element={<LeadDetail />} />
         <Route path="/content" element={<Content />} />
+        <Route path="/ai-generator" element={<AIGenerator />} />
         <Route path="/calendar" element={<Calendar />} />
         <Route path="/workflows" element={<Workflows />} />
         <Route path="/analytics" element={<Analytics />} />
