@@ -37,8 +37,28 @@ const MOCK_DATA = {
     { id: '2', titulo: 'Escalar Campanha Reels', conta_nome: 'Loja Principal', urgencia: 'media', racional: 'Performance excepcional com ROAS de 8.5x nas últimas 48h.', comando_api: 'increase_budget', economia_estimada: 'Vendas Adicionais' }
   ],
   auditLog: [
-    { hora: '10:45', mensagem: 'Orçamento Meta Ads ajustado para R$ 500/dia', executado_por: 'IA MidiaOS', tipo: 'automation' },
-    { hora: '09:30', mensagem: 'Nova campanha "Inverno 2024" criada', executado_por: 'Admin', tipo: 'manual' }
+    { id: 1, executado_por: 'IA MidiaOS', mensagem: 'ajustou orçamento de Meta Ads', alvo: 'Loja Principal', hora: 'Há 10 min', tipo: 'automation' },
+    { id: 2, executado_por: 'Admin User', mensagem: 'criou nova campanha', alvo: 'Verão 2024', hora: 'Há 45 min', tipo: 'manual' },
+    { id: 3, executado_por: 'Beatriz Silva', mensagem: 'atualizou criativo', alvo: 'Banner Principal V2', hora: 'Há 2h', tipo: 'manual' },
+    { id: 4, executado_por: 'IA MidiaOS', mensagem: 'pausou campanha por baixo ROAS', alvo: 'Google Search Test', hora: 'Há 5h', tipo: 'automation' }
+  ],
+  analytics: {
+    plataformas: [
+      { name: 'Instagram', value: 4500, color: '#E1306C' },
+      { name: 'Facebook', value: 3200, color: '#1877F2' },
+      { name: 'TikTok', value: 5800, color: '#000000' },
+      { name: 'Google', value: 2100, color: '#4285F4' },
+    ],
+    cpaTrend: [
+      { month: 'Jan', cpa: 12.5 }, { month: 'Fev', cpa: 11.8 }, { month: 'Mar', cpa: 14.2 },
+      { month: 'Abr', cpa: 10.5 }, { month: 'Mai', cpa: 9.8 }, { month: 'Jun', cpa: 8.4 },
+    ]
+  },
+  budget: [
+    { platform: 'Meta Ads', planned: 5000, actual: 4200, color: '#3b82f6' },
+    { platform: 'Google Ads', planned: 3500, actual: 3800, color: '#ef4444' },
+    { platform: 'TikTok Ads', planned: 2000, actual: 1200, color: '#000000' },
+    { platform: 'LinkedIn Ads', planned: 1500, actual: 450, color: '#0a66c2' },
   ]
 };
 
@@ -128,6 +148,8 @@ async function callWebhook(path: string, method = 'GET', body?: object) {
     if (path === '/alertas-ativos') return MOCK_DATA.alertas;
     if (path === '/acoes-pendentes') return MOCK_DATA.acoesPendentes;
     if (path === '/audit-log') return MOCK_DATA.auditLog;
+    if (path.startsWith('/analytics')) return MOCK_DATA.analytics;
+    if (path.startsWith('/budget')) return MOCK_DATA.budget;
     return {};
   }
   const base = import.meta.env.VITE_N8N_URL || '';
