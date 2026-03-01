@@ -3,7 +3,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'sonner';
-import Layout from './components/Layout';
 import Index from './pages/Index';
 import Analytics from './pages/Analytics';
 import Settings from './pages/Settings';
