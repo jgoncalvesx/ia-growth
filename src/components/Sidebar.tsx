@@ -15,13 +15,15 @@ import {
   Brain,
   Palette,
   Globe,
-  DollarSign
+  DollarSign,
+  Target
 } from 'lucide-react';
 
 const navItems = [
   { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
   { icon: Megaphone, label: 'Campanhas', path: '/campaigns' },
   { icon: Users, label: 'Leads', path: '/leads' },
+  { icon: Target, label: 'Audiências', path: '/audiences' },
   { icon: FileVideo, label: 'Conteúdo', path: '/content' },
   { icon: Brain, label: 'Gerador de IA', path: '/ai-generator' },
   { icon: Palette, label: 'Brand Kit', path: '/brand-kit' },

@@ -18,6 +18,7 @@ import AIGenerator from './pages/AIGenerator';
 import BrandKit from './pages/BrandKit';
 import Competitors from './pages/Competitors';
 import Budget from './pages/Budget';
+import Audiences from './pages/Audiences';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
         <Route path="/campaigns/:id" element={<CampaignDetail />} />
         <Route path="/leads" element={<Leads />} />
         <Route path="/leads/:id" element={<LeadDetail />} />
+        <Route path="/audiences" element={<Audiences />} />
         <Route path="/content" element={<Content />} />
         <Route path="/ai-generator" element={<AIGenerator />} />
         <Route path="/brand-kit" element={<BrandKit />} />
