@@ -2,11 +2,12 @@
 
 import React from 'react';
 import Sidebar from './Sidebar';
-import { Search, Menu, X } from 'lucide-react';
+import { Search, Menu, X, ChevronRight } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import NotificationDropdown from './NotificationDropdown';
 import { Button } from './ui/button';
 import CommandPalette from './CommandPalette';
+import { useClient } from '../context/ClientContext';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -15,6 +16,7 @@ interface LayoutProps {
 const Layout = ({ children }: LayoutProps) => {
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
   const [isSearchOpen, setIsSearchOpen] = React.useState(false);
+  const { selectedClient } = useClient();
 
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -60,7 +62,7 @@ const Layout = ({ children }: LayoutProps) => {
       
       <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Header */}
-        <header className="bg-white border-b border-slate-200 px-4 lg:px-8 py-4 flex items-center justify-between sticky top-0 z-30">
+        <header className="bg-white border-b border-slate-200 px-4 lg:px-8 py-4 flex items-center justify-between sticky top-0 z-30 h-16">
           <div className="flex items-center space-x-4">
             <Button 
               variant="ghost" 
@@ -70,25 +72,31 @@ const Layout = ({ children }: LayoutProps) => {
             >
               <Menu size={24} />
             </Button>
-            <div 
-              className="relative w-48 md:w-96 hidden sm:block cursor-pointer group"
-              onClick={() => setIsSearchOpen(true)}
-            >
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-hover:text-blue-500 transition-colors" size={18} />
-              <div className="pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-slate-400 text-sm flex justify-between items-center group-hover:bg-white group-hover:border-blue-200 transition-all">
-                <span>Busca rápida...</span>
-                <div className="flex items-center space-x-1">
-                  <kbd className="bg-white border border-slate-200 px-1.5 py-0.5 rounded text-[10px] font-bold">⌘</kbd>
-                  <kbd className="bg-white border border-slate-200 px-1.5 py-0.5 rounded text-[10px] font-bold">K</kbd>
-                </div>
-              </div>
+            
+            {/* Breadcrumb / Active Dimension */}
+            <div className="flex items-center text-sm font-medium">
+              <span className="text-slate-400">Growth Midia IA</span>
+              <ChevronRight size={14} className="mx-2 text-slate-300" />
+              <span className="text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-100">
+                {selectedClient.name}
+              </span>
             </div>
           </div>
           
           <div className="flex items-center space-x-2 md:space-x-4">
+            <div 
+              className="relative w-48 hidden md:flex cursor-pointer group mr-4"
+              onClick={() => setIsSearchOpen(true)}
+            >
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-hover:text-blue-500 transition-colors" size={16} />
+              <div className="pl-9 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-400 text-xs flex justify-between items-center w-full group-hover:bg-white group-hover:border-blue-200 transition-all">
+                <span>Busca (⌘K)</span>
+              </div>
+            </div>
+            
             <NotificationDropdown />
             <div className="flex items-center space-x-3 pl-2 md:pl-4 border-l border-slate-200">
-              <Avatar className="h-8 w-8 md:h-10 md:w-10">
+              <Avatar className="h-8 w-8">
                 <AvatarImage src="https://github.com/shadcn.png" />
                 <AvatarFallback>AD</AvatarFallback>
               </Avatar>
