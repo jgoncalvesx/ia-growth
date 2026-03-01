@@ -1,180 +1,64 @@
 "use client";
 
-const N8N_URL = import.meta.env.VITE_N8N_WEBHOOK_URL;
+// Removidas as lógicas de n8n_url e MOCK_DATA, pois tudo agora vem do Backend via '/api'
 
-const MOCK_DATA = {
-  campaigns: [
-    { id: 1, name: 'Verão 2024 (Simulado)', status: 'Ativa', budget: 'R$ 5.000', spent: 'R$ 1.200', platform: 'Meta' },
-    { id: 2, name: 'Black Friday (Simulado)', status: 'Pausada', budget: 'R$ 15.000', spent: 'R$ 14.800', platform: 'Google' },
-    { id: 3, name: 'Lançamento App (Simulado)', status: 'Ativa', budget: 'R$ 2.500', spent: 'R$ 450', platform: 'TikTok' }
-  ],
-  leads: [
-    { id: 1, name: 'João Silva', email: 'joao@exemplo.com', phone: '(11) 99999-9999', source: 'Instagram', status: 'Novo', date: '2024-05-20' },
-    { id: 2, name: 'Maria Oliveira', email: 'maria@exemplo.com', phone: '(21) 98888-8888', source: 'Google Ads', status: 'Em Contato', date: '2024-05-19' },
-    { id: 3, name: 'Pedro Santos', email: 'pedro@exemplo.com', phone: '(31) 97777-7777', source: 'TikTok', status: 'Qualificado', date: '2024-05-18' }
-  ],
-  dashboardKpis: {
-    investimento: "12.450",
-    cpl_medio: "5,18",
-    leads: "2.403",
-    roas: "4,2",
-    investimento_delta: "+12%",
-    cpl_delta: "-8%",
-    leads_delta: "+15%",
-    roas_delta: "+0.3"
-  },
-  contasStatus: [
-    { nome: 'Loja Principal', canal: 'Meta Ads', cpl_real: 4.50, cpl_meta: 5.00, cpl_max: 7.00, investimento_hoje: 450, status: 'green' },
-    { nome: 'E-commerce Google', canal: 'Google Ads', cpl_real: 8.20, cpl_meta: 6.00, cpl_max: 9.00, investimento_hoje: 890, status: 'yellow' },
-    { nome: 'TikTok Branding', canal: 'TikTok Ads', cpl_real: 2.10, cpl_meta: 3.50, cpl_max: 4.50, investimento_hoje: 120, status: 'green' }
-  ],
-  alertas: [
-    { tipo: 'danger', titulo: 'CPA Crítico no Google', descricao: 'O custo por aquisição na campanha de Search subiu 40% nas últimas 2h.', acao: 'Pausar Campanha' },
-    { tipo: 'warn', titulo: 'Orçamento Meta no Limite', descricao: 'Você atingiu 90% do orçamento diário planejado para hoje.', acao: 'Ajustar Limite' }
-  ],
-  acoesPendentes: [
-    { id: '1', titulo: 'Reduzir Lances Google Search', conta_nome: 'E-commerce Google', urgencia: 'alta', racional: 'O CPL está 30% acima da meta máxima permitida.', comando_api: 'reduce_bids', economia_estimada: 'R$ 150/dia' },
-    { id: '2', titulo: 'Escalar Campanha Reels', conta_nome: 'Loja Principal', urgencia: 'media', racional: 'Performance excepcional com ROAS de 8.5x nas últimas 48h.', comando_api: 'increase_budget', economia_estimada: 'Vendas Adicionais' }
-  ],
-  auditLog: [
-    { id: 1, executado_por: 'IA MidiaOS', mensagem: 'ajustou orçamento de Meta Ads', alvo: 'Loja Principal', hora: 'Há 10 min', tipo: 'automation' },
-    { id: 2, executado_por: 'Admin User', mensagem: 'criou nova campanha', alvo: 'Verão 2024', hora: 'Há 45 min', tipo: 'manual' },
-    { id: 3, executado_por: 'Beatriz Silva', mensagem: 'atualizou criativo', alvo: 'Banner Principal V2', hora: 'Há 2h', tipo: 'manual' },
-    { id: 4, executado_por: 'IA MidiaOS', mensagem: 'pausou campanha por baixo ROAS', alvo: 'Google Search Test', hora: 'Há 5h', tipo: 'automation' }
-  ],
-  analytics: {
-    plataformas: [
-      { name: 'Instagram', value: 4500, color: '#E1306C' },
-      { name: 'Facebook', value: 3200, color: '#1877F2' },
-      { name: 'TikTok', value: 5800, color: '#000000' },
-      { name: 'Google', value: 2100, color: '#4285F4' },
-    ],
-    cpaTrend: [
-      { month: 'Jan', cpa: 12.5 }, { month: 'Fev', cpa: 11.8 }, { month: 'Mar', cpa: 14.2 },
-      { month: 'Abr', cpa: 10.5 }, { month: 'Mai', cpa: 9.8 }, { month: 'Jun', cpa: 8.4 },
-    ]
-  },
-  budget: [
-    { platform: 'Meta Ads', planned: 5000, actual: 4200, color: '#3b82f6' },
-    { platform: 'Google Ads', planned: 3500, actual: 3800, color: '#ef4444' },
-    { platform: 'TikTok Ads', planned: 2000, actual: 1200, color: '#000000' },
-    { platform: 'LinkedIn Ads', planned: 1500, actual: 450, color: '#0a66c2' },
-  ]
-};
-
-const isConfigured = () => {
-  return N8N_URL && N8N_URL !== "" && !N8N_URL.includes('sua-instancia');
-};
-
-const isWebhookConfigured = () => {
-  const base = import.meta.env.VITE_N8N_URL;
-  return base && base !== "" && !base.includes('sua-instancia');
-};
-
-export const dbService = {
-  async getCampaigns() {
-    if (!isConfigured()) return MOCK_DATA.campaigns;
-    try {
-      const response = await fetch(N8N_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'get_campaigns' })
-      });
-      if (!response.ok) return MOCK_DATA.campaigns;
-      const data = await response.json();
-      return Array.isArray(data) ? data : MOCK_DATA.campaigns;
-    } catch (error) {
-      console.warn("N8N fetch failed, using mock data", error);
-      return MOCK_DATA.campaigns;
-    }
-  },
-
-  async createCampaign(data: any) {
-    if (!isConfigured()) {
-      console.log("Mock create campaign:", data);
-      return { success: true };
-    }
-    try {
-      const response = await fetch(N8N_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'create_campaign', data })
-      });
-      return await response.json();
-    } catch (error) {
-      return { success: true };
-    }
-  },
-
-  async getLeads() {
-    if (!isConfigured()) return MOCK_DATA.leads;
-    try {
-      const response = await fetch(N8N_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'get_leads' })
-      });
-      if (!response.ok) return MOCK_DATA.leads;
-      const data = await response.json();
-      return Array.isArray(data) ? data : MOCK_DATA.leads;
-    } catch (error) {
-      console.warn("N8N fetch failed, using mock data", error);
-      return MOCK_DATA.leads;
-    }
-  },
-
-  async createLead(data: any) {
-    if (!isConfigured()) {
-      console.log("Mock create lead:", data);
-      return { success: true };
-    }
-    try {
-      const response = await fetch(N8N_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'create_lead', data })
-      });
-      return await response.json();
-    } catch (error) {
-      return { success: true };
-    }
-  }
-};
-
-async function callWebhook(path: string, method = 'GET', body?: object) {
-  if (!isWebhookConfigured()) {
-    if (path === '/dashboard-kpis') return MOCK_DATA.dashboardKpis;
-    if (path === '/contas-status') return MOCK_DATA.contasStatus;
-    if (path === '/alertas-ativos') return MOCK_DATA.alertas;
-    if (path === '/acoes-pendentes') return MOCK_DATA.acoesPendentes;
-    if (path === '/audit-log') return MOCK_DATA.auditLog;
-    if (path.startsWith('/analytics')) return MOCK_DATA.analytics;
-    if (path.startsWith('/budget')) return MOCK_DATA.budget;
-    return {};
-  }
-  const base = import.meta.env.VITE_N8N_URL || '';
-  const res = await fetch(`${base}${path}`, {
+async function callApi(path: string, method = 'GET', body?: object) {
+  const res = await fetch(`/api${path}`, {
     method,
     headers: { 'Content-Type': 'application/json' },
     ...(body ? { body: JSON.stringify(body) } : {}),
   });
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+  if (!res.ok) {
+    throw new Error(`HTTP ${res.status} from API`);
+  }
   return res.json();
 }
 
-export async function fetchDashboardKpis() { return callWebhook('/dashboard-kpis'); }
-export async function fetchContasStatus() { return callWebhook('/contas-status'); }
-export async function fetchAlertasAtivos() { return callWebhook('/alertas-ativos'); }
+export const dbService = {
+  async getCampaigns() {
+    return callApi('/campaigns');
+  },
+
+  async createCampaign(data: any) {
+    return callApi('/campaigns', 'POST', data);
+  },
+
+  async getLeads() {
+    return callApi('/leads');
+  },
+
+  async createLead(data: any) {
+    return callApi('/leads', 'POST', Object.keys(data).length > 0 ? data : { name: "Sample", email: "sample@email.com" });
+  }
+};
+
+export async function fetchDashboardKpis() { return callApi('/dashboard-kpis'); }
+export async function fetchContasStatus() { return callApi('/contas-status'); }
+export async function fetchAlertasAtivos() { return callApi('/alertas-ativos'); }
+export async function fetchAcoesPendentes() { return callApi('/acoes-pendentes'); }
+export async function fetchAuditLog() { return callApi('/audit-log'); }
+
 export async function enviarMensagemChat(pergunta: string, contaId: string | null = null, periodo: string = '30d') {
-  if (!isWebhookConfigured()) return { analise: "Simulação: Para ter respostas reais da IA, configure seu Webhook no n8n.", confianca: 0.95 };
-  return callWebhook('/chat', 'POST', { pergunta, conta_id: contaId, periodo });
+  return callApi('/chat', 'POST', { pergunta, conta_id: contaId, periodo });
 }
-export async function fetchAcoesPendentes() { return callWebhook('/acoes-pendentes'); }
-export async function executarAcao(acaoId: string) { return callWebhook('/executar-acao', 'POST', { acao_id: acaoId }); }
-export async function ignorarAcao(acaoId: string) { return callWebhook('/ignorar-acao', 'POST', { acao_id: acaoId }); }
-export async function fetchAuditLog() { return callWebhook('/audit-log'); }
+
+export async function executarAcao(acaoId: string) {
+  return callApi('/executar-acao', 'POST', { acao_id: acaoId });
+}
+
+export async function ignorarAcao(acaoId: string) {
+  return callApi('/ignorar-acao', 'POST', { acao_id: acaoId });
+}
+
 export async function executarAnalise(tipo: string, contaId: string | null = null, periodo: string = '30d') {
-  return callWebhook('/executar-analise', 'POST', { tipo, conta_id: contaId, periodo });
+  return callApi('/executar-analise', 'POST', { tipo, conta_id: contaId, periodo });
 }
-export async function fetchMetricasAnalytics(contaId: string | null = null) { return callWebhook(`/analytics${contaId ? `?conta_id=${contaId}` : ''}`); }
-export async function fetchDadosBudget(contaId: string | null = null) { return callWebhook(`/budget${contaId ? `?conta_id=${contaId}` : ''}`); }
+
+export async function fetchMetricasAnalytics(contaId: string | null = null) {
+  return callApi(contaId ? `/analytics?conta_id=${contaId}` : '/analytics');
+}
+
+export async function fetchDadosBudget(contaId: string | null = null) {
+  return callApi(contaId ? `/budget?conta_id=${contaId}` : '/budget');
+}
