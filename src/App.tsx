@@ -26,6 +26,8 @@ import Integrations from './pages/Integrations';
 import Funnel from './pages/Funnel';
 import Help from './pages/Help';
 import Login from './pages/Login';
+import Billing from './pages/Billing';
+import ActivityLog from './pages/ActivityLog';
 
 function App() {
   return (
@@ -53,6 +55,8 @@ function App() {
         <Route path="/workflows" element={<Workflows />} />
         <Route path="/analytics" element={<Analytics />} />
         <Route path="/team" element={<Team />} />
+        <Route path="/activity-log" element={<ActivityLog />} />
+        <Route path="/billing" element={<Billing />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/help" element={<Help />} />
       </Routes>

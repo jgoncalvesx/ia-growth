@@ -21,7 +21,9 @@ import {
   Star,
   Share2,
   Filter,
-  HelpCircle
+  HelpCircle,
+  CreditCard,
+  History
 } from 'lucide-react';
 
 const menuGroups = [
@@ -65,6 +67,8 @@ const menuGroups = [
       { icon: Zap, label: 'Automações', path: '/workflows' },
       { icon: Share2, label: 'Integrações', path: '/integrations' },
       { icon: Users, label: 'Equipe', path: '/team' },
+      { icon: History, label: 'Atividades', path: '/activity-log' },
+      { icon: CreditCard, label: 'Faturamento', path: '/billing' },
       { icon: Settings, label: 'Configurações', path: '/settings' },
     ]
   }
