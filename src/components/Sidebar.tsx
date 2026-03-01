@@ -13,7 +13,8 @@ import {
   Calendar as CalendarIcon,
   Zap,
   Brain,
-  Palette
+  Palette,
+  Globe
 } from 'lucide-react';
 
 const navItems = [
@@ -23,6 +24,7 @@ const navItems = [
   { icon: FileVideo, label: 'Conteúdo', path: '/content' },
   { icon: Brain, label: 'Gerador de IA', path: '/ai-generator' },
   { icon: Palette, label: 'Brand Kit', path: '/brand-kit' },
+  { icon: Globe, label: 'Competidores', path: '/competitors' },
   { icon: CalendarIcon, label: 'Calendário', path: '/calendar' },
   { icon: Zap, label: 'Automações', path: '/workflows' },
   { icon: BarChart3, label: 'Analytics', path: '/analytics' },
