@@ -269,6 +269,111 @@ app.get('/api/budget', async (req: Request, res: Response) => {
 });
 
 // ==========================================
+// CAMPAIGNS KPIs (30d aggregated per campaign)
+// ==========================================
+
+app.get('/api/campaigns-kpis', async (req: Request, res: Response) => {
+  try {
+    const { cliente_id } = req.query;
+
+    const rows: any[] = cliente_id
+      ? await db.$queryRaw`
+          SELECT
+            c.id,
+            c.nome            AS campanha,
+            c.status,
+            c.budget_diario,
+            ca.plataforma,
+            ca.cpl_meta,
+            ca.cpl_max,
+            COALESCE(SUM(m.investimento),    0) AS investimento,
+            COALESCE(SUM(m.impressoes),      0) AS impressoes,
+            COALESCE(SUM(m.cliques),         0) AS cliques,
+            COALESCE(SUM(m.leads_plataforma),0) AS leads_plataforma,
+            CASE WHEN COALESCE(SUM(m.leads_plataforma), 0) > 0
+              THEN SUM(m.investimento) / SUM(m.leads_plataforma)
+              ELSE 0
+            END               AS cpl_real,
+            AVG(m.cpm)        AS cpm_medio,
+            AVG(m.ctr)        AS ctr_medio,
+            AVG(m.frequencia) AS frequencia_media
+          FROM campanhas c
+          JOIN contas_anuncio ca ON ca.id = c.conta_id
+          LEFT JOIN metricas_diarias m
+            ON m.conta_id      = c.conta_id
+            AND m.campanha_id  = c.campanha_id_externo
+            AND m.data        >= NOW() - INTERVAL '30 days'
+          WHERE ca.cliente_id = ${cliente_id}::uuid
+          GROUP BY c.id, c.nome, c.status, c.budget_diario, ca.plataforma, ca.cpl_meta, ca.cpl_max
+          ORDER BY ca.plataforma, SUM(m.investimento) DESC NULLS LAST`
+      : await db.$queryRaw`
+          SELECT
+            c.id,
+            c.nome            AS campanha,
+            c.status,
+            c.budget_diario,
+            ca.plataforma,
+            ca.cpl_meta,
+            ca.cpl_max,
+            COALESCE(SUM(m.investimento),    0) AS investimento,
+            COALESCE(SUM(m.impressoes),      0) AS impressoes,
+            COALESCE(SUM(m.cliques),         0) AS cliques,
+            COALESCE(SUM(m.leads_plataforma),0) AS leads_plataforma,
+            CASE WHEN COALESCE(SUM(m.leads_plataforma), 0) > 0
+              THEN SUM(m.investimento) / SUM(m.leads_plataforma)
+              ELSE 0
+            END               AS cpl_real,
+            AVG(m.cpm)        AS cpm_medio,
+            AVG(m.ctr)        AS ctr_medio,
+            AVG(m.frequencia) AS frequencia_media
+          FROM campanhas c
+          JOIN contas_anuncio ca ON ca.id = c.conta_id
+          LEFT JOIN metricas_diarias m
+            ON m.conta_id      = c.conta_id
+            AND m.campanha_id  = c.campanha_id_externo
+            AND m.data        >= NOW() - INTERVAL '30 days'
+          GROUP BY c.id, c.nome, c.status, c.budget_diario, ca.plataforma, ca.cpl_meta, ca.cpl_max
+          ORDER BY ca.plataforma, SUM(m.investimento) DESC NULLS LAST`;
+
+    const result = rows.map((r: any) => {
+      const cplReal    = Number(r.cpl_real     ?? 0);
+      const cplMeta    = Number(r.cpl_meta     ?? 0);
+      const cplMax     = Number(r.cpl_max      ?? 0);
+      const invest     = Number(r.investimento ?? 0);
+      const budgetDay  = Number(r.budget_diario ?? 0);
+      const status     = cplReal > cplMax  && cplMax  > 0 ? 'red'
+                       : cplReal > cplMeta && cplMeta > 0 ? 'yellow' : 'green';
+      const realizadoPct = budgetDay > 0
+        ? Math.min(100, Math.round((invest / (budgetDay * 30)) * 100))
+        : 0;
+
+      return {
+        campanha:         r.campanha ?? 'Sem nome',
+        plataforma:       r.plataforma,
+        status,
+        cpl_real:         cplReal,
+        cpl_meta:         cplMeta,
+        cpl_max:          cplMax,
+        investimento:     invest,
+        impressoes:       Number(r.impressoes       ?? 0),
+        cliques:          Number(r.cliques          ?? 0),
+        leads_plataforma: Number(r.leads_plataforma ?? 0),
+        budget_diario:    budgetDay,
+        realizado_pct:    realizadoPct,
+        cpm_medio:        r.cpm_medio       != null ? Number(r.cpm_medio).toFixed(2)            : null,
+        ctr_medio:        r.ctr_medio       != null ? (Number(r.ctr_medio) * 100).toFixed(2)   : null,
+        frequencia_media: r.frequencia_media != null ? Number(r.frequencia_media).toFixed(1)   : null,
+      };
+    });
+
+    res.json(result);
+  } catch (err) {
+    console.error('[campaigns-kpis]', err);
+    res.status(500).json({ error: 'Erro ao buscar KPIs de campanhas' });
+  }
+});
+
+// ==========================================
 // CAMPANHAS
 // ==========================================
 

@@ -38,6 +38,7 @@ export const dbService = {
 export async function fetchClientes() { return callApi('/clientes'); }
 export async function fetchDashboardKpis(clienteId?: string | null) { return callApi(`/dashboard-kpis${qs(clienteId)}`); }
 export async function fetchContasStatus(clienteId?: string | null) { return callApi(`/contas-status${qs(clienteId)}`); }
+export async function fetchCampaignsKpis(clienteId?: string | null) { return callApi(`/campaigns-kpis${qs(clienteId)}`); }
 export async function fetchAlertasAtivos(clienteId?: string | null) { return callApi(`/alertas-ativos${qs(clienteId)}`); }
 export async function fetchAcoesPendentes(clienteId?: string | null) { return callApi(`/acoes-pendentes${qs(clienteId)}`); }
 export async function fetchAuditLog(clienteId?: string | null) { return callApi(`/audit-log${qs(clienteId)}`); }
