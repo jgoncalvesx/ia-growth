@@ -26,7 +26,7 @@ const ClientSwitcher = () => {
       <div className="p-1.5 bg-blue-600 rounded-md">
         <Briefcase size={16} className="text-white" />
       </div>
-      <Select value={selectedClient.id} onValueChange={handleClientChange}>
+      <Select value={selectedClient.id || undefined} onValueChange={handleClientChange}>
         <SelectTrigger className="w-full bg-transparent border-none text-white focus:ring-0 h-8 text-sm font-medium">
           <SelectValue placeholder="Selecionar Cliente" />
         </SelectTrigger>

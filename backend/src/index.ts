@@ -17,12 +17,34 @@ app.set('json replacer', (_key: string, value: unknown) =>
 );
 
 // ==========================================
+// CLIENTES
+// ==========================================
+
+app.get('/api/clientes', async (_req: Request, res: Response) => {
+  try {
+    const clientes = await db.clientes.findMany({
+      where: { ativo: true },
+      select: { id: true, nome: true, slug: true, cor_primaria: true, logo_url: true },
+      orderBy: { nome: 'asc' },
+    });
+    res.json(clientes);
+  } catch (err) {
+    console.error('[clientes]', err);
+    res.status(500).json({ error: 'Erro ao buscar clientes' });
+  }
+});
+
+// ==========================================
 // DASHBOARD
 // ==========================================
 
-app.get('/api/dashboard-kpis', async (_req: Request, res: Response) => {
+app.get('/api/dashboard-kpis', async (req: Request, res: Response) => {
   try {
-    const rows = await db.$queryRaw`SELECT * FROM v_dashboard_hoje` as any[];
+    const { cliente_id } = req.query;
+
+    const rows: any[] = cliente_id
+      ? await db.$queryRaw`SELECT * FROM v_dashboard_hoje WHERE cliente_id = ${cliente_id}::uuid`
+      : await db.$queryRaw`SELECT * FROM v_dashboard_hoje`;
 
     if (rows.length === 0) {
       return res.json({ investimento: '0.00', cpl_medio: '0.00', leads: '0', roas: '0.0' });
@@ -49,9 +71,13 @@ app.get('/api/dashboard-kpis', async (_req: Request, res: Response) => {
 // CONTAS / STATUS
 // ==========================================
 
-app.get('/api/contas-status', async (_req: Request, res: Response) => {
+app.get('/api/contas-status', async (req: Request, res: Response) => {
   try {
-    const rows = await db.$queryRaw`SELECT * FROM v_kpis_30d` as any[];
+    const { cliente_id } = req.query;
+
+    const rows: any[] = cliente_id
+      ? await db.$queryRaw`SELECT * FROM v_kpis_30d WHERE cliente_id = ${cliente_id}::uuid`
+      : await db.$queryRaw`SELECT * FROM v_kpis_30d`;
 
     const result = rows.map((r: any) => ({
       nome: r.conta_nome,
@@ -77,9 +103,13 @@ app.get('/api/contas-status', async (_req: Request, res: Response) => {
 // ALERTAS
 // ==========================================
 
-app.get('/api/alertas-ativos', async (_req: Request, res: Response) => {
+app.get('/api/alertas-ativos', async (req: Request, res: Response) => {
   try {
-    const rows = await db.$queryRaw`SELECT * FROM v_alertas_cpl` as any[];
+    const { cliente_id } = req.query;
+
+    const rows: any[] = cliente_id
+      ? await db.$queryRaw`SELECT * FROM v_alertas_cpl WHERE cliente_id = ${cliente_id}::uuid`
+      : await db.$queryRaw`SELECT * FROM v_alertas_cpl`;
 
     const alertas = rows.map((r: any) => ({
       conta_id: r.conta_id,
@@ -100,10 +130,15 @@ app.get('/api/alertas-ativos', async (_req: Request, res: Response) => {
 // AÇÕES PENDENTES DA IA
 // ==========================================
 
-app.get('/api/acoes-pendentes', async (_req: Request, res: Response) => {
+app.get('/api/acoes-pendentes', async (req: Request, res: Response) => {
   try {
+    const { cliente_id } = req.query;
+
     const acoes = await db.acoes_ia.findMany({
-      where: { status: 'pendente' },
+      where: {
+        status: 'pendente',
+        ...(cliente_id ? { cliente_id: String(cliente_id) } : {}),
+      },
       include: { contas_anuncio: { select: { nome: true } } },
       orderBy: { criado_em: 'desc' },
     });
@@ -129,9 +164,14 @@ app.get('/api/acoes-pendentes', async (_req: Request, res: Response) => {
 // AUDIT LOG
 // ==========================================
 
-app.get('/api/audit-log', async (_req: Request, res: Response) => {
+app.get('/api/audit-log', async (req: Request, res: Response) => {
   try {
+    const { cliente_id } = req.query;
+
     const logs = await db.audit_log.findMany({
+      where: {
+        ...(cliente_id ? { cliente_id: String(cliente_id) } : {}),
+      },
       orderBy: { criado_em: 'desc' },
       take: 50,
     });
@@ -144,31 +184,41 @@ app.get('/api/audit-log', async (_req: Request, res: Response) => {
 });
 
 // ==========================================
-// ANALYTICS (agregação de metricas_diarias)
+// ANALYTICS
 // ==========================================
 
-app.get('/api/analytics', async (_req: Request, res: Response) => {
+app.get('/api/analytics', async (req: Request, res: Response) => {
   try {
-    const porPlataforma = await db.$queryRaw`
-      SELECT ca.plataforma, SUM(m.investimento) AS total_investimento
-      FROM metricas_diarias m
-      JOIN contas_anuncio ca ON ca.id = m.conta_id
-      GROUP BY ca.plataforma
-      ORDER BY total_investimento DESC
-    ` as any[];
+    const { cliente_id } = req.query;
 
-    const tendenciaCpl = await db.$queryRaw`
-      SELECT
-        TO_CHAR(DATE_TRUNC('month', data), 'Mon') AS mes,
-        ROUND(
-          SUM(investimento) / NULLIF(SUM(leads_plataforma), 0),
-          2
-        ) AS cpl
-      FROM metricas_diarias
-      WHERE data >= NOW() - INTERVAL '6 months'
-      GROUP BY DATE_TRUNC('month', data)
-      ORDER BY DATE_TRUNC('month', data)
-    ` as any[];
+    const porPlataforma: any[] = cliente_id
+      ? await db.$queryRaw`
+          SELECT ca.plataforma, SUM(m.investimento) AS total_investimento
+          FROM metricas_diarias m
+          JOIN contas_anuncio ca ON ca.id = m.conta_id
+          WHERE ca.cliente_id = ${cliente_id}::uuid
+          GROUP BY ca.plataforma ORDER BY total_investimento DESC`
+      : await db.$queryRaw`
+          SELECT ca.plataforma, SUM(m.investimento) AS total_investimento
+          FROM metricas_diarias m
+          JOIN contas_anuncio ca ON ca.id = m.conta_id
+          GROUP BY ca.plataforma ORDER BY total_investimento DESC`;
+
+    const tendenciaCpl: any[] = cliente_id
+      ? await db.$queryRaw`
+          SELECT TO_CHAR(DATE_TRUNC('month', m.data), 'Mon') AS mes,
+            ROUND(SUM(m.investimento) / NULLIF(SUM(m.leads_plataforma), 0), 2) AS cpl
+          FROM metricas_diarias m
+          JOIN contas_anuncio ca ON ca.id = m.conta_id
+          WHERE m.data >= NOW() - INTERVAL '6 months'
+            AND ca.cliente_id = ${cliente_id}::uuid
+          GROUP BY DATE_TRUNC('month', m.data) ORDER BY DATE_TRUNC('month', m.data)`
+      : await db.$queryRaw`
+          SELECT TO_CHAR(DATE_TRUNC('month', data), 'Mon') AS mes,
+            ROUND(SUM(investimento) / NULLIF(SUM(leads_plataforma), 0), 2) AS cpl
+          FROM metricas_diarias
+          WHERE data >= NOW() - INTERVAL '6 months'
+          GROUP BY DATE_TRUNC('month', data) ORDER BY DATE_TRUNC('month', data)`;
 
     res.json({
       plataformas: porPlataforma.map((r: any) => ({
@@ -190,9 +240,14 @@ app.get('/api/analytics', async (_req: Request, res: Response) => {
 // ORÇAMENTO
 // ==========================================
 
-app.get('/api/budget', async (_req: Request, res: Response) => {
+app.get('/api/budget', async (req: Request, res: Response) => {
   try {
+    const { cliente_id } = req.query;
+
     const orcamentos = await db.orcamentos.findMany({
+      where: {
+        ...(cliente_id ? { cliente_id: String(cliente_id) } : {}),
+      },
       include: { contas_anuncio: { select: { plataforma: true } } },
       orderBy: { periodo_inicio: 'desc' },
     });
@@ -217,9 +272,14 @@ app.get('/api/budget', async (_req: Request, res: Response) => {
 // CAMPANHAS
 // ==========================================
 
-app.get('/api/campaigns', async (_req: Request, res: Response) => {
+app.get('/api/campaigns', async (req: Request, res: Response) => {
   try {
+    const { cliente_id } = req.query;
+
     const campanhas = await db.campanhas.findMany({
+      where: cliente_id
+        ? { contas_anuncio: { cliente_id: String(cliente_id) } }
+        : {},
       include: { contas_anuncio: { select: { nome: true, plataforma: true } } },
       orderBy: { atualizado_em: 'desc' },
     });
@@ -247,9 +307,14 @@ app.get('/api/campaigns', async (_req: Request, res: Response) => {
 // LEADS
 // ==========================================
 
-app.get('/api/leads', async (_req: Request, res: Response) => {
+app.get('/api/leads', async (req: Request, res: Response) => {
   try {
+    const { cliente_id } = req.query;
+
     const leads = await db.leads.findMany({
+      where: {
+        ...(cliente_id ? { cliente_id: String(cliente_id) } : {}),
+      },
       orderBy: { criado_em: 'desc' },
     });
     res.json(leads);
@@ -292,7 +357,6 @@ app.post('/api/leads', async (req: Request, res: Response) => {
 app.post('/api/chat', (req: Request, res: Response) => {
   const { pergunta } = req.body;
   console.log(`[chat] pergunta: ${pergunta}`);
-  // TODO: integrar @anthropic-ai/sdk
   res.json({
     analise: 'Integração com Claude API pendente. Adicione ANTHROPIC_API_KEY no backend/.env.',
     confianca: 0,
@@ -308,7 +372,7 @@ app.post('/api/executar-acao', async (req: Request, res: Response) => {
       data: {
         status: 'executada',
         executada_em: new Date(),
-        rollback_ate: new Date(Date.now() + 2 * 60 * 60 * 1000), // +2h
+        rollback_ate: new Date(Date.now() + 2 * 60 * 60 * 1000),
       },
     });
 
@@ -334,12 +398,10 @@ app.post('/api/executar-acao', async (req: Request, res: Response) => {
 app.post('/api/ignorar-acao', async (req: Request, res: Response) => {
   try {
     const { acao_id } = req.body;
-
     await db.acoes_ia.update({
       where: { id: acao_id },
       data: { status: 'ignorada' },
     });
-
     res.json({ success: true });
   } catch (err) {
     console.error('[ignorar-acao]', err);
@@ -350,7 +412,6 @@ app.post('/api/ignorar-acao', async (req: Request, res: Response) => {
 app.post('/api/executar-analise', (req: Request, res: Response) => {
   const { tipo, conta_id } = req.body;
   console.log(`[executar-analise] tipo: ${tipo}, conta: ${conta_id}`);
-  // TODO: integrar Claude API
   res.json({ success: true, message: `Análise '${tipo}' pendente de integração com Claude API` });
 });
 

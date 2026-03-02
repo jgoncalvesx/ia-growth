@@ -2,17 +2,14 @@
 
 import React from 'react';
 import Layout from '../components/Layout';
-import { 
-  RefreshCw, 
-  AlertTriangle, 
-  Bell, 
-  ArrowUpRight, 
-  ArrowDownRight, 
+import {
+  RefreshCw,
+  AlertTriangle,
+  Bell,
+  ArrowUpRight,
+  ArrowDownRight,
   Circle,
-  MoreHorizontal,
   ChevronRight,
-  TrendingUp,
-  Target,
   DollarSign,
   Users
 } from 'lucide-react';
@@ -20,217 +17,303 @@ import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/card'
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { Progress } from '../components/ui/progress';
+import {
+  fetchDashboardKpis,
+  fetchContasStatus,
+  fetchAlertasAtivos,
+  fetchAuditLog,
+} from '../services/api.service';
 import { useClient } from '../context/ClientContext';
+
+const semaforo = (status: string) => {
+  if (status === 'red')    return { cor: 'text-red-500',    label: 'Urgente' };
+  if (status === 'yellow') return { cor: 'text-yellow-500', label: 'Atenção' };
+  return                          { cor: 'text-green-500',  label: 'OK' };
+};
+
+const fmt = (val: string | number | null, prefix = '') =>
+  val != null ? `${prefix}${Number(val).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '—';
 
 const Index = () => {
   const { selectedClient } = useClient();
+  const [kpis, setKpis]       = React.useState<any>(null);
+  const [contas, setContas]   = React.useState<any[]>([]);
+  const [alertas, setAlertas] = React.useState<any[]>([]);
+  const [auditLog, setAudit]  = React.useState<any[]>([]);
+  const [loading, setLoading] = React.useState(true);
+
+  const carregar = React.useCallback(async () => {
+    setLoading(true);
+    const cid = selectedClient.id || null;
+    try {
+      const [k, c, a, l] = await Promise.all([
+        fetchDashboardKpis(cid),
+        fetchContasStatus(cid),
+        fetchAlertasAtivos(cid),
+        fetchAuditLog(cid),
+      ]);
+      setKpis(k);
+      setContas(c);
+      setAlertas(a);
+      setAudit(l);
+    } catch (err) {
+      console.error('Erro ao carregar dashboard:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, [selectedClient.id]);
+
+  React.useEffect(() => { carregar(); }, [carregar]);
+
+  const investimentoTotal = contas.reduce((s, c) => s + (c.investimento ?? 0), 0);
+  const maxInvest = Math.max(...contas.map(c => c.investimento ?? 0), 1);
 
   return (
     <Layout>
       <div className="space-y-8 bg-slate-950 min-h-screen -m-4 lg:-m-8 p-4 lg:p-8 text-white">
-        
-        {/* HEADER DA PÁGINA */}
+
+        {/* HEADER */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
             <h1 className="text-3xl font-black tracking-tight text-white">Dashboard</h1>
-            <p className="text-muted-foreground text-sm mt-1">Visão geral · Atualizado há 12 min</p>
+            <p className="text-muted-foreground text-sm mt-1">
+              Visão geral · {loading ? 'Carregando...' : `${contas.length} contas ativas`}
+            </p>
           </div>
           <div className="flex items-center gap-3">
             <Badge className="bg-blue-600/20 text-blue-400 border-blue-500/30 px-3 py-1">Meta Ads</Badge>
             <Badge className="bg-red-600/20 text-red-400 border-red-500/30 px-3 py-1">Google Ads</Badge>
-            <Badge className="bg-orange-600/20 text-orange-400 border-orange-500/30 px-3 py-1">CRM</Badge>
-            <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-white ml-2">
-              <RefreshCw size={16} className="mr-2" /> Atualizar
+            <Badge className="bg-orange-600/20 text-orange-400 border-orange-500/30 px-3 py-1">TikTok</Badge>
+            <Button onClick={carregar} variant="ghost" size="sm" className="text-muted-foreground hover:text-white ml-2">
+              <RefreshCw size={16} className={`mr-2 ${loading ? 'animate-spin' : ''}`} /> Atualizar
             </Button>
           </div>
         </div>
 
-        {/* SEÇÃO 1: ALERTAS */}
-        <div className="space-y-3">
-          {/* Alerta Danger */}
-          <div className="bg-red-950/40 border border-red-900/50 rounded-xl p-4 flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="p-2 bg-red-500/20 rounded-lg text-red-500">
-                <AlertTriangle size={20} />
+        {/* ALERTAS DE CPL */}
+        {alertas.length > 0 && (
+          <div className="space-y-3">
+            {alertas.map((alerta, i) => (
+              <div key={i} className="bg-red-950/40 border border-red-900/50 rounded-xl p-4 flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="p-2 bg-red-500/20 rounded-lg text-red-500">
+                    <AlertTriangle size={20} />
+                  </div>
+                  <div>
+                    <p className="font-bold text-red-200">{alerta.titulo}</p>
+                    <p className="text-xs text-red-400/80">{alerta.descricao}</p>
+                  </div>
+                </div>
+                <Button size="sm" className="bg-red-600 hover:bg-red-700 text-white border-none">
+                  {alerta.acao}
+                </Button>
               </div>
-              <div>
-                <p className="font-bold text-red-200">3 anúncios ultrapassaram o CPL máximo de R$ 22 hoje</p>
-                <p className="text-xs text-red-400/80">Meta Ads · Conjunto: Leads Fundo — CPL médio: R$ 31,40</p>
-              </div>
-            </div>
-            <Button size="sm" className="bg-red-600 hover:bg-red-700 text-white border-none">Ver ações</Button>
+            ))}
           </div>
+        )}
 
-          {/* Alerta Warning */}
-          <div className="bg-yellow-950/40 border border-yellow-900/50 rounded-xl p-4 flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="p-2 bg-yellow-500/20 rounded-lg text-yellow-500">
-                <Bell size={20} />
-              </div>
-              <div>
-                <p className="font-bold text-yellow-200">Anúncio #4872 com queda de 28% no CTR nos últimos 3 dias</p>
-                <p className="text-xs text-yellow-400/80">Possível fadiga criativa · Frequência: 4.1</p>
-              </div>
+        {alertas.length === 0 && !loading && (
+          <div className="bg-green-950/30 border border-green-900/40 rounded-xl p-4 flex items-center gap-4">
+            <div className="p-2 bg-green-500/20 rounded-lg text-green-500">
+              <Bell size={20} />
             </div>
-            <Button variant="outline" size="sm" className="border-yellow-700 text-yellow-500 hover:bg-yellow-900/30">Analisar</Button>
+            <p className="font-bold text-green-200">Todas as contas dentro das metas de CPL</p>
           </div>
-        </div>
+        )}
 
-        {/* SEÇÃO 2: 4 KPI CARDS */}
+        {/* KPI CARDS */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <Card className="bg-slate-900 border-slate-800 shadow-xl">
             <CardContent className="pt-6">
-              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-2">INVESTIMENTO TOTAL</p>
-              <h3 className="text-3xl font-bold font-mono text-white">R$ 84.320</h3>
+              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-2">INVESTIMENTO TOTAL (30d)</p>
+              <h3 className="text-3xl font-bold font-mono text-white">
+                {loading ? '—' : `R$ ${Number(investimentoTotal).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
+              </h3>
+              <div className="flex items-center gap-1 mt-2 text-slate-400 text-xs font-bold">
+                <DollarSign size={14} /> Soma de todas as contas
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-slate-900 border-slate-800 shadow-xl">
+            <CardContent className="pt-6">
+              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-2">CPL MÉDIO (ontem)</p>
+              <h3 className={`text-3xl font-bold font-mono ${
+                kpis?.cpl_medio > 60 ? 'text-red-400' : kpis?.cpl_medio > 40 ? 'text-yellow-400' : 'text-green-400'
+              }`}>
+                {loading ? '—' : `R$ ${fmt(kpis?.cpl_medio)}`}
+              </h3>
+              <p className="text-[10px] text-muted-foreground mt-2 font-medium">
+                {kpis?.leads ? `${kpis.leads} leads ontem` : ''}
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-slate-900 border-slate-800 shadow-xl">
+            <CardContent className="pt-6">
+              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-2">LEADS QUALIFICADOS (30d)</p>
+              <h3 className="text-3xl font-bold font-mono text-white">
+                {loading ? '—' : contas.reduce((s, c) => s + (c.leads_qualificados ?? 0), 0).toLocaleString('pt-BR')}
+              </h3>
               <div className="flex items-center gap-1 mt-2 text-green-500 text-xs font-bold">
-                <ArrowUpRight size={14} /> +12% <span className="text-muted-foreground font-medium">vs. mês anterior</span>
+                <ArrowUpRight size={14} />
+                <span className="text-muted-foreground font-medium">
+                  {contas.length > 0 ? `${contas.reduce((s, c) => s + (c.vendas ?? 0), 0)} vendas` : ''}
+                </span>
               </div>
             </CardContent>
           </Card>
 
           <Card className="bg-slate-900 border-slate-800 shadow-xl">
             <CardContent className="pt-6">
-              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-2">CPL (CRM)</p>
-              <h3 className="text-3xl font-bold font-mono text-red-400">R$ 18,40</h3>
-              <div className="flex items-center gap-1 mt-2 text-red-500 text-xs font-bold">
-                <ArrowDownRight size={14} /> -8%
+              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-2">ROAS MÉDIO (ontem)</p>
+              <h3 className="text-3xl font-bold font-mono text-blue-400">
+                {loading ? '—' : `${fmt(kpis?.roas)}x`}
+              </h3>
+              <div className="flex items-center gap-1 mt-2 text-slate-400 text-xs">
+                <Users size={14} />
+                <span>{contas.length} contas ativas</span>
               </div>
-              <p className="text-[10px] text-muted-foreground mt-2 font-medium">Meta: R$ 15 · Max: R$ 22</p>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-slate-900 border-slate-800 shadow-xl">
-            <CardContent className="pt-6">
-              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-2">LEADS QUALIFICADOS</p>
-              <h3 className="text-3xl font-bold font-mono text-white">1.284</h3>
-              <div className="flex items-center gap-1 mt-2 text-green-500 text-xs font-bold">
-                <ArrowUpRight size={14} /> +21%
-              </div>
-              <p className="text-[10px] text-muted-foreground mt-2 font-medium">Taxa qualif.: 34%</p>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-slate-900 border-slate-800 shadow-xl">
-            <CardContent className="pt-6">
-              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-2">ROAS CONSOLIDADO</p>
-              <h3 className="text-3xl font-bold font-mono text-blue-400">4.2x</h3>
-              <div className="flex items-center gap-1 mt-2 text-red-500 text-xs font-bold">
-                <ArrowDownRight size={14} /> -0.3x
-              </div>
-              <p className="text-[10px] text-muted-foreground mt-2 font-medium">Meta: 4.5x</p>
             </CardContent>
           </Card>
         </div>
 
-        {/* SEÇÃO 3: SEMÁFORO DE CONTAS */}
+        {/* SEMÁFORO DE CONTAS */}
         <Card className="bg-slate-900 border-slate-800 shadow-xl overflow-hidden">
           <CardHeader className="flex flex-row items-center justify-between border-b border-slate-800 py-4">
             <CardTitle className="text-lg font-bold text-white">Semáforo de Contas</CardTitle>
-            <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-white">Ver todas</Button>
+            <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-white">
+              Ver todas <ChevronRight size={14} className="ml-1" />
+            </Button>
           </CardHeader>
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
               <thead className="bg-slate-800/50 text-muted-foreground uppercase text-[10px] font-bold tracking-widest">
                 <tr>
-                  <th className="px-6 py-4">Cliente</th>
+                  <th className="px-6 py-4">Conta</th>
                   <th className="px-6 py-4">Canal</th>
                   <th className="px-6 py-4">Status</th>
                   <th className="px-6 py-4">CPL Real</th>
                   <th className="px-6 py-4">Meta</th>
-                  <th className="px-6 py-4">Invest. Hoje</th>
-                  <th className="px-6 py-4">Ação Pendente</th>
+                  <th className="px-6 py-4">Máx</th>
+                  <th className="px-6 py-4">Invest. 30d</th>
+                  <th className="px-6 py-4">Leads Qual.</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-800">
-                {[
-                  { cliente: "Clínica Saúde+", canal: "Meta+Google", status: "ok", cpl: "14,20", meta: "18", invest: "2.840", acao: null },
-                  { cliente: "EduTech Pro", canal: "Google", status: "ok", cpl: "16,80", meta: "20", invest: "1.520", acao: null },
-                  { cliente: "Imóveis SP", canal: "Meta", status: "atencao", cpl: "24,10", meta: "22", invest: "3.200", acao: "Revisar conjunto", color: "yellow" },
-                  { cliente: "SaaS Financeiro", canal: "Meta+Google", status: "urgente", cpl: "38,40", meta: "25", invest: "4.100", acao: "Ação urgente", color: "red" },
-                  { cliente: "E-commerce Moda", canal: "Meta", status: "ok", cpl: "9,80", meta: "12", invest: "5.600", acao: null },
-                  { cliente: "Consultor RH", canal: "LinkedIn+Google", status: "atencao", cpl: "42,00", meta: "40", invest: "980", acao: "Revisar budget", color: "yellow" },
-                ].map((row, i) => (
-                  <tr key={i} className="hover:bg-slate-800/30 transition-colors">
-                    <td className="px-6 py-4 font-bold text-white">{row.cliente}</td>
-                    <td className="px-6 py-4">
-                      <Badge variant="secondary" className="bg-slate-800 text-muted-foreground border-slate-700 text-[10px]">{row.canal}</Badge>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-2">
-                        <Circle size={8} className={`fill-current ${row.status === 'ok' ? 'text-green-500' : row.status === 'atencao' ? 'text-yellow-500' : 'text-red-500'}`} />
-                        <span className="capitalize font-medium text-white">{row.status === 'ok' ? 'OK' : row.status === 'atencao' ? 'Atenção' : 'Urgente'}</span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 font-mono font-bold text-white">R$ {row.cpl}</td>
-                    <td className="px-6 py-4 text-muted-foreground font-mono">R$ {row.meta}</td>
-                    <td className="px-6 py-4 font-mono text-white">R$ {row.invest}</td>
-                    <td className="px-6 py-4">
-                      {row.acao ? (
-                        <Badge className={`${row.color === 'red' ? 'bg-red-500/10 text-red-500 border-red-500/20' : 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20'} text-[9px] uppercase font-black`}>
-                          {row.acao}
+                {loading ? (
+                  <tr><td colSpan={8} className="px-6 py-8 text-center text-muted-foreground">Carregando...</td></tr>
+                ) : contas.length === 0 ? (
+                  <tr><td colSpan={8} className="px-6 py-8 text-center text-muted-foreground">Nenhuma conta encontrada</td></tr>
+                ) : contas.map((row, i) => {
+                  const s = semaforo(row.status);
+                  return (
+                    <tr key={i} className="hover:bg-slate-800/30 transition-colors">
+                      <td className="px-6 py-4 font-bold text-white">{row.nome}</td>
+                      <td className="px-6 py-4">
+                        <Badge variant="secondary" className="bg-slate-800 text-muted-foreground border-slate-700 text-[10px]">
+                          {row.canal}
                         </Badge>
-                      ) : <span className="text-slate-800">—</span>}
-                    </td>
-                  </tr>
-                ))}
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-2">
+                          <Circle size={8} className={`fill-current ${s.cor}`} />
+                          <span className={`font-medium ${s.cor}`}>{s.label}</span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 font-mono font-bold text-white">
+                        R$ {fmt(row.cpl_real)}
+                      </td>
+                      <td className="px-6 py-4 text-muted-foreground font-mono">R$ {fmt(row.cpl_meta)}</td>
+                      <td className="px-6 py-4 text-muted-foreground font-mono">R$ {fmt(row.cpl_max)}</td>
+                      <td className="px-6 py-4 font-mono text-white">
+                        R$ {Number(row.investimento ?? 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                      </td>
+                      <td className="px-6 py-4 font-mono text-white">{row.leads_qualificados ?? 0}</td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
         </Card>
 
-        {/* SEÇÃO 4: DUAS COLUNAS */}
+        {/* PERFORMANCE POR CANAL + ATIVIDADE RECENTE */}
         <div className="grid grid-cols-1 lg:grid-cols-10 gap-8">
-          
-          {/* COLUNA ESQUERDA - PERFORMANCE POR CANAL */}
+
+          {/* PERFORMANCE POR CANAL */}
           <Card className="lg:col-span-6 bg-slate-900 border-slate-800 shadow-xl">
             <CardHeader className="pb-4">
-              <CardTitle className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">PERFORMANCE POR CANAL</CardTitle>
+              <CardTitle className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                PERFORMANCE POR CANAL (30d)
+              </CardTitle>
             </CardHeader>
             <CardContent className="space-y-8 pt-2">
-              {[
-                { name: "Meta Ads", spend: "52.100", cpl: "17,20", leads: "478", progress: 75 },
-                { name: "Google Ads", spend: "24.800", cpl: "20,40", leads: "312", progress: 45 },
-                { name: "Google P.Max", spend: "7.420", cpl: "30,10", leads: "98", progress: 15 },
-              ].map((canal, i) => (
+              {loading ? (
+                <p className="text-muted-foreground text-sm">Carregando...</p>
+              ) : contas.map((canal, i) => (
                 <div key={i} className="space-y-3">
                   <div className="flex justify-between items-end">
                     <div>
-                      <h4 className="text-lg font-bold text-white">{canal.name}</h4>
+                      <h4 className="text-lg font-bold text-white">{canal.nome}</h4>
                       <div className="flex gap-4 mt-1">
-                        <p className="text-xs text-muted-foreground">CPL: <span className="text-white font-mono font-bold">R$ {canal.cpl}</span></p>
-                        <p className="text-xs text-muted-foreground">Leads CRM: <span className="text-white font-mono font-bold">{canal.leads}</span></p>
+                        <p className="text-xs text-muted-foreground">
+                          CPL: <span className={`font-mono font-bold ${
+                            canal.cpl_real > canal.cpl_max ? 'text-red-400' :
+                            canal.cpl_real > canal.cpl_meta ? 'text-yellow-400' : 'text-green-400'
+                          }`}>R$ {fmt(canal.cpl_real)}</span>
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          Leads: <span className="text-white font-mono font-bold">{canal.leads_qualificados}</span>
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          ROAS: <span className="text-white font-mono font-bold">{fmt(canal.roas_medio)}x</span>
+                        </p>
                       </div>
                     </div>
-                    <p className="text-sm text-muted-foreground font-mono">R$ {canal.spend}</p>
+                    <p className="text-sm text-muted-foreground font-mono">
+                      R$ {Number(canal.investimento ?? 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                    </p>
                   </div>
-                  <Progress value={canal.progress} className="h-2 bg-slate-800" />
-                  {i < 2 && <div className="border-b border-slate-800 pt-2"></div>}
+                  <Progress
+                    value={maxInvest > 0 ? (canal.investimento / maxInvest) * 100 : 0}
+                    className="h-2 bg-slate-800"
+                  />
+                  {i < contas.length - 1 && <div className="border-b border-slate-800 pt-2" />}
                 </div>
               ))}
             </CardContent>
           </Card>
 
-          {/* COLUNA DIREITA - ATIVIDADE RECENTE */}
+          {/* ATIVIDADE RECENTE */}
           <Card className="lg:col-span-4 bg-slate-900 border-slate-800 shadow-xl">
             <CardHeader className="pb-4">
-              <CardTitle className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">ATIVIDADE RECENTE DO SISTEMA</CardTitle>
+              <CardTitle className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                ATIVIDADE RECENTE DO SISTEMA
+              </CardTitle>
             </CardHeader>
             <CardContent className="pt-2">
               <div className="space-y-6">
-                {[
-                  { time: "09:02", color: "blue", text: "Relatório diário gerado e enviado no Slack" },
-                  { time: "09:15", color: "yellow", text: "Alert: Conjunto 'Fundo LP' CPL +45% acima da meta" },
-                  { time: "11:30", color: "green", text: "Você pausou 2 anúncios via one-click" },
-                  { time: "14:00", color: "blue", text: "Snapshot diário calculado e armazenado" },
-                  { time: "15:22", color: "blue", text: "Novo upload de CSV Meta processado (3.421 linhas)" },
-                  { time: "16:45", color: "yellow", text: "Alert: Anomalia de gasto em campanha Google Search" },
-                ].map((log, i) => (
-                  <div key={i} className="flex gap-4 items-start">
-                    <span className="text-[10px] font-mono text-muted-foreground mt-0.5">{log.time}</span>
-                    <Circle size={8} className={`mt-1.5 fill-current ${log.color === 'blue' ? 'text-blue-500' : log.color === 'yellow' ? 'text-yellow-500' : 'text-green-500'}`} />
-                    <p className="text-xs text-slate-300 leading-relaxed">{log.text}</p>
-                  </div>
-                ))}
+                {loading ? (
+                  <p className="text-muted-foreground text-sm">Carregando...</p>
+                ) : auditLog.length === 0 ? (
+                  <p className="text-muted-foreground text-sm">Nenhuma atividade registrada</p>
+                ) : auditLog.slice(0, 6).map((log, i) => {
+                  const hora = log.criado_em
+                    ? new Date(log.criado_em).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+                    : '—';
+                  const cor = log.tipo === 'automation' ? 'text-blue-500' : 'text-green-500';
+                  return (
+                    <div key={i} className="flex gap-4 items-start">
+                      <span className="text-[10px] font-mono text-muted-foreground mt-0.5">{hora}</span>
+                      <Circle size={8} className={`mt-1.5 fill-current ${cor}`} />
+                      <div>
+                        <p className="text-xs text-slate-300 leading-relaxed">{log.descricao}</p>
+                        <p className="text-[10px] text-muted-foreground mt-0.5">{log.executado_por}</p>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </CardContent>
           </Card>

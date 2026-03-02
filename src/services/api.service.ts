@@ -1,7 +1,5 @@
 "use client";
 
-// Removidas as lógicas de n8n_url e MOCK_DATA, pois tudo agora vem do Backend via '/api'
-
 async function callApi(path: string, method = 'GET', body?: object) {
   const res = await fetch(`/api${path}`, {
     method,
@@ -15,17 +13,21 @@ async function callApi(path: string, method = 'GET', body?: object) {
   return res.json();
 }
 
+function qs(clienteId?: string | null): string {
+  return clienteId ? `?cliente_id=${clienteId}` : '';
+}
+
 export const dbService = {
-  async getCampaigns() {
-    return callApi('/campaigns');
+  async getCampaigns(clienteId?: string | null) {
+    return callApi(`/campaigns${qs(clienteId)}`);
   },
 
   async createCampaign(data: any) {
     return callApi('/campaigns', 'POST', data);
   },
 
-  async getLeads() {
-    return callApi('/leads');
+  async getLeads(clienteId?: string | null) {
+    return callApi(`/leads${qs(clienteId)}`);
   },
 
   async createLead(data: any) {
@@ -33,11 +35,12 @@ export const dbService = {
   }
 };
 
-export async function fetchDashboardKpis() { return callApi('/dashboard-kpis'); }
-export async function fetchContasStatus() { return callApi('/contas-status'); }
-export async function fetchAlertasAtivos() { return callApi('/alertas-ativos'); }
-export async function fetchAcoesPendentes() { return callApi('/acoes-pendentes'); }
-export async function fetchAuditLog() { return callApi('/audit-log'); }
+export async function fetchClientes() { return callApi('/clientes'); }
+export async function fetchDashboardKpis(clienteId?: string | null) { return callApi(`/dashboard-kpis${qs(clienteId)}`); }
+export async function fetchContasStatus(clienteId?: string | null) { return callApi(`/contas-status${qs(clienteId)}`); }
+export async function fetchAlertasAtivos(clienteId?: string | null) { return callApi(`/alertas-ativos${qs(clienteId)}`); }
+export async function fetchAcoesPendentes(clienteId?: string | null) { return callApi(`/acoes-pendentes${qs(clienteId)}`); }
+export async function fetchAuditLog(clienteId?: string | null) { return callApi(`/audit-log${qs(clienteId)}`); }
 
 export async function enviarMensagemChat(pergunta: string, contaId: string | null = null, periodo: string = '30d') {
   return callApi('/chat', 'POST', { pergunta, conta_id: contaId, periodo });
@@ -55,10 +58,10 @@ export async function executarAnalise(tipo: string, contaId: string | null = nul
   return callApi('/executar-analise', 'POST', { tipo, conta_id: contaId, periodo });
 }
 
-export async function fetchMetricasAnalytics(contaId: string | null = null) {
-  return callApi(contaId ? `/analytics?conta_id=${contaId}` : '/analytics');
+export async function fetchMetricasAnalytics(clienteId?: string | null) {
+  return callApi(`/analytics${qs(clienteId)}`);
 }
 
-export async function fetchDadosBudget(contaId: string | null = null) {
-  return callApi(contaId ? `/budget?conta_id=${contaId}` : '/budget');
+export async function fetchDadosBudget(clienteId?: string | null) {
+  return callApi(`/budget${qs(clienteId)}`);
 }

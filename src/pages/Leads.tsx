@@ -38,18 +38,17 @@ const Leads = () => {
   React.useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      const data = await dbService.getLeads();
-      // Simulando filtro por cliente
+      const data = await dbService.getLeads(selectedClient.id || null);
       setLeads(data);
       setLoading(false);
     };
     fetchData();
   }, [selectedClient.id]);
 
-  const filteredLeads = leads.filter(lead => 
-    lead.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    lead.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    lead.source.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredLeads = leads.filter(lead =>
+    (lead.nome ?? '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (lead.email ?? '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (lead.utm_source ?? '').toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleExport = () => {
@@ -149,8 +148,10 @@ const Leads = () => {
                 {filteredLeads.map((lead) => (
                   <tr key={lead.id} className="hover:bg-slate-50/50 transition-colors group">
                     <td className="px-6 py-4">
-                      <p className="font-bold text-slate-900">{lead.name}</p>
-                      <p className="text-[10px] text-slate-400 uppercase font-medium">{lead.date}</p>
+                      <p className="font-bold text-slate-900">{lead.nome}</p>
+                      <p className="text-[10px] text-slate-400 uppercase font-medium">
+                        {lead.data_criacao ? new Date(lead.data_criacao).toLocaleDateString('pt-BR') : '—'}
+                      </p>
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex flex-col space-y-0.5">
@@ -158,20 +159,20 @@ const Leads = () => {
                           <Mail size={12} className="mr-1.5 text-slate-400" /> {lead.email}
                         </div>
                         <div className="flex items-center text-xs text-slate-600">
-                          <Phone size={12} className="mr-1.5 text-slate-400" /> {lead.phone}
+                          <Phone size={12} className="mr-1.5 text-slate-400" /> {lead.telefone ?? '—'}
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4">
                       <Badge variant="outline" className="bg-slate-50 text-slate-600 border-slate-200 font-medium text-[10px]">
-                        {lead.source}
+                        {lead.utm_source ?? '—'}
                       </Badge>
                     </td>
                     <td className="px-6 py-4">
                       <Badge 
                         className={`font-bold text-[9px] px-2 py-0.5 ${
-                          lead.status === 'Novo' ? 'bg-blue-100 text-blue-700' : 
-                          lead.status === 'Convertido' ? 'bg-green-100 text-green-700' : 
+                          lead.status === 'novo' ? 'bg-blue-100 text-blue-700' :
+                          lead.status === 'convertido' ? 'bg-green-100 text-green-700' :
                           'bg-slate-100 text-slate-600'
                         } border-none`}
                       >
