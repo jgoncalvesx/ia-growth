@@ -133,9 +133,19 @@ async function run() {
       'ad_T1', 'ad_T2',            // TikTok Loja
     ];
 
+    // Mapeamento ad_id → campanha_id_externo (deve bater com campanhas inseridas acima)
+    const adCampanha: Record<string, string> = {
+      'ad_A1': 'camp_001', 'ad_A2': 'camp_001',  // Meta Alpha → Geração de Leads
+      'ad_A3': 'camp_002',                         // Meta Alpha → Remarketing
+      'ad_G1': 'camp_003', 'ad_G2': 'camp_003',  // Google Alpha → Search
+      'ad_L1': 'camp_004', 'ad_L2': 'camp_004',  // Meta Loja → Captação Leads
+      'ad_L3': 'camp_005',                         // Meta Loja → Tráfego Catálogo
+      'ad_T1': 'camp_006', 'ad_T2': 'camp_006',  // TikTok Loja → Brand Awareness
+    };
+
     const metricasConfig: Array<{ conta: typeof metaAlpha, ads: string[], altoCPL?: boolean }> = [
       { conta: metaAlpha,   ads: ['ad_A1','ad_A2','ad_A3'], altoCPL: false },
-      { conta: googleAlpha, ads: ['ad_G1','ad_G2'],          altoCPL: true  }, // G1 terá CPL alto → alerta
+      { conta: googleAlpha, ads: ['ad_G1','ad_G2'],          altoCPL: true  }, // G2 terá CPL alto → alerta
       { conta: metaLoja,    ads: ['ad_L1','ad_L2','ad_L3'], altoCPL: false },
       { conta: tiktokLoja,  ads: ['ad_T1','ad_T2'],          altoCPL: true  }, // T2 terá CPL alto → alerta
     ];
@@ -157,12 +167,12 @@ async function run() {
 
           await client.query(`
             INSERT INTO metricas_diarias
-              (conta_id, ad_id, data, investimento, impressoes, cliques, leads_plataforma,
+              (conta_id, campanha_id, ad_id, data, investimento, impressoes, cliques, leads_plataforma,
                cpm, ctr, cpl_plataforma, frequencia, alcance)
-            VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)
+            VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)
             ON CONFLICT (conta_id, ad_id, data) DO NOTHING
           `, [
-            conta.id, adId, daysAgo(i),
+            conta.id, adCampanha[adId], adId, daysAgo(i),
             investimento, impressoes, cliques, leads,
             +((investimento / impressoes) * 1000).toFixed(2),
             +((cliques / impressoes) * 100).toFixed(4),
@@ -174,7 +184,7 @@ async function run() {
         }
       }
     }
-    console.log(`✓ ${metricasInseridas} registros de métricas diárias inseridos`);
+    console.log(`✓ ${metricasInseridas} registros de métricas diárias inseridos (com campanha_id)`);
 
     // ──────────────────────────────────────────────
     // 6. LEADS
