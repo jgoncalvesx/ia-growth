@@ -98,7 +98,7 @@ const Sidebar = () => {
   return (
     <div className="w-64 bg-slate-900 text-white h-screen flex flex-col border-r border-slate-800">
       <div className="p-6 border-b border-slate-800/50">
-        <h1 className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent mb-6">
+        <h1 className="text-xl font-bold text-white mb-6">
           Growth Midia IA
         </h1>
         <ClientSwitcher />
