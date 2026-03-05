@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Análise de Campanhas — TGH | Google Ads</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap"
+    rel="stylesheet" />
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: #080e18;
+      color: #c8d8e8;
+      font-family: 'IBM Plex Sans', sans-serif;
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #0a1118;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #1a2535;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState } = React;
+
+    const data = {
+      campanhas: [
+        {
+          nome: "Produto",
+          nomeCompleto: "[TGH][LP][PESQUISA] Produto",
+          inicio: "10.02.26",
+          gasto: 1729.89,
+          cliques: 1042,
+          leads: 148,
+          clientes: 2,
+          cor: "#00D4AA",
+          keywords: [
+            { term: "banco de questões residencia medica", leads: 81 },
+            { term: "curso residencia medica", leads: 29 },
+            { term: "cursinho residencia medica", leads: 24 },
+            { term: "preparatorio residencia medica", leads: 10 },
+            { term: "questões residência médica comentadas", leads: 2 },
+          ],
+          etapas: {
+            Contato: 96,
+            "10q Iniciado": 18,
+            "Relatório preditivo": 17,
+            "10q Parcial": 6,
+            "40q Finalizado": 5,
+            "Novo Lead": 4,
+            "40q Iniciado": 1,
+            "10q Completo": 1,
+          },
+          perdidos: 18,
+          leadsComQuestoes: 60,
+          mediaQuestoesRP: 7.5,
+          mediaQuestoesRA: 36.3,
+        },
+        {
+          nome: "Institucional",
+          nomeCompleto: "[TGH][LP][PESQUISA] Institucional",
+          inicio: "10.02.26",
+          gasto: 995.38,
+          cliques: 500,
+          leads: 53,
+          clientes: 1,
+          cor: "#4D9EFF",
+          keywords: [
+            { term: "medmentoria", leads: 29 },
+            { term: "aristo", leads: 11 },
+            { term: "med grupo", leads: 9 },
+            { term: "estratégia med", leads: 3 },
+            { term: "grupomedcof", leads: 1 },
+          ],
+          etapas: {
+            Contato: 27,
+            "Relatório preditivo": 9,
+            "10q Iniciado": 7,
+            "Novo Lead": 4,
+            "10q Completo": 2,
+            "10q Parcial": 2,
+            "40q Iniciado": 2,
+          },
+          perdidos: 1,
+          leadsComQuestoes: 31,
+          mediaQuestoesRP: 6.9,
+          mediaQuestoesRA: 0,
+        },
+        {
+          nome: "Concorrentes",
+          nomeCompleto: "[TGH][LP][PESQUISA] Concorrentes",
+          inicio: "21.02.26",
+          gasto: 657.03,
+          cliques: 201,
+          leads: 0,
+          clientes: 0,
+          cor: "#FF6B6B",
+          kwGroups: [
+            { kw: "aristo", cliques: 101, limitada: false },
+            { kw: "Med Grupo", cliques: 47, limitada: false },
+            { kw: "grupomedcof", cliques: 30, limitada: true },
+            { kw: "Estratégia Med", cliques: 10, limitada: false },
+            { kw: "medway", cliques: 3, limitada: false },
+            { kw: "medgrupo", cliques: 3, limitada: true },
+            { kw: "mentoriaresidencia", cliques: 3, limitada: true },
+            { kw: "eumedicoresidente", cliques: 2, limitada: false },
+            { kw: "medcel", cliques: 1, limitada: true },
+            { kw: "afya", cliques: 1, limitada: true },
+          ],
+          searchTerms: [
+            { term: "medmentoria", cliques: 40, impr: 70, ctr: "57,14%", cpc: "R$ 1,38", custo: "R$ 55,28" },
+            { term: "medmentoria ia", cliques: 12, impr: 30, ctr: "40,00%", cpc: "R$ 0,49", custo: "R$ 5,87" },
+            { term: "estrategia med", cliques: 6, impr: 328, ctr: "1,83%", cpc: "R$ 3,80", custo: "R$ 22,79" },
+            { term: "med mentor ia", cliques: 4, impr: 5, ctr: "80,00%", cpc: "R$ 2,78", custo: "R$ 11,13" },
+            { term: "med mentoria ia", cliques: 3, impr: 3, ctr: "100,00%", cpc: "R$ 3,17", custo: "R$ 9,52" },
+            { term: "mentoria residencia", cliques: 3, impr: 33, ctr: "9,09%", cpc: "R$ 4,51", custo: "R$ 13,54" },
+            { term: "chagas ia", cliques: 2, impr: 32, ctr: "6,25%", cpc: "R$ 4,34", custo: "R$ 8,68" },
+            { term: "estratégia med (exata)", cliques: 2, impr: 124, ctr: "1,61%", cpc: "R$ 4,67", custo: "R$ 9,34" },
+            { term: "sanar", cliques: 1, impr: 74, ctr: "1,35%", cpc: "R$ 4,96", custo: "R$ 4,96" },
+            { term: "medsimple", cliques: 1, impr: 31, ctr: "3,23%", cpc: "R$ 4,79", custo: "R$ 4,79" },
+          ],
+        },
+      ],
+      funil: [
+        { etapa: "Leads captados", valor: 201, pct: 100 },
+        { etapa: "Iniciou simulado 10q", valor: 182, pct: 90.5 },
+        { etapa: "Abriu Relatório Preditivo", valor: 99, pct: 49.3 },
+        { etapa: "Leu Relatório Preditivo", valor: 84, pct: 41.8 },
+        { etapa: "Finalizou 10q", valor: 89, pct: 44.3 },
+        { etapa: "Finalizou 40q", valor: 9, pct: 4.5 },
+        { etapa: "Clientes (Ganhos)", valor: 3, pct: 1.5 },
+      ],
+    };
+
+    const totalGasto = data.campanhas.reduce((s, c) => s + c.gasto, 0);
+    const totalCliques = data.campanhas.reduce((s, c) => s + c.cliques, 0);
+    const totalLeads = 201;
+    const totalClientes = 3;
+
+    const fmt = (v) => v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+    const fmtN = (v) => v.toLocaleString("pt-BR");
+
+    const Badge = ({ children, color }) => (
+      <span style={{ background: color + "22", color, border: `1px solid ${color}44`, padding: "2px 10px", borderRadius: 99, fontSize: 10, fontWeight: 700, letterSpacing: "0.05em" }}>
+        {children}
+      </span>
+    );
+
+    const KPICard = ({ label, value, sub, color }) => (
+      <div style={{ background: "#0f1923", border: `1px solid ${color}33`, borderTop: `3px solid ${color}`, borderRadius: 12, padding: "14px 18px", display: "flex", flexDirection: "column", gap: 3 }}>
+        <div style={{ color: "#8899aa", fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 600 }}>{label}</div>
+        <div style={{ color, fontSize: 18, fontWeight: 800, fontFamily: "'Space Mono', monospace", lineHeight: 1.2 }}>{value}</div>
+        {sub && <div style={{ color: "#445566", fontSize: 11 }}>{sub}</div>}
+      </div>
+    );
+
+    const SectionTitle = ({ children }) => (
+      <div style={{ display: "flex", alignItems: "center", gap: 12, margin: "26px 0 13px" }}>
+        <div style={{ height: 2, flex: 1, background: "linear-gradient(to right, #00D4AA33, transparent)" }} />
+        <span style={{ color: "#00D4AA", fontSize: 10, letterSpacing: "0.15em", textTransform: "uppercase", fontWeight: 700, whiteSpace: "nowrap" }}>{children}</span>
+        <div style={{ height: 2, flex: 1, background: "linear-gradient(to left, #00D4AA33, transparent)" }} />
+      </div>
+    );
+
+    const Bar = ({ value, max, color }) => (
+      <div style={{ background: "#1a2535", borderRadius: 99, height: 5, overflow: "hidden", width: "100%" }}>
+        <div style={{ width: `${Math.min((value / max) * 100, 100)}%`, height: "100%", background: color, borderRadius: 99 }} />
+      </div>
+    );
+
+    function App() {
+      const [activeTab, setActiveTab] = useState("overview");
+      const tabs = [
+        { id: "overview", label: "Visão Geral" },
+        { id: "produto", label: "Produto" },
+        { id: "institucional", label: "Institucional" },
+        { id: "concorrentes", label: "Concorrentes" },
+        { id: "funil", label: "Funil & Engajamento" },
+        { id: "insights", label: "Insights & Próximos Passos" },
+      ];
+      const campMap = { produto: data.campanhas[0], institucional: data.campanhas[1] };
+      const camp = campMap[activeTab];
+
+      return (
+        <div style={{ minHeight: "100vh", background: "#080e18", color: "#c8d8e8", fontFamily: "'IBM Plex Sans', sans-serif" }}>
+          <div style={{ background: "#0f1923", borderBottom: "1px solid #1a2535", padding: "18px 26px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
+              <div style={{ background: "#00D4AA22", border: "1px solid #00D4AA44", borderRadius: 6, padding: "3px 9px" }}>
+                <span style={{ color: "#00D4AA", fontSize: 10, fontWeight: 700, letterSpacing: "0.1em" }}>GOOGLE ADS</span>
+              </div>
+              <span style={{ color: "#445566", fontSize: 11 }}>10.02.2026 – 05.03.2026</span>
+            </div>
+            <h1 style={{ margin: 0, fontSize: 20, fontWeight: 800, color: "#e8f4ff" }}>Análise de Campanhas — TGH</h1>
+            <p style={{ margin: "3px 0 0", color: "#4D9EFF", fontSize: 12 }}>3 campanhas · {fmt(totalGasto)} investidos · {fmtN(totalLeads)} leads · {totalClientes} clientes</p>
+          </div>
+
+          <div style={{ background: "#0a1118", borderBottom: "1px solid #1a2535", padding: "0 26px", display: "flex", gap: 2, overflowX: "auto" }}>
+            {tabs.map((t) => (
+              <button key={t.id} onClick={() => setActiveTab(t.id)} style={{ background: "none", border: "none", padding: "12px 14px", cursor: "pointer", color: activeTab === t.id ? "#00D4AA" : "#4a6070", borderBottom: activeTab === t.id ? "2px solid #00D4AA" : "2px solid transparent", fontSize: 12, fontWeight: activeTab === t.id ? 700 : 500, whiteSpace: "nowrap", fontFamily: "'IBM Plex Sans', sans-serif" }}>
+                {t.label}
+              </button>
+            ))}
+          </div>
+
+          <div style={{ padding: "18px 26px", maxWidth: 1060, margin: "0 auto" }}>
+
+            {/* OVERVIEW */}
+            {activeTab === "overview" && (<div>
+              <SectionTitle>KPIs Consolidados</SectionTitle>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 8 }}>
+                <KPICard label="Total Investido" value={fmt(totalGasto)} color="#00D4AA" />
+                <KPICard label="Total Cliques" value={fmtN(totalCliques)} sub="3 campanhas" color="#4D9EFF" />
+                <KPICard label="Total Leads" value={fmtN(totalLeads)} sub="Produto + Institucional" color="#9B8EFF" />
+                <KPICard label="CPL Médio" value={fmt(totalGasto / totalLeads)} sub="custo por lead" color="#F59E0B" />
+                <KPICard label="CAC" value={fmt(totalGasto / totalClientes)} sub={`${totalClientes} clientes`} color="#FF6B6B" />
+                <KPICard label="Conv. Clique→Lead" value={`${((totalLeads / totalCliques) * 100).toFixed(1)}%`} sub="excl. Concorrentes" color="#00D4AA" />
+              </div>
+
+              <SectionTitle>Performance por Campanha</SectionTitle>
+              {data.campanhas.map((c) => (
+                <div key={c.nome} style={{ background: "#0f1923", border: `1px solid ${c.cor}33`, borderLeft: `4px solid ${c.cor}`, borderRadius: 12, padding: "13px 17px", marginBottom: 8 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
+                    <div>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                        <span style={{ color: c.cor, fontWeight: 800, fontSize: 14 }}>{c.nome}</span>
+                        <Badge color={c.cor}>desde {c.inicio}</Badge>
+                        {c.nome === "Concorrentes" && <Badge color="#F59E0B">sem conv. esperada</Badge>}
+                      </div>
+                      <div style={{ color: "#33445566", fontSize: 10, marginTop: 2 }}>{c.nomeCompleto}</div>
+                    </div>
+                    <div style={{ display: "flex", gap: 18, flexWrap: "wrap" }}>
+                      {[
+                        { l: "Gasto", v: fmt(c.gasto) },
+                        { l: "Cliques", v: fmtN(c.cliques) },
+                        { l: "Leads", v: fmtN(c.leads) },
+                        { l: "CPL", v: c.leads > 0 ? fmt(c.gasto / c.leads) : "—" },
+                        { l: "CTR→Lead", v: c.leads > 0 ? `${((c.leads / c.cliques) * 100).toFixed(1)}%` : "—" },
+                      ].map((item) => (
+                        <div key={item.l} style={{ textAlign: "right" }}>
+                          <div style={{ color: "#445566", fontSize: 9, letterSpacing: "0.08em", textTransform: "uppercase" }}>{item.l}</div>
+                          <div style={{ color: c.cor, fontWeight: 700, fontSize: 13, fontFamily: "'Space Mono', monospace" }}>{item.v}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ))}
+
+              <SectionTitle>Distribuição do Investimento</SectionTitle>
+              <div style={{ background: "#0f1923", border: "1px solid #1a2535", borderRadius: 12, padding: "16px 20px" }}>
+                {data.campanhas.map((c) => (
+                  <div key={c.nome} style={{ marginBottom: 13 }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
+                      <span style={{ color: "#8899aa", fontSize: 12 }}>{c.nome}</span>
+                      <span style={{ color: c.cor, fontFamily: "'Space Mono', monospace", fontSize: 12 }}>{fmt(c.gasto)} · {((c.gasto / totalGasto) * 100).toFixed(1)}%</span>
+                    </div>
+                    <Bar value={c.gasto} max={totalGasto} color={c.cor} />
+                  </div>
+                ))}
+              </div>
+
+              <SectionTitle>Tabela Completa de KPIs</SectionTitle>
+              <div style={{ background: "#0f1923", border: "1px solid #1a2535", borderRadius: 12, overflow: "auto" }}>
+                <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 600 }}>
+                  <thead>
+                    <tr style={{ background: "#0a1118" }}>
+                      {["Campanha", "Gasto", "Cliques", "Leads", "CPL", "Clientes", "CAC", "Conv. Clique→Lead"].map((h) => (
+                        <th key={h} style={{ textAlign: "left", color: "#4a6070", fontSize: 9, letterSpacing: "0.08em", textTransform: "uppercase", padding: "9px 12px", borderBottom: "1px solid #1a2535" }}>{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.campanhas.map((c) => (
+                      <tr key={c.nome} style={{ borderBottom: "1px solid #1a253522" }}>
+                        <td style={{ padding: "10px 12px", color: c.cor, fontWeight: 700, fontSize: 12 }}>{c.nome}</td>
+                        <td style={{ padding: "10px 12px", color: "#c8d8e8", fontFamily: "'Space Mono', monospace", fontSize: 11 }}>{fmt(c.gasto)}</td>
+                        <td style={{ padding: "10px 12px", color: "#c8d8e8", fontFamily: "'Space Mono', monospace", fontSize: 11 }}>{fmtN(c.cliques)}</td>
+                        <td style={{ padding: "10px 12px", color: "#c8d8e8", fontFamily: "'Space Mono', monospace", fontSize: 11 }}>{c.leads}</td>
+                        <td style={{ padding: "10px 12px", color: "#c8d8e8", fontFamily: "'Space Mono', monospace", fontSize: 11 }}>{c.leads > 0 ? fmt(c.gasto / c.leads) : "—"}</td>
+                        <td style={{ padding: "10px 12px", color: "#c8d8e8", fontFamily: "'Space Mono', monospace", fontSize: 11 }}>{c.clientes}</td>
+                        <td style={{ padding: "10px 12px", color: "#c8d8e8", fontFamily: "'Space Mono', monospace", fontSize: 11 }}>{c.clientes > 0 ? fmt(c.gasto / c.clientes) : "—"}</td>
+                        <td style={{ padding: "10px 12px", color: "#c8d8e8", fontFamily: "'Space Mono', monospace", fontSize: 11 }}>{c.leads > 0 ? `${((c.leads / c.cliques) * 100).toFixed(1)}%` : "—"}</td>
+                      </tr>
+                    ))}
+                    <tr style={{ background: "#00D4AA08", borderTop: "2px solid #00D4AA33" }}>
+                      <td style={{ padding: "10px 12px", color: "#00D4AA", fontWeight: 800, fontSize: 12 }}>TOTAL</td>
+                      <td style={{ padding: "10px 12px", color: "#00D4AA", fontFamily: "'Space Mono', monospace", fontSize: 11, fontWeight: 700 }}>{fmt(totalGasto)}</td>
+                      <td style={{ padding: "10px 12px", color: "#00D4AA", fontFamily: "'Space Mono', monospace", fontSize: 11, fontWeight: 700 }}>{fmtN(totalCliques)}</td>
+                      <td style={{ padding: "10px 12px", color: "#00D4AA", fontFamily: "'Space Mono', monospace", fontSize: 11, fontWeight: 700 }}>{totalLeads}</td>
+                      <td style={{ padding: "10px 12px", color: "#00D4AA", fontFamily: "'Space Mono', monospace", fontSize: 11, fontWeight: 700 }}>{fmt(totalGasto / totalLeads)}</td>
+                      <td style={{ padding: "10px 12px", color: "#00D4AA", fontFamily: "'Space Mono', monospace", fontSize: 11, fontWeight: 700 }}>{totalClientes}</td>
+                      <td style={{ padding: "10px 12px", color: "#00D4AA", fontFamily: "'Space Mono', monospace", fontSize: 11, fontWeight: 700 }}>{fmt(totalGasto / totalClientes)}</td>
+                      <td style={{ padding: "10px 12px", color: "#00D4AA", fontFamily: "'Space Mono', monospace", fontSize: 11, fontWeight: 700 }}>{((totalLeads / totalCliques) * 100).toFixed(1)}%</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>)}
+
+            {/* PRODUTO / INSTITUCIONAL */}
+            {(activeTab === "produto" || activeTab === "institucional") && camp && (<div>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
+                <div style={{ width: 4, height: 28, background: camp.cor, borderRadius: 2 }} />
+                <div>
+                  <h2 style={{ margin: 0, color: camp.cor, fontSize: 18, fontWeight: 800 }}>Campanha {camp.nome}</h2>
+                  <div style={{ color: "#445566", fontSize: 10 }}>{camp.nomeCompleto}</div>
+                </div>
+              </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: 8, marginBottom: 14 }}>
+                <KPICard label="Gasto" value={fmt(camp.gasto)} color={camp.cor} />
+                <KPICard label="Cliques" value={fmtN(camp.cliques)} color={camp.cor} />
+                <KPICard label="Leads" value={fmtN(camp.leads)} color={camp.cor} />
+                <KPICard label="CPL" value={fmt(camp.gasto / camp.leads)} color={camp.cor} />
+                <KPICard label="Conv. Clique→Lead" value={`${((camp.leads / camp.cliques) * 100).toFixed(1)}%`} color={camp.cor} />
+                <KPICard label="Clientes" value={camp.clientes} sub={`CAC: ${fmt(camp.gasto / camp.clientes)}`} color={camp.cor} />
+              </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                <div style={{ background: "#0f1923", border: "1px solid #1a2535", borderRadius: 12, padding: "16px 20px" }}>
+                  <div style={{ color: "#8899aa", fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 600, marginBottom: 12 }}>Keywords por leads gerados</div>
+                  {camp.keywords.map((k, i) => (
+                    <div key={i} style={{ marginBottom: 10 }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 3 }}>
+                        <span style={{ color: "#aabbc8", fontSize: 11 }}>{k.term}</span>
+                        <span style={{ color: camp.cor, fontWeight: 700, fontSize: 12, fontFamily: "'Space Mono', monospace" }}>{k.leads}</span>
+                      </div>
+                      <Bar value={k.leads} max={camp.keywords[0].leads} color={camp.cor} />
+                    </div>
+                  ))}
+                </div>
+
+                <div style={{ background: "#0f1923", border: "1px solid #1a2535", borderRadius: 12, padding: "16px 20px" }}>
+                  <div style={{ color: "#8899aa", fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 600, marginBottom: 12 }}>Distribuição no Funil</div>
+                  {Object.entries(camp.etapas).map(([etapa, qtd]) => (
+                    <div key={etapa} style={{ marginBottom: 9 }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 3 }}>
+                        <span style={{ color: "#aabbc8", fontSize: 11 }}>{etapa}</span>
+                        <span style={{ color: camp.cor, fontWeight: 700, fontSize: 11, fontFamily: "'Space Mono', monospace" }}>{qtd} ({((qtd / camp.leads) * 100).toFixed(0)}%)</span>
+                      </div>
+                      <Bar value={qtd} max={camp.leads} color={camp.cor} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div style={{ background: "#0f1923", border: "1px solid #1a2535", borderRadius: 12, padding: "16px 20px", marginTop: 12 }}>
+                <div style={{ color: "#8899aa", fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 600, marginBottom: 12 }}>Engajamento com Questões — Médias</div>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 16 }}>
+                  <div>
+                    <div style={{ color: "#445566", fontSize: 11 }}>Média questões 10q (RP) por lead</div>
+                    <div style={{ color: camp.cor, fontSize: 24, fontWeight: 800, fontFamily: "'Space Mono', monospace" }}>{camp.mediaQuestoesRP > 0 ? camp.mediaQuestoesRP.toFixed(1) : "—"}</div>
+                    <div style={{ color: "#334455", fontSize: 10 }}>de 10 questões possíveis</div>
+                  </div>
+                  <div>
+                    <div style={{ color: "#445566", fontSize: 11 }}>Média questões 40q (RA) por lead</div>
+                    <div style={{ color: camp.cor, fontSize: 24, fontWeight: 800, fontFamily: "'Space Mono', monospace" }}>{camp.mediaQuestoesRA > 0 ? camp.mediaQuestoesRA.toFixed(1) : "—"}</div>
+                    <div style={{ color: "#334455", fontSize: 10 }}>{camp.mediaQuestoesRA > 0 ? "de 40 questões possíveis" : "sem dados de RA"}</div>
+                  </div>
+                  <div>
+                    <div style={{ color: "#445566", fontSize: 11 }}>Leads que responderam alguma questão</div>
+                    <div style={{ color: camp.cor, fontSize: 24, fontWeight: 800, fontFamily: "'Space Mono', monospace" }}>{camp.leadsComQuestoes}</div>
+                    <div style={{ color: "#334455", fontSize: 10 }}>{((camp.leadsComQuestoes / camp.leads) * 100).toFixed(0)}% dos leads da campanha</div>
+                  </div>
+                </div>
+              </div>
+            </div>)}
+
+            {/* CONCORRENTES */}
+            {activeTab === "concorrentes" && (<div>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16, flexWrap: "wrap" }}>
+                <div style={{ width: 4, height: 28, background: "#FF6B6B", borderRadius: 2 }} />
+                <div>
+                  <h2 style={{ margin: 0, color: "#FF6B6B", fontSize: 18, fontWeight: 800 }}>Campanha Concorrentes</h2>
+                  <div style={{ color: "#445566", fontSize: 10 }}>[TGH][LP][PESQUISA] Concorrentes · desde 21.02.26</div>
+                </div>
+                <Badge color="#F59E0B">conversão não esperada nesta etapa</Badge>
+              </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginBottom: 14 }}>
+                <KPICard label="Gasto" value={fmt(657.03)} color="#FF6B6B" />
+                <KPICard label="Cliques" value="201" color="#FF6B6B" />
+                <KPICard label="CPC Médio" value="R$ 2,95" sub="136 termos de busca ativados" color="#FF6B6B" />
+              </div>
+
+              <div style={{ background: "#F59E0B0d", border: "1px solid #F59E0B33", borderRadius: 12, padding: "16px 20px", marginBottom: 14 }}>
+                <div style={{ color: "#F59E0B", fontWeight: 700, fontSize: 13, marginBottom: 8 }}>📌 Contexto estratégico</div>
+                <div style={{ color: "#aa9966", fontSize: 12, lineHeight: 1.8 }}>
+                  Esta campanha mira usuários buscando diretamente pelos concorrentes (Aristo, Med Grupo, Estratégia Med…). É normal que esse público não converta diretamente — ele está em modo de pesquisa comparativa. O objetivo é <strong style={{ color: "#F59E0B" }}>interromper a jornada</strong> antes que o lead feche com a concorrência e criar consciência de marca.<br /><br />
+                  <strong style={{ color: "#F59E0B" }}>Oportunidade principal:</strong> trocar a LP atual por uma construída especificamente para esse momento de decisão — com argumentação direta de diferenciação e CTA de baixo atrito.
+                </div>
+              </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 14 }}>
+                <div style={{ background: "#0f1923", border: "1px solid #1a2535", borderRadius: 12, padding: "16px 20px" }}>
+                  <div style={{ color: "#8899aa", fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 600, marginBottom: 12 }}>Keywords · cliques por grupo</div>
+                  {data.campanhas[2].kwGroups.map((k, i) => (
+                    <div key={i} style={{ marginBottom: 9 }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 3 }}>
+                        <div>
+                          <span style={{ color: "#aabbc8", fontSize: 11 }}>{k.kw}</span>
+                        </div>
+                        <span style={{ color: "#FF6B6B", fontWeight: 700, fontSize: 11, fontFamily: "'Space Mono', monospace" }}>{k.cliques}</span>
+                      </div>
+                      <Bar value={k.cliques} max={101} color="#FF6B6B" />
+                    </div>
+                  ))}
+                </div>
+
+                <div style={{ background: "#0f1923", border: "1px solid #1a2535", borderRadius: 12, padding: "16px 20px" }}>
+                  <div style={{ color: "#8899aa", fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 600, marginBottom: 12 }}>Top termos de pesquisa reais</div>
+                  {data.campanhas[2].searchTerms.map((t, i) => (
+                    <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "6px 0", borderBottom: i < data.campanhas[2].searchTerms.length - 1 ? "1px solid #1a253533" : "none" }}>
+                      <div>
+                        <div style={{ color: "#aabbc8", fontSize: 11 }}>{t.term}</div>
+                        <div style={{ color: "#334455", fontSize: 10 }}>CTR {t.ctr} · CPC {t.cpc}</div>
+                      </div>
+                      <div style={{ textAlign: "right" }}>
+                        <div style={{ color: "#FF6B6B", fontWeight: 700, fontSize: 13, fontFamily: "'Space Mono', monospace" }}>{t.cliques}</div>
+                        <div style={{ color: "#334455", fontSize: 9 }}>cliques</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div style={{ background: "#0f1923", border: "1px solid #1a2535", borderRadius: 12, padding: "16px 20px" }}>
+                <div style={{ color: "#8899aa", fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 600, marginBottom: 12 }}>Quem está chegando nessa campanha?</div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
+                  <div>
+                    <div style={{ color: "#FF6B6B", fontWeight: 700, marginBottom: 7, fontSize: 12 }}>🔍 Perfil do buscador</div>
+                    <ul style={{ color: "#8899aa", fontSize: 12, lineHeight: 1.9, margin: 0, paddingLeft: 16 }}>
+                      <li><strong style={{ color: "#aabbc8" }}>Aristo + Med Grupo</strong> = 73% dos cliques — usuário comparando cursinhos, ainda em decisão</li>
+                      <li><strong style={{ color: "#aabbc8" }}>medmentoria/ia</strong> = 52 cliques — já conhecem a marca, buscando referências</li>
+                      <li><strong style={{ color: "#aabbc8" }}>estrategia med</strong> = 328 impressões, CTR de 1,83% — audiência menos quente, intenção difusa</li>
+                      <li><strong style={{ color: "#aabbc8" }}>grupomedcof, medcel, afya</strong> = baixo QS — candidatos a pausa ou refinamento</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <div style={{ color: "#F59E0B", fontWeight: 700, marginBottom: 7, fontSize: 12 }}>💡 Recomendação de LP</div>
+                    <ul style={{ color: "#8899aa", fontSize: 12, lineHeight: 1.9, margin: 0, paddingLeft: 16 }}>
+                      <li>Angle de comparação direta: "Por que médicos trocam o Aristo/Med Grupo pela medmentorIA"</li>
+                      <li>Destaque de diferenciais únicos: IA preditiva, simulado personalizado, relatório de lacunas</li>
+                      <li>Prova social de quem migrou de outros cursinhos</li>
+                      <li>CTA de baixo atrito para público ainda em decisão (ex: "Teste grátis 7 dias")</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>)}
+
+            {/* FUNIL */}
+            {activeTab === "funil" && (<div>
+              <SectionTitle>Funil de Conversão — Todos os Leads</SectionTitle>
+              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                {data.funil.map((f, i) => (
+                  <div key={i} style={{ background: "#0f1923", border: "1px solid #1a2535", borderRadius: 10, padding: "11px 16px", position: "relative", overflow: "hidden" }}>
+                    <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: `${f.pct}%`, background: `linear-gradient(to right, #00D4AA${Math.round(f.pct * 0.35).toString(16).padStart(2, "0")}, transparent)` }} />
+                    <div style={{ position: "relative", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                        <span style={{ color: "#00D4AA", fontWeight: 800, fontSize: 11, fontFamily: "'Space Mono', monospace", minWidth: 24 }}>{String(i + 1).padStart(2, "0")}</span>
+                        <span style={{ color: "#c8d8e8", fontSize: 13 }}>{f.etapa}</span>
+                      </div>
+                      <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
+                        <span style={{ color: "#00D4AA", fontWeight: 800, fontSize: 16, fontFamily: "'Space Mono', monospace" }}>{f.valor}</span>
+                        <span style={{ color: "#4a6070", fontSize: 11, minWidth: 40, textAlign: "right" }}>{f.pct}%</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <SectionTitle>Engajamento com Questões — Médias Gerais</SectionTitle>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(190px, 1fr))", gap: 8 }}>
+                <KPICard label="Média questões 10q (RP) por lead" value="7,3" sub="de 10 possíveis · entre quem respondeu" color="#00D4AA" />
+                <KPICard label="Média questões 40q (RA) por lead" value="36,3" sub="de 40 possíveis · entre quem chegou ao 40q" color="#4D9EFF" />
+                <KPICard label="Leads que iniciaram o 10q" value="182" sub="90,5% do total de leads" color="#9B8EFF" />
+                <KPICard label="Taxa conclusão 10q" value="44,3%" sub="89 de 182 que iniciaram" color="#F59E0B" />
+              </div>
+            </div>)}
+
+            {/* INSIGHTS */}
+            {activeTab === "insights" && (<div>
+              <SectionTitle>Insights Estratégicos</SectionTitle>
+              {[
+                {
+                  num: "01", cor: "#00D4AA",
+                  titulo: "🏆 Palavra-chave estrela: 'banco de questões residencia medica'",
+                  texto: "81 dos 148 leads da campanha Produto (54,7%) vieram dessa única keyword. É onde está a maior intenção de compra e o melhor fit de produto. Recomendação: criar um Ad Group dedicado com landing page específica para esse termo, testando mensagens focadas em 'banco de questões comentadas + simulado preditivo com IA'.",
+                },
+                {
+                  num: "02", cor: "#4D9EFF",
+                  titulo: "🎯 Institucional capta marca",
+                  texto: "'medmentoria' (29 leads) é tráfego de marca — sinal positivo de reconhecimento. 'Aristo' e 'Med Grupo' somam 20 leads — captura de concorrentes funcionando aqui também.",
+                },
+                {
+                  num: "03", cor: "#F59E0B",
+                  titulo: "💡 Concorrentes precisa de LP específica de diferenciação",
+                  texto: "201 cliques de usuários buscando Aristo, Med Grupo, Estratégia Med e outros. Esse público está em modo comparativo — a LP atual não foi feita para ele. A recomendação é uma landing page com argumento direto de diferenciação: por que migrar para a medmentorIA, com prova social e CTA de baixo atrito.",
+                },
+
+              ].map((ins) => (
+                <div key={ins.num} style={{ background: "#0f1923", border: `1px solid ${ins.cor}33`, borderLeft: `4px solid ${ins.cor}`, borderRadius: 12, padding: "16px 20px", marginBottom: 9 }}>
+                  <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
+                    <span style={{ color: ins.cor, fontFamily: "'Space Mono', monospace", fontSize: 16, fontWeight: 700, flexShrink: 0 }}>{ins.num}</span>
+                    <div>
+                      <div style={{ color: "#e8f4ff", fontWeight: 700, fontSize: 13, marginBottom: 6 }}>{ins.titulo}</div>
+                      <div style={{ color: "#7a8fa0", fontSize: 12, lineHeight: 1.7 }}>{ins.texto}</div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+
+              <SectionTitle>Próximos Passos Prioritários</SectionTitle>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+                {[
+                  { prioridade: "ESTA SEMANA", cor: "#FF6B6B", acao: "Criar LP de diferenciação para Concorrentes", detalhe: "Angle de comparação com Aristo/Med Grupo. CTA de baixo atrito para público em decisão." },
+                  { prioridade: "ESTA SEMANA", cor: "#FF6B6B", acao: "Ad Group dedicado para 'banco de questões'", detalhe: "LP e copy específicos para o termo que gera 54,7% dos leads da campanha Produto." },
+
+                ].map((step, i) => (
+                  <div key={i} style={{ background: "#0f1923", border: `1px solid ${step.cor}33`, borderRadius: 12, padding: "13px 16px" }}>
+                    <Badge color={step.cor}>{step.prioridade}</Badge>
+                    <div style={{ color: "#e8f4ff", fontWeight: 700, fontSize: 13, margin: "9px 0 5px" }}>{step.acao}</div>
+                    <div style={{ color: "#556677", fontSize: 11, lineHeight: 1.6 }}>{step.detalhe}</div>
+                  </div>
+                ))}
+              </div>
+            </div>)}
+
+          </div>
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(<App />);
+  </script>
+</body>
+
+</html>
